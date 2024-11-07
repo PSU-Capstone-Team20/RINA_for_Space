@@ -1,0 +1,67 @@
+V "GNAT Lib v13"
+A -Og
+A -gnatA
+A -ffunction-sections
+A -fdata-sections
+A -g
+A -gnatwa
+A -gnatw.X
+A -gnatVa
+A -gnaty3
+A -gnatya
+A -gnatyA
+A -gnatyB
+A -gnatyb
+A -gnatyc
+A -gnaty-
+A -gnatyd
+A -gnatye
+A -gnatyf
+A -gnatyh
+A -gnatyi
+A -gnatyI
+A -gnatyk
+A -gnatyl
+A -gnatym
+A -gnatyn
+A -gnatyO
+A -gnatyp
+A -gnatyr
+A -gnatyS
+A -gnatyt
+A -gnatyu
+A -gnatyx
+A -gnatW8
+A -mtune=generic
+A -march=x86-64
+P ZX
+
+RN
+RV NO_IMPLEMENTATION_PRAGMAS
+
+U rina%s		rina.ads		57082c83 NE OO PK
+
+D rina.ads		20241107130604 57082c83 rina%s
+D system.ads		20230727081304 426dafb8 system%s
+G a e
+G c Z s s [header_tIP rina 13 9 none]
+G c Z s s [address_tIP rina 17 9 none]
+G c Z s s [pci_tIP rina 19 9 none]
+X 1 rina.ads
+7K9*Rina 41l5 41e9
+9i4*Max_Header_Size{positive}
+11M9*U8_T 13r49 15r24
+13A9*Header_T(11M9)<integer> 20r19
+15M12*QoS_Id_T{11M9} 30r19
+17R9*Address_T 25r19 26r19
+19R9*PCI_T 19d16 31e14
+19i16*Header_Length{natural} 20r34
+20a7*Header{13A9}
+21i7*Length{natural}
+22b7*DRF_Flag{boolean}
+23b7*ECN_Flag{boolean}
+25r7*Src_Addr{17R9}
+26r7*Dst_Addr{17R9}
+28i7*Seq_Num{natural}
+30m7*QoS_ID{15M12}
+

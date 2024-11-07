@@ -1,0 +1,239 @@
+V "GNAT Lib v13"
+A -Og
+A -gnatA
+A -gnatA
+A -gnatWb
+A -gnatiw
+A -gnatws
+A -ffunction-sections
+A -fdata-sections
+A -g
+A -mtune=generic
+A -march=x86-64
+P ZX
+
+RN
+RV NO_ACCESS_SUBPROGRAMS
+RV NO_DEFAULT_INITIALIZATION
+RV NO_IMPLEMENTATION_ATTRIBUTES
+RV NO_IMPLEMENTATION_PRAGMAS
+RV NO_IMPLICIT_LOOPS
+RV NO_ELABORATION_CODE
+RV NO_OBSOLESCENT_FEATURES
+
+U ada_main%b		b__rina_for_space.adb	c4dfdef9 OO PK IL
+Z system%s		system.ads		system.ali
+
+U ada_main%s		b__rina_for_space.ads	49f21a73 EE NE OO PK IL
+W system%s		system.ads		system.ali
+W system.parameters%s	s-parame.adb		s-parame.ali
+W system.secondary_stack%s  s-secsta.adb	s-secsta.ali
+
+D b__rina_for_space.ads	20241107130606 88896898 ada_main%s
+D b__rina_for_space.adb	20241107130606 4c56b661 ada_main%b
+D system.ads		20230727081304 426dafb8 system%s
+D s-parame.ads		20230727081304 d494a4a6 system.parameters%s
+D s-secsta.ads		20230727081304 578279f5 system.secondary_stack%s
+D s-stoele.ads		20230727081304 ab5468e4 system.storage_elements%s
+G a e
+G c Z s b [adainit ada_main 29 14 none]
+G c Z s b [adafinal ada_main 32 14 none]
+G c Z s b [main ada_main 35 13 none]
+G c Z b b [Tsec_default_sized_stacksBIP ada_main 28 4 none]
+G c Z b b [ada_main_program ada_main 172 14 none]
+X 1 b__rina_for_space.ads
+6K9*ada_main 356l5 356e13 2|7b14 217l5 217t13
+8i4*gnat_argc{integer} 12m22 12r22 2|192r10 193m10
+9m4*gnat_argv{3|67M9} 13m22 13r22 2|194m10
+10m4*gnat_envp{3|67M9} 14m22 14r22 2|196m7
+16i4*gnat_exit_status{integer} 17m22 17r22 2|203r15
+19a4*GNAT_Version{string} 21r22 23r54
+23m4*GNAT_Version_Address{3|67M9} 24r22
+26a4*Ada_Main_Program_Name{string} 27r22 2|188r52
+29U14*adainit 30i<c,adainit>22 2|54b14 170l8 170t15 199s7
+32U14*adafinal 33i<c,adafinal>22 2|35b14 49l8 49t16 201s7
+35V13*main{integer} 36>7 37>7 38>7 40i<c,main>22 2|175b13 204t7
+36i7 argc{integer} 2|176b7 193r23
+37m7 argv{3|67M9} 2|177b7 194r23
+38m7 envp{3|67M9} 2|178b7 196r20
+42M9*Version_32 43r22 45r22 47r22 49r22 51r22 53r22 55r22 57r22 59r22 61r22
+. 63r22 65r22 67r22 69r22 71r22 73r22 75r22 77r22 79r22 81r22 83r22 85r22
+. 87r22 89r22 91r22 93r22 95r22 97r22 99r22 101r22 103r22 105r22 107r22 109r22
+. 111r22 113r22 115r22 117r22 119r22 121r22 123r22 125r22 127r22 129r22 131r22
+. 133r22 135r22 137r22 139r22 141r22 143r22 145r22 147r22 149r22 151r22 153r22
+. 155r22 157r22 159r22 161r22 163r22 165r22 167r22 169r22 171r22 173r22 175r22
+. 177r22 179r22 181r22 183r22 185r22 187r22 189r22 191r22 193r22 195r22 197r22
+. 199r22 201r22 203r22 205r22 207r22 209r22 211r22 213r22 215r22 217r22 219r22
+. 221r22 223r22 225r22 227r22 229r22 231r22 233r22 235r22 237r22 239r22 241r22
+. 243r22 245r22 247r22
+43m4*u00001{42M9} 44r22
+45m4*u00002{42M9} 46r22
+47m4*u00003{42M9} 48r22
+49m4*u00004{42M9} 50r22
+51m4*u00005{42M9} 52r22
+53m4*u00006{42M9} 54r22
+55m4*u00007{42M9} 56r22
+57m4*u00008{42M9} 58r22
+59m4*u00009{42M9} 60r22
+61m4*u00010{42M9} 62r22
+63m4*u00011{42M9} 64r22
+65m4*u00012{42M9} 66r22
+67m4*u00013{42M9} 68r22
+69m4*u00014{42M9} 70r22
+71m4*u00015{42M9} 72r22
+73m4*u00016{42M9} 74r22
+75m4*u00017{42M9} 76r22
+77m4*u00018{42M9} 78r22
+79m4*u00019{42M9} 80r22
+81m4*u00020{42M9} 82r22
+83m4*u00021{42M9} 84r22
+85m4*u00022{42M9} 86r22
+87m4*u00023{42M9} 88r22
+89m4*u00024{42M9} 90r22
+91m4*u00025{42M9} 92r22
+93m4*u00026{42M9} 94r22
+95m4*u00027{42M9} 96r22
+97m4*u00028{42M9} 98r22
+99m4*u00029{42M9} 100r22
+101m4*u00030{42M9} 102r22
+103m4*u00031{42M9} 104r22
+105m4*u00032{42M9} 106r22
+107m4*u00033{42M9} 108r22
+109m4*u00034{42M9} 110r22
+111m4*u00035{42M9} 112r22
+113m4*u00036{42M9} 114r22
+115m4*u00037{42M9} 116r22
+117m4*u00038{42M9} 118r22
+119m4*u00039{42M9} 120r22
+121m4*u00040{42M9} 122r22
+123m4*u00041{42M9} 124r22
+125m4*u00042{42M9} 126r22
+127m4*u00043{42M9} 128r22
+129m4*u00044{42M9} 130r22
+131m4*u00045{42M9} 132r22
+133m4*u00046{42M9} 134r22
+135m4*u00047{42M9} 136r22
+137m4*u00048{42M9} 138r22
+139m4*u00049{42M9} 140r22
+141m4*u00050{42M9} 142r22
+143m4*u00051{42M9} 144r22
+145m4*u00052{42M9} 146r22
+147m4*u00053{42M9} 148r22
+149m4*u00054{42M9} 150r22
+151m4*u00055{42M9} 152r22
+153m4*u00056{42M9} 154r22
+155m4*u00057{42M9} 156r22
+157m4*u00058{42M9} 158r22
+159m4*u00059{42M9} 160r22
+161m4*u00060{42M9} 162r22
+163m4*u00061{42M9} 164r22
+165m4*u00062{42M9} 166r22
+167m4*u00063{42M9} 168r22
+169m4*u00064{42M9} 170r22
+171m4*u00065{42M9} 172r22
+173m4*u00066{42M9} 174r22
+175m4*u00067{42M9} 176r22
+177m4*u00068{42M9} 178r22
+179m4*u00069{42M9} 180r22
+181m4*u00070{42M9} 182r22
+183m4*u00071{42M9} 184r22
+185m4*u00072{42M9} 186r22
+187m4*u00073{42M9} 188r22
+189m4*u00074{42M9} 190r22
+191m4*u00075{42M9} 192r22
+193m4*u00076{42M9} 194r22
+195m4*u00077{42M9} 196r22
+197m4*u00078{42M9} 198r22
+199m4*u00079{42M9} 200r22
+201m4*u00080{42M9} 202r22
+203m4*u00081{42M9} 204r22
+205m4*u00082{42M9} 206r22
+207m4*u00083{42M9} 208r22
+209m4*u00084{42M9} 210r22
+211m4*u00085{42M9} 212r22
+213m4*u00086{42M9} 214r22
+215m4*u00087{42M9} 216r22
+217m4*u00088{42M9} 218r22
+219m4*u00089{42M9} 220r22
+221m4*u00090{42M9} 222r22
+223m4*u00091{42M9} 224r22
+225m4*u00092{42M9} 226r22
+227m4*u00093{42M9} 228r22
+229m4*u00094{42M9} 230r22
+231m4*u00095{42M9} 232r22
+233m4*u00096{42M9} 234r22
+235m4*u00097{42M9} 236r22
+237m4*u00098{42M9} 238r22
+239m4*u00099{42M9} 240r22
+241m4*u00100{42M9} 242r22
+243m4*u00101{42M9} 244r22
+245m4*u00102{42M9} 246r22
+247m4*u00103{42M9} 248r22
+X 2 b__rina_for_space.adb
+9i4 E082{short_integer} 9m46 9r46 158m7 158r15
+10i4 E009{short_integer} 10m46 10r46 166m7 166r15
+11i4 E014{short_integer} 11m46 11r46 161m7 161r15
+12i4 E026{short_integer} 12m46 12r46 137m7 137r15
+13i4 E049{short_integer} 13m46 13r46 139m7 139r15
+14i4 E077{short_integer} 14m46 14r46 141m7 141r15
+15i4 E033{short_integer} 15m46 15r46 143m7 143r15
+16i4 E064{short_integer} 16m46 16r46 145m7 145r15
+17i4 E066{short_integer} 17m46 17r46 147m7 147r15
+18i4 E069{short_integer} 18m46 18r46 149m7 149r15
+19i4 E054{short_integer} 19m46 19r46 151m7 151r15
+20i4 E027{short_integer} 20m46 20r46 153m7 153r15
+21i4 E091{short_integer} 21m46 21r46 155m7 155r15
+22i4 E059{short_integer} 22m46 22r46 169m7 169r15
+23i4 E022{short_integer} 23m46 23r46 160m7 160r15
+24i4 E048{short_integer} 24m46 24r46 163m7 163r15
+25i4 E032{short_integer} 25m46 25r46 165m7 165r15
+26i4 E072{short_integer} 26m46 26r46 168m7 168r15
+28a4 Sec_Default_Sized_Stacks(5|43R9) 128m32 128r32
+30a4 Local_Priority_Specific_Dispatching{string} 114r9
+31a4 Local_Interrupt_States{string} 117r27
+33b4 Is_Elaborated{boolean} 43r14 46m7 103r10 106m7
+36U17*s_stalib_adafinal 37b<ada,system__standard_library__adafinal>27 48s7
+39U17*Runtime_Finalize 40b<c,__gnat_runtime_finalize>25 47s7
+51P9 No_Param_Proc 52r28 95r34
+55i7*Main_Priority{integer} 56m25 56r25 107m7
+57i7*Time_Slice_Value{integer} 58m25 58r25 108m7
+59e7*WC_Encoding{character} 60m25 60r25 109m7
+61e7*Locking_Policy{character} 62m25 62r25 110m7
+63e7*Queuing_Policy{character} 64m25 64r25 111m7
+65e7*Task_Dispatching_Policy{character} 66m25 66r25 112m7
+67m7*Priority_Specific_Dispatching{3|67M9} 68m25 68r25 113m7
+69i7*Num_Specific_Dispatching{integer} 70m25 70r25 115m7
+71i7*Main_CPU{integer} 72m25 72r25 116m7
+73m7*Interrupt_States{3|67M9} 74m25 74r25 117m7
+75i7*Num_Interrupt_States{integer} 76m25 76r25 118m7
+77i7*Unreserve_All_Interrupts{integer} 78m25 78r25 119m7
+79i7*Exception_Tracebacks{integer} 80m25 80r25 120m7
+81i7*Exception_Tracebacks_Symbolic{integer} 82m25 82r25 121m7
+83i7*Detect_Blocking{integer} 84m25 84r25 122m7
+85i7*Default_Stack_Size{integer} 86m25 86r25 123m7
+87i7*Default_Secondary_Stack_Size{4|56I9} 88m25 88r25 126m7
+89m7*Bind_Env_Addr{3|67M9} 90m25 90r25
+92U17*Runtime_Initialize 92>37 93b<c,__gnat_runtime_initialize>25 130s7
+92i37 Install_Handler{integer}
+95p7*Finalize_Library_Objects{51P9} 96m25 96r25 132m7
+97i7*Binder_Sec_Stacks_Count{natural} 98m27 98r27 127m7
+99m7*Default_Sized_SS_Pool{3|67M9} 100m27 100r27 128m7
+172U14 Ada_Main_Program 173b<ada,_ada_rina_for_space>24 200s7
+181U17*Initialize 181>29 182b<c,__gnat_initialize>25 198s7
+181m29 Addr{3|67M9}
+184U17*Finalize 185b<c,__gnat_finalize>25 202s7
+186a7 SEH(integer) 198m19 198r19
+188m7 Ensure_Reference{3|67M9} 189r24
+X 3 system.ads
+37K9*System 1|3w6 4r6 5r6 9r16 10r16 23r36 37r14 38r14 2|28r57 28r90 67r39
+. 73r26 87r38 89r23 99r31 126r39 177r14 178r14 181r36 188r34 3|153e11
+67M9*Address 1|9r23 10r23 23r43 37r21 38r21 2|67r46 73r33 89r30 99r38 177r21
+. 178r21 181r43 188r41
+X 4 s-parame.ads
+49K16*Parameters 1|4w13 2|28r97 87r45 126r46 4|190e22
+56I9*Size_Type<long_integer> 2|87r56
+93i4*Runtime_Default_Sec_Stack_Size{56I9} 2|28r108 126r57
+X 5 s-secsta.ads
+35K16*Secondary_Stack 1|5w13 2|28r64 5|429e27
+43R9*SS_Stack 2|28r80 5|329e14
+

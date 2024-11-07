@@ -1,0 +1,22 @@
+[GENERATED OBJECT FILE]
+b__rina_for_space.o
+[PROJECT FILES]
+/home/henley/Desktop/GAP_org/RINA-for-Space/rina_for_space.gpr
+20241106210313 014346c18f65ed92948d851026b1592a
+/home/henley/Desktop/GAP_org/RINA-for-Space/config/rina_for_space_config.gpr
+20241106210313 6e15df6bc79af5e2be10cc6dd1ca857c
+[BOUND OBJECT FILES]
+/home/henley/Desktop/GAP_org/RINA-for-Space/obj/development/rina.o
+/home/henley/Desktop/GAP_org/RINA-for-Space/obj/development/rina_for_space.o
+[GENERATED SOURCE FILES]
+b__rina_for_space.ads
+b__rina_for_space.adb
+b__rina_for_space.ali
+[RESULTING OPTIONS]
+-L/home/henley/Desktop/GAP_org/RINA-for-Space/obj/development/
+-L/home/henley/Desktop/GAP_org/RINA-for-Space/obj/development/
+-L/home/henley/.local/share/alire/toolchains/gnat_native_13.2.2_a27fd794/lib/gcc/x86_64-pc-linux-gnu/13.2.0/adalib/
+-static
+-static-libgcc
+/home/henley/.local/share/alire/toolchains/gnat_native_13.2.2_a27fd794/lib/gcc/x86_64-pc-linux-gnu/13.2.0/adalib/libgnat.a
+-ldl
