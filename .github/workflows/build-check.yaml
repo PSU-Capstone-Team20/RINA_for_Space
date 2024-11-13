@@ -2,10 +2,8 @@ name: alr build check
 
 on:
   push:
-    paths:
-      - 'src/**.adb'
-      - 'src/**.ads'
-      - 'src/**.gpr'
+    branches:
+      - master
 
 jobs:
   build:
