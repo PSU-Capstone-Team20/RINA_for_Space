@@ -7,7 +7,6 @@ on:
       - 'src/**.ads'
       - 'src/**.gpr'
 
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,10 +15,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - uses: alire-project/setup-alire@v2.21
+      - name: Download and Setup Alire
+        run: |
+          curl -L -o alr.zip https://github.com/alire-project/alire/releases/download/v2.0.2/alr-2.0.2-bin-x86_64-linux.zip
+          unzip alr.zip -d alire
+          sudo mv alire/bin/alr /usr/local/bin/alr
 
-      - name: Build
-        run: >
-          alr index --add git+https://github.com/PSU-Capstone-Team20/RINA_for_Space --name rina &&
-          cd src && alr build
+      - name: Install Dependencies
+        run: |
+          export ALR_NONINTERACTIVE=1
+          alr with
 
+      - name: Build Project
+        run: alr build
