@@ -1,7 +1,10 @@
-name: alr build check
+name: Ada Build Check
 
 on:
   push:
+    branches:
+      - master
+  pull_request:
     branches:
       - master
 
@@ -13,16 +16,29 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Download and Setup Alire
+      - name: Set up cache for Alire dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.config/alire
+          key: ${{ runner.os }}-alire-${{ hashFiles('**/alire.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-alire-
+
+      - name: Download Alire Linux Binary
         run: |
           curl -L -o alr.zip https://github.com/alire-project/alire/releases/download/v2.0.2/alr-2.0.2-bin-x86_64-linux.zip
           unzip alr.zip -d alire
           sudo mv alire/bin/alr /usr/local/bin/alr
 
-      - name: Install Dependencies
+      - name: Set Non-Interactive Environment
         run: |
           export ALR_NONINTERACTIVE=1
-          alr with
+          export ALR_TOOLCHAIN_AUTO=1  # toolchain is automatically selected
+
+      - name: Install Project Dependencies
+        run: |
+          yes | alr with
 
       - name: Build Project
-        run: alr build
+        run: |
+          yes | alr build
