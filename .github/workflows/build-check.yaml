@@ -16,11 +16,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Download Alire AppImage
+      - name: Download Alire Linux Binary
         run: |
-          curl -L -o alr.AppImage https://github.com/alire-project/alire/releases/download/v2.0.2/alr-2.0.2-x86_64.AppImage
-          chmod +x alr.AppImage
-          sudo mv alr.AppImage /usr/local/bin/alr
+          curl -L -o alr.zip https://github.com/alire-project/alire/releases/download/v2.0.2/alr-2.0.2-bin-x86_64-linux.zip
+          unzip alr.zip -d alire
+          sudo mv alire/bin/alr /usr/local/bin/alr
 
       - name: Install Project Dependencies
         run: alr with
