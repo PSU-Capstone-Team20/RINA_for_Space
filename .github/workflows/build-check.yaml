@@ -11,16 +11,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Alire
+      - name: Download Alire AppImage
         run: |
-          curl -L https://github.com/alire-project/alire/releases/latest/download/install.sh | bash
-          export PATH="$HOME/.local/bin:$PATH"
-          
+          curl -L -o alr.AppImage https://github.com/alire-project/alire/releases/download/v2.0.2/alr-2.0.2-x86_64.AppImage
+          chmod +x alr.AppImage
+          sudo mv alr.AppImage /usr/local/bin/alr
+
       - name: Install Project Dependencies
         run: alr with
 
