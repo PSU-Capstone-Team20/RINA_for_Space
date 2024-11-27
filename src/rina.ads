@@ -3,7 +3,7 @@
 -- PCI       (Protocol Control Information)
 -- DRF       (Data Run Flag)
 -- ECN       (Explicit Congestion Notification)
-
+with Ada.Text_IO; use Ada.Text_IO;
 package Rina is
 
    Max_Header_Size : Positive;
