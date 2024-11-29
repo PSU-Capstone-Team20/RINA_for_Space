@@ -1,37 +1,28 @@
+with Ada.Text_IO; use Ada.Text_IO;
+with RINA_Policies;
 
 package body RINA_Policies.DTN_Bundle_Protocol is 
 	
-	procedure Create_Bundle (
-		Flow : in Flow_ID;
-		Bundle : out Bundle_ID
-	) is 
+	procedure Create_Bundle (Flow : in Flow_ID; Bundle : out Bundle_ID) is 
 	begin
 		
 		Put_Line("Creating a new Bundle for Flow " & Integer'Image(Flow));
-		Bundle := 1; 
+		Bundle := 1; --place holder for bundle ID generation
+
 	end Create_Bundle;
 
-	procedure Send_Bundle (
-		Flow : in Flow_ID; 
-		Bundle : in Bundle_ID
-	) is
+	procedure Send_Bundle(Flow : in Flow_ID; Bundle : in Bundle_ID) is
 	begin
 		Put_Line("Sending Bundle " & Integer'Image(Bundle) & " over Flow " & Integer'Image(Flow));
 	end Send_Bundle;
 
-	procedure Receive_Bundle (
-		Flow : in Flow_ID;
-		Bundle : out Bundle_ID
-	) is
+	procedure Receive_Bundle (Flow : in Flow_ID; Bundle : out Bundle_ID) is
 	begin
 		Put_Line("Receiving a bundle from Flow " & Integer'Image(Flow));
 		Bundle := 2;
 	end Receive_Bundle;
 
-	procedure Handle_Custody (
-		Bundle : in Bundle_ID;
-		Status : in Custody_Status
-	) is
+	procedure Handle_Custody (Bundle : in Bundle_ID; Status : in Custody_Status) is
 	begin
 		case Status is 
 			when Pending => 
