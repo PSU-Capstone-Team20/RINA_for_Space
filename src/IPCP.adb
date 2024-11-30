@@ -7,13 +7,13 @@ package body ipcp is
    end setName;
 
    -- Returns the name of the IPCP
-   function getName (Self : in IPCP) is
+   function getName (Self : in IPCP) return String is
    begin
       return IPCP.ipcpName;
    end getName;
 
    -- Joins a DIF
-   function JoinDIF (Self : in out IPCP; dif : in DIF) is
+   function JoinDIF (Self : in out IPCP; dif : in DIF) return Boolean is
    begin
       IPCP.associatedDIF := dif;
 
@@ -22,7 +22,7 @@ package body ipcp is
    end JoinDIF;
 
    -- Leaves a DIF
-   function LeaveDIF (Self : in out IPCP) is
+   function LeaveDIF (Self : in out IPCP) return Boolean is
    begin
       IPCP.associatedDIF := null;
 
@@ -32,33 +32,33 @@ package body ipcp is
 
    -- Finds available DIFs
    -- TODO: Implement search here.
-   function DiscoverDIF (Self : in out IPCP) is
+   function DiscoverDIF (Self : in out IPCP) return Boolean is
    begin
       null;
       return true;
    end DiscoverDIF;
 
    -- Gets the current state of IPCP
-   function getState (Self : in IPCP) is
+   function getState (Self : in IPCP) return String is
    begin
       return IPCP.state;
    end getState;
 
    -- Sets the state of IPCP and returns new value
-   function setState (Self : in out IPCP; state : String) is
+   function setState (Self : in out IPCP; state : String) return Boolean is
    begin
       IPCP.state := state;
       return IPCP.state = state;
    end setState;
 
    -- Gets the current ID of IPCP
-   function getID (Self : in IPCP) is
+   function getID (Self : in IPCP) return Natural is
    begin
       return IPCP.ipcpID;
    end getID;
 
    -- Sets the ID of the IPCP
-   function setID (Self : in out IPCP; id : Natural) is
+   function setID (Self : in out IPCP; id : Natural) return Boolean is
    begin
       IPCP.ipcpID := id;
       return IPCP.ipcpID = id;

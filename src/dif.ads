@@ -1,4 +1,4 @@
-with IPCP; use IPCP;
+limited with IPCP; use IPCP;
 with application; use application;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 

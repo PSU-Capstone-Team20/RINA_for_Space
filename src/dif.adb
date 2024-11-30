@@ -1,7 +1,7 @@
 with Ada.Text_IO; use Ada.Text_IO;
 
 package body dif is
-   function addIPCP(Self : in out dif; ipcp : in out IPCP) is
+   function addIPCP(Self : in out dif; ipcp : in out IPCP) return Boolean is
 
    index : Natural;
    flag : Boolean;
@@ -14,7 +14,7 @@ package body dif is
       while flag loop
          if dif.memberIPCPs(index) = null then
             flag := true;
-         else if index = Natural'Last then
+         elsif index = Natural'Last then
             return false;
          else
             index := index + 1;
@@ -30,7 +30,7 @@ package body dif is
       return true;
    end addIPCP;
 
-   function removeIPCP(Self : in out dif; ipcpID : Natural) is
+   function removeIPCP(Self : in out dif; ipcpID : Natural) return Boolean is
 
    index : Natural;
    flag : Boolean;
@@ -41,11 +41,9 @@ package body dif is
 
       -- Find element with matching ID
       while flag loop
-         if dif.memberIPCPs(index) /= null then
-            if dif.memberIPCPs(index).getID() = ipcpID then
+         if dif.memberIPCPs(index) /= null and then dif.memberIPCPs(index).getID = ipcpID then
                flag := true;
-            end if;
-         else if index = Natural'Last then
+         elsif index = Natural'Last then
             return false;
          else
             index := index + 1;
@@ -60,22 +58,22 @@ package body dif is
 
    -- Discovers accescible DIFs
    -- TODO: Figure out and implement logic
-   function discoverDIFs(Self : in out dif) is
+   function discoverDIFs(Self : in out dif) return Boolean is
    begin
       null;
       return true;
    end discoverDIFs;
 
-   function listMemberIPCPs(self : in dif) is
+   function listMemberIPCPs(self : in dif) return Boolean is
    
    index : Natural;
 
    begin
       index := 0;
 
-      for index in (Natural'First .. Natural'Last) loop
+      for index in Natural'First .. Natural'Last loop
          if dif.memberIPCPs(index) /= null then
-            Put_Line(dif.memberIPCPs(index).getName());       
+            Put_Line(dif.memberIPCPs(index).getName);       
          end if;
       end loop;
 

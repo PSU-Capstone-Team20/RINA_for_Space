@@ -1,5 +1,6 @@
 with Rina;
 with dif;
+with ipcp;
 
 procedure Rina_For_Space is
 begin
