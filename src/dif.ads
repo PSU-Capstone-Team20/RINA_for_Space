@@ -27,7 +27,11 @@ package dif is
       AccessibleDIFs : DIF_Vector; 
       -- TODO: Will need to add policies here when branches are merged        
    end record;
-   
-   procedure CreateDIF(Self : out DIF; ID : Integer)
+
+   procedure createDIF(ID : Integer; vector : in out DIF_Vector);
+
+   function getID(self : DIF_Access) return Integer;
+
+   procedure deleteDIF(ID : Integer; vector : in out DIF_Vector);
 
 end dif;
