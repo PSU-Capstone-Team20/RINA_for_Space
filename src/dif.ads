@@ -1,33 +1,33 @@
-limited with IPCP; use IPCP;
-with application; use application;
+with ipcp;
+with application; use application; 
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Ada.Containers.Vectors;
 
 package dif is
-   
-   type IPCPArray is array (Natural range <>) of IPCP;
-   type ApplicationArray is array (Natural range <>) of application;
-   type DIFArray is array (Natural range <>) of dif;
-   
-   type dif is tagged record
-      difID : Integer;
-      memberIPCPs : IPCPArray;
-      applications : ApplicationArray;
-      -- TODO: Implement policies when all branches are merged
-      -- policies :
-      accessibleDIFS : DIFArray;
+   type DIF is tagged;
+
+   type DIF_Access is access all DIF;
+   type IPCP_Access is access all ipcp.ipcp;
+
+   package Application_Vectors is new Ada.Containers.Vectors
+     (Index_Type => Natural, Element_Type => application.application);
+   package DIF_Vectors is new Ada.Containers.Vectors
+     (Index_Type => Natural, Element_Type => DIF_Access);
+   package IPCP_Vectors is new Ada.Containers.Vectors
+     (Index_Type => Natural, Element_Type => IPCP_Access);
+
+   subtype Application_Vector is Application_Vectors.Vector;
+   subtype DIF_Vector is DIF_Vectors.Vector;
+   subtype IPCP_Vector is IPCP_Vectors.Vector;
+
+   type DIF is tagged record
+      DIF_ID          : Integer;
+      MemberIPCPs    : IPCP_Vector;        
+      Applications    : Application_Vector; 
+      AccessibleDIFs : DIF_Vector; 
+      -- TODO: Will need to add policies here when branches are merged        
    end record;
-
-   -- Adds an IPCP to the DIF 
-   -- This will be called by the IPCP when it wants to join
-   function addIPCP(Self : in out dif; ipcp : in out IPCP) return Boolean;
-
-   -- Removes IPCP from DIF
-   function removeIPCP(Self : in out dif; ipcpID : Natural) return Boolean;
-
-   -- Discover connectable DIFs
-   function discoverDIFs(Self : in out dif) return Boolean;
-
-   -- Lists all member IPCPs
-   function listMemberIPCPs(self : in dif) return Boolean;
+   
+   procedure CreateDIF(Self : out DIF; ID : Integer)
 
 end dif;
