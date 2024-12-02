@@ -2,6 +2,7 @@ with ipcp;
 with application; use application; 
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Containers.Vectors;
+with Ada.Text_IO; use Ada.Text_IO;
 
 package dif is
    type DIF is tagged;
@@ -28,10 +29,21 @@ package dif is
       -- TODO: Will need to add policies here when branches are merged        
    end record;
 
+   -- creates a DIF with specified ID and adds it to the vector
    procedure createDIF(ID : Integer; vector : in out DIF_Vector);
-
+   -- returns the ID of the inputted DIF in a vector
    function getID(self : DIF_Access) return Integer;
-
+   -- deletes the DIF that has the specified ID if possible
    procedure deleteDIF(ID : Integer; vector : in out DIF_Vector);
+   -- adds a pair of DIFs to each other's accessible DIFs
+   procedure pairDIF(first : in out DIF_Access; second : in out DIF_Access);
+   -- lists the IDs of accessible DIFs
+   procedure listAccessibleDIF(self : DIF_Access);
+   -- creates an IPCP with specified string and adds it to the provided DIF
+   procedure createIPCP(name : Unbounded_String; self : in out DIF_Access);
+   -- lists all member IPCPs of a provided DIF
+   procedure listIPCP(self : DIF_Access);
+   -- deletes IPCP with given name from given DIF
+   procedure deleteIPCP(name : Unbounded_String; self : in out DIF_Access);
 
 end dif;

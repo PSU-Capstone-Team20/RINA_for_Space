@@ -7,6 +7,5 @@ package ipcp is
       ipcpName : Unbounded_String;
       state : Unbounded_String;
    end record;
-
    
 end ipcp;
