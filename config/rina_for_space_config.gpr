@@ -15,14 +15,6 @@ abstract project Rina_For_Space_Config is
            ,"-ffunction-sections" -- Separate ELF section for each function
            ,"-fdata-sections" -- Separate ELF section for each variable
            ,"-g" -- Generate debug info
-          
-           ,"-gnatw.X" -- Disable warnings for No_Exception_Propagation
-           ,"-gnatVa" -- All validity checks
-    
-        
-          
-           ,"-gnatyx" -- Check extra parentheses
-           ,"-gnatW8" -- UTF-8 encoding for wide characters
           );
 
    type Build_Profile_Kind is ("release", "validation", "development");
