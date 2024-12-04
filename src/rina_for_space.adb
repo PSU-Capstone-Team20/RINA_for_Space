@@ -11,21 +11,21 @@ procedure Rina_For_Space is
    test1 : dif.DIF_Vector;
    num : Integer;
    choice : Character;
-   Flow		: RINA_Policies.Flow_ID := 1;
-   QoS		: RINA_Policies.QoS_Parameter := (
-   Priority => 1,
-   Latency => 100,
-   Throughput => 500,
-   QoS_ID => 42);
+   -- Flow		: RINA_Policies.Flow_ID := 1;
+   -- QoS		: RINA_Policies.QoS_Parameter := (
+   -- Priority => 1,
+   -- Latency => 100,
+   -- Throughput => 500,
+   -- QoS_ID => 42);
 
 begin
 
-   Put_Line ("Initializing test");
-   RINA_Policies.Define_QoS(Flow, QoS);
-   RINA_Policies.Schedule_Flow(Flow);
-   RINA_Policies.Relay_And_Forward (Source_Flow => Flow, Destination_Flow => 2);
-   RINA_Policies.Handle_Error (Flow, Error_Code => 404);
-   Put_Line ("RINA Policies test");
+   -- Put_Line ("Initializing test");
+   -- RINA_Policies.Define_QoS(Flow, QoS);
+   -- RINA_Policies.Schedule_Flow(Flow);
+   -- RINA_Policies.Relay_And_Forward (Source_Flow => Flow, Destination_Flow => 2);
+   -- RINA_Policies.Handle_Error (Flow, Error_Code => 404);
+   -- Put_Line ("RINA Policies test");
    -- Original Test Code 
    -- TODO: Delete if no longer needed
    -- dif.createDIF(1, test1);
@@ -39,6 +39,7 @@ begin
    
    -- Below is temporary(?) code to give a console interface for presentation demo
    -- TODO: Either remove or clean up after demo
+
    Put_Line("Select an option:");
    Put_Line("1. Create DIF");
    Put_Line("2. Create IPCP");
