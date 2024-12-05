@@ -34,7 +34,7 @@ package dif is
    -- returns the ID of the inputted DIF in a vector
    function getID(self : DIF_Access) return Integer;
    -- deletes the DIF that has the specified ID if possible
-   procedure deleteDIF(ID : Integer; vector : in out DIF_Vector);
+   procedure disconnectDIF(ID : Integer; vector : in out DIF_Vector);
    -- adds a pair of DIFs to each other's accessible DIFs
    procedure pairDIF(first : in out DIF_Access; second : in out DIF_Access);
    -- lists the IDs of accessible DIFs
@@ -44,6 +44,6 @@ package dif is
    -- lists all member IPCPs of a provided DIF
    procedure listIPCP(self : DIF_Access);
    -- deletes IPCP with given name from given DIF
-   procedure deleteIPCP(name : Unbounded_String; self : in out DIF_Access);
+   procedure disconnectIPCP(name : Unbounded_String; self : in out DIF_Access);
 
 end dif;

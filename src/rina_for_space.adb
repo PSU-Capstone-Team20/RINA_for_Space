@@ -11,7 +11,7 @@ procedure Rina_For_Space is
    test1 : dif.DIF_Vector;
    num : Integer;
    choice : Character;
-   -- Flow		: RINA_Policies.Flow_ID := 1;
+   Flow		: RINA_Policies.Flow_ID := 1;
    -- QoS		: RINA_Policies.QoS_Parameter := (
    -- Priority => 1,
    -- Latency => 100,
@@ -20,12 +20,9 @@ procedure Rina_For_Space is
 
 begin
 
-   -- Put_Line ("Initializing test");
-   -- RINA_Policies.Define_QoS(Flow, QoS);
-   -- RINA_Policies.Schedule_Flow(Flow);
-   -- RINA_Policies.Relay_And_Forward (Source_Flow => Flow, Destination_Flow => 2);
    -- RINA_Policies.Handle_Error (Flow, Error_Code => 404);
    -- Put_Line ("RINA Policies test");
+   
    -- Original Test Code 
    -- TODO: Delete if no longer needed
    -- dif.createDIF(1, test1);
@@ -48,6 +45,7 @@ begin
    Put_Line("5. Disconnect IPCP");
    Put_Line("6. Disconnect DIF");
    Put_Line("7. Build DSN Demo");
+   Put_Line("8. Bundle Demo");
    Put_Line("0. Exit");
       
    loop
@@ -139,6 +137,13 @@ begin
          -- TODO: Create a DSN demo that generates all necessary DIFs and IPCPs
          when '7' =>
             Put_Line("Successful Input - 7");   
+
+         when '8' =>
+            Put_Line("Successful Input - 8");  
+            -- Put_Line ("Initializing test");
+            -- RINA_Policies.Define_QoS(Flow, QoS);
+            -- RINA_Policies.Schedule_Flow(Flow);
+            -- RINA_Policies.Relay_And_Forward (Source_Flow => Flow, Destination_Flow => 2);
 
          when '0' =>
             Put_Line("Exiting");
