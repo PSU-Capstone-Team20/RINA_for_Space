@@ -14,11 +14,30 @@ package body dif is
       vector.append(New_DIF);
    end createDIF;
 
+   procedure createNamedDIF(ID : Integer; vector : in out DIF_Vector; name : Unbounded_String) is
+      New_DIF : constant DIF_Access := new DIF;
+      begin
+      New_DIF.DIF_ID := ID;
+      New_DIF.DIF_Name := name;
+      New_DIF.AccessibleDIFs.Clear;
+      New_DIF.AccessibleDIFs.Set_Length(0);
+      New_DIF.Applications.Clear;
+      New_DIF.Applications.Set_Length(0);
+      New_DIF.MemberIPCPs.Clear;
+      New_DIF.MemberIPCPs.Set_Length(0);
+      vector.append(New_DIF);
+   end createNamedDIF;
+
    -- returns the ID of the inputted DIF in a vector
    function getID(self : DIF_Access) return Integer is
       begin
          return self.DIF_ID;
    end getID;
+
+   function getName(self : DIF_Access) return Unbounded_String is
+      begin
+         return self.DIF_Name;
+   end getName;
 
    -- deletes the DIF that has the specified ID if possible
    procedure disconnectDIF(ID : Integer; vector : in out DIF_Vector) is
@@ -43,7 +62,8 @@ package body dif is
    procedure listAccessibleDIF(self : DIF_Access) is
       begin
       for i in self.AccessibleDIFs.First_Index .. self.AccessibleDIFs.Last_Index loop
-         Put_Line(getID(self.AccessibleDIFs(i))'Image);
+         Put(getID(self.AccessibleDIFs(i))'Image);
+         Put_Line(" " & Unbounded_String'Image(getName(self.AccessibleDIFs(i))));
       end loop;
    end listAccessibleDIF;
    
