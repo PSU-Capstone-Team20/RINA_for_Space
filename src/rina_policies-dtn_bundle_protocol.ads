@@ -1,6 +1,6 @@
 with RINA_Policies;
 
-package RINA_Policies.DTN_Bundle_Protocol.ads is 
+package RINA_Policies.DTN_Bundle_Protocol is 
 
 	type Bundle_ID is new Integer;
 	type Custody_Status is (Pending, Accepted, Rejected);

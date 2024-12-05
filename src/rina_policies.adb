@@ -1,4 +1,5 @@
 with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Rina;
 
 package body RINA_Policies is
@@ -33,5 +34,48 @@ procedure Relay_And_Forward (Source_Flow : in Flow_ID; Destination_Flow : in Flo
 begin
 	Put_Line("Relaying packets from Flow "  & Integer'Image(Integer(Source_Flow)) & " to Flow " & Integer'Image(Integer(Destination_Flow)));
 end Relay_And_Forward;
+
+--for creating new data unit 
+procedure Create_Data_Unit(Flow : in Flow_ID; Data_Unit : out Rina.Data_Unit_T) is
+begin
+   Data_Unit.Configuration.Max_window_Size := 10;
+   Data_Unit.Configuration.Timeout := 500;
+
+   Data_Unit.Control_Info := Rina.PCI_T'
+                               (Header_Length =>
+                                  120,
+                                Header        =>
+                                  (others => 0),
+                                Length        =>
+                                  0,
+                                DRF_Flag      =>
+                                  False,
+                                ECN_Flag      =>
+                                  True,
+                                Src_Addr      =>
+                                  (DIF_ID => 1, App_Process_Name => To_Unbounded_String ("Source Application")),
+                                Dst_Addr      =>
+                                  (DIF_ID => 2, App_Process_Name => To_Unbounded_String ("Destination Application")),
+                                Seq_Num       =>
+                                  1,
+                                QoS_ID        =>
+                                  42);
+
+   Put_Line("Created Data Unit for Flow" & Integer'Image(Integer(Flow)));
+end Create_Data_Unit;
+
+--process data unit
+procedure Process_Data_Unit(Data_Unit : in out Rina.Data_Unit_T) is 
+begin
+   Data_Unit.Control_Info.Seq_Num := Data_Unit.Control_Info.Seq_Num +1;
+   Put_Line("Processed Data Unit. Sequence number incremented to " & Integer'Image(Data_Unit.Control_Info.Seq_Num));
+end Process_Data_Unit;
+
+--transmit data unit 
+procedure Transmit_Data_Unit(Flow : in Flow_ID; Data_Unit : in Rina.Data_Unit_T) is
+begin 
+   Put_Line("Transmitting Data unit for flow " & Integer'Image(Integer(Flow)));
+   Put_Line("Payload Length: " & Integer'Image(Data_Unit.SDU_Head.Data_Length));
+end Transmit_Data_Unit;
 
 end RINA_Policies;
