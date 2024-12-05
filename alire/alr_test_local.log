@@ -1,0 +1,19 @@
+Spawning: alr -d -n build --release
+Note: Building rina_for_space=0.1.0-dev/rina_for_space.gpr...
+Setup
+   [mkdir]        object directory for project Rina_For_Space
+Compile
+   [Ada]          rina_for_space.adb
+   [Ada]          dif.adb
+   [Ada]          ipcp.ads
+   [Ada]          rina.ads
+   [Ada]          rina_policies.adb
+   [Ada]          rina_policies-dtn_bundle_protocol.adb
+   [Ada]          application.ads
+Bind
+   [gprbind]      rina_for_space.bexch
+   [Ada]          rina_for_space.ali
+Link
+   [link]         rina_for_space.adb
+Success: Build finished successfully in 13.52 seconds.
+Found declared GPR file: rina_for_space.gpr
