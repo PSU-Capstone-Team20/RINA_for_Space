@@ -21,7 +21,7 @@ package body dif is
    end getID;
 
    -- deletes the DIF that has the specified ID if possible
-   procedure deleteDIF(ID : Integer; vector : in out DIF_Vector) is
+   procedure disconnectDIF(ID : Integer; vector : in out DIF_Vector) is
       begin
          for I in vector.First_Index .. vector.Last_Index loop
             if (getID(vector(I)) = ID) then
@@ -29,7 +29,7 @@ package body dif is
                exit;
             end if;
          end loop;
-   end deleteDIF;
+   end disconnectDIF;
 
 
    -- adds a pair of DIFs to each other's accessible DIFs
@@ -64,7 +64,7 @@ package body dif is
    end listIPCP;
    
    -- deletes IPCP with given name from given DIF
-   procedure deleteIPCP(name : Unbounded_String; self : in out DIF_Access) is
+   procedure disconnectIPCP(name : Unbounded_String; self : in out DIF_Access) is
       begin
       for I in self.MemberIPCPs.First_Index .. self.MemberIPCPs.Last_Index loop
          if self.MemberIPCPs(I).ipcpName = name then
@@ -72,6 +72,6 @@ package body dif is
             exit;
          end if;
       end loop;
-   end deleteIPCP;
+   end disconnectIPCP;
 
 end dif;

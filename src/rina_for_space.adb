@@ -45,8 +45,8 @@ begin
    Put_Line("2. Create IPCP");
    Put_Line("3. List IPCP");
    Put_Line("4. List DIF");
-   Put_Line("5. Delete IPCP");
-   Put_Line("6. Delete DIF");
+   Put_Line("5. Disconnect IPCP");
+   Put_Line("6. Disconnect DIF");
    Put_Line("7. Build DSN Demo");
    Put_Line("0. Exit");
       
@@ -128,11 +128,11 @@ begin
                Put_Line(Integer'Image(Dif.getID(Test1(i))));
             end loop;      
 
-         -- TODO: Add delete IPCP logic
+         -- TODO: Add Disconnect IPCP logic
          when '5' =>
             Put_Line("Successful Input - 5");    
 
-         -- TODO: Add delete DIF logic
+         -- TODO: Add Disconnect DIF logic
          when '6' =>
             Put_Line("Successful Input - 6");
 
