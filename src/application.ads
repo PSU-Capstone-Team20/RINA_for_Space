@@ -1,10 +1,10 @@
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
-package application is
+package Application is
 
-    type application is tagged record
-       appName : Unbounded_String;
-       appID   : Integer;
-    end record;
+   type application is tagged record
+      appName : Unbounded_String;
+      appID   : Integer;
+   end record;
 
-end application;
+end Application;

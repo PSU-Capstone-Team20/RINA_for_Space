@@ -10,3 +10,6 @@ website = ""
 tags = []
 
 executables = ["rina_for_space"]
+
+[build-switches]
+"*".style_checks = "No"
