@@ -2,60 +2,44 @@ with Ada.Text_IO; use Ada.Text_IO;
 with RINA_Policies;
 
 package body RINA_Policies.DTN_Bundle_Protocol is 
-	
-   Min_Flow_ID : constant Integer := 0;
-   Max_Bundle_ID : constant Integer := 9998;
 
-	procedure Create_Bundle (Flow : in Flow_ID; Bundle : out Bundle_ID) is 
-	begin
-		if Integer(Flow) < Min_Flow_ID then
-         Put_Line(Integer'Image(Integer(Flow)) & " Flow ID is not allowed.");
-         Bundle := 0; 
-      else 
-		   Put_Line("Creating a new Bundle for Flow " & Integer'Image(Integer(Flow)));
-		 Bundle := 1; --place holder for bundle ID generation
-      end if;
-	end Create_Bundle;
+   --test: create new buyndle with SDNV encoding 
+   procedure Create_Bundle(Flow : in RINA_Policies.Flow_ID; Bundle : out Bundle) is
+   begin
+      --primary block initialize 
+      Bundle.Primary.Version := 1; --BPv7 
+      Bundle.Primary.Processing_Flag := RINA_Policies.Encode_SDNV(0); --flag ex.
+      Bundle.Primary.Creation_Timestamp := RINA_Policies.Encode_SDNV(Integer(Calendar.Clock));
+      Bundle.Lifetime := RINA_Policies.Encode_SDNV(600);
+      Bundle.Source_EID := "Source_Application";
+      Bundle.Destination_EID := "Destination_Application";
 
-	procedure Send_Bundle(Flow : in Flow_ID; Bundle : in Bundle_ID) is
-	begin
-      if Integer(Flow) < Min_Flow_ID then
-         Put_Line(Integer'Image(Integer(Flow)) & " Flow ID is not allowed.");
-      elsif Integer(Bundle) > Max_Bundle_ID then 
-         Put_Line(Integer'Image(Integer(Bundle)) & " Bundle ID is out of bounds.");
-      else
-		   Put_Line("Sending Bundle " & Integer'Image(Integer(Bundle)));
-		   Put_Line(" over Flow " & Integer'Image(Integer(Flow)));
-      end if;
-	end Send_Bundle;
+      --payload block initialize 
+      Bundle.Payload.Data_Length := RINA_Policies.Encode_SDNV(512); -- arbitrary payload length
+      Bundle.Payload.Data := (others => 'X'); -- payload data for test purpose
 
-	procedure Receive_Bundle (Flow : in Flow_ID; Bundle : out Bundle_ID) is
-	begin
-      if Integer(Flow) < Min_Flow_ID then 
-         Put_Line("Error: Flow ID " & Integer'Image(Integer(Flow)) & " is not allowed.");
-      else
-		   Put_Line("Receiving a bundle from Flow " & Integer'Image(Integer(Flow)));
-		   Bundle := 2;
-      end if;
-	end Receive_Bundle;
+      Put_Line("Bundle Created for FLow: " & Integer'Image(Integer(Flow)));
+   end Create_Bundle;
 
-	procedure Handle_Custody (Bundle : in Bundle_ID; Status : in Custody_Status) is
-	begin
-      if Integer(Bundle) > Max_Bundle_ID then 
-         Put_Line("Error: Bundle ID " & Integer'Image(Integer(Bundle)) & " is not allowed");
-      else
-		   case Status is 
-			   when Pending => 
-				   Put_Line("Custody for Bundle " & Integer'Image(Integer(Bundle)));
-				   Put_Line("is: Pending");
-			   when Accepted =>
-				   Put_Line("Custody for Bundle " & Integer'Image(Integer(Bundle)));
-				   Put_Line("is: Accepted");
-			   when Rejected => 
-				   Put_Line("Custody for Bundle " & Integer'Image(Integer(Bundle)));
-				   Put_Line("is: Rejected");
-			
-		   end case;
-      end if;
-	end Handle_Custody;
+   --decode SDNV encoding 
+   procedure Process_Bundle(Flow : in RINA_Policies.Flow_ID; Bundle : in out Bundle) is 
+      Decode_Timestamp : Integer := RINA_Policies.Decode_SDNV(Bundle.Primary.Creation_Timestamp);
+   begin
+      Put_Line("processing bundle for flow: " & Integer'Image(Integer(Flow)));
+      Put_Line(" Source EID: " & Bundle.Primary.Source_EID);
+      Put_Line(" Destination EID: " & Bundle.Primary.Destination_EID);
+      Put_Line(" Creation Timestamp: " & Integer'Image(Decode_Timestamp));
+   end Process_Bundle;
+
+   --transmit bundle 
+   procedure Transmit_Bundle(Flow : in RINA_Policies.Flow_ID; Bundle : in Bundle) is
+      Data_Unit : Rina.Data_Unit_T;
+   begin
+      RINA_Policies.Create_Data_Unit(Flow, Data_Unit);
+      Data_Unit.SDU_Head.Data_Length := RINA_policies.Decode_SDNV(Bundle.Payload.Data_Length);
+      RINA_Policies.Transmit_Data_Unit(Flow, Data_Unit);
+      Put_Line("Budnle Transmitted for FLow: " & Integer'Image(Integer(Flow)));
+   end Transmit_Bundle; 
+
+
 end RINA_Policies.DTN_Bundle_Protocol;

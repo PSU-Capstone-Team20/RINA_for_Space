@@ -78,4 +78,34 @@ begin
    Put_Line("Payload Length: " & Integer'Image(Data_Unit.SDU_Head.Data_Length));
 end Transmit_Data_Unit;
 
+-- test: SDNV encoding - converts an integer into an SDNV 
+function Encode_SDNV(Value : Integer) return SDNV is 
+  Result : SDNV(1 .. 32); -- size limit
+  Index  : Positive := 1;
+  Temp   : Integer := Value;
+
+begin
+  while Temp > 0 loop
+    if Index > Result'Length then 
+      raise Constraint_Error
+        with "SDNV over length max"; --when SDNV is too long 
+    end if;
+    Result(Index) := Boolean((Temp and 128) /= 0); -- MSB
+    Temp := Temp / 128;
+    Index := Index + 1;
+  end loop;
+  Result(Index - 1) := False; -- for last byte MSB to equal 0
+  return Result(1 .. Index -1);
+end Encode_SDNV;
+
+-- test: SDNV decoding - converting back to integer 
+function Decode_SDNV(SDNV_Value : SDNV) return Integer is 
+  Result : Integer := 0;
+begin
+  for I in SDNV_Value'Range loop
+    Result := (Result * 128) + (if SDNV_Value(I) then 1 else 0); 
+  end loop;
+  return Result;
+end Decode_SDNV;
+
 end RINA_Policies;
