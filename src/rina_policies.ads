@@ -11,7 +11,9 @@ package RINA_Policies is
 
    type QoS_Table is array(Flow_ID range <>) of QoS_Parameter;
 
-   type SDNV is array (Positive range <>) of Boolean;
+   type byte is mod 2**8;
+
+   type SDNV is array (Positive range <>) of byte;
 
    --Function for encoding integer as an SDNV 
    function Encode_SDNV(Value : Integer) return SDNV;

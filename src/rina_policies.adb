@@ -4,7 +4,6 @@ with Rina;
 
 package body RINA_Policies is
 
-type QoS_Table is array (Flow_ID range <>) of QoS_Parameter;
 Flow_QoS : QoS_Table(1 .. 100);
 
 --QoS dor specific flow defined
@@ -80,32 +79,56 @@ end Transmit_Data_Unit;
 
 -- test: SDNV encoding - converts an integer into an SDNV 
 function Encode_SDNV(Value : Integer) return SDNV is 
-  Result : SDNV(1 .. 32); -- size limit
-  Index  : Positive := 1;
-  Temp   : Integer := Value;
-
+  Result : SDNV (1 .. 5);
+  val, hold : Integer;
+  num : byte;
+  
 begin
-  while Temp > 0 loop
-    if Index > Result'Length then 
-      raise Constraint_Error
-        with "SDNV over length max"; --when SDNV is too long 
-    end if;
-    Result(Index) := Boolean((Temp and 128) /= 0); -- MSB
-    Temp := Temp / 128;
-    Index := Index + 1;
-  end loop;
-  Result(Index - 1) := False; -- for last byte MSB to equal 0
-  return Result(1 .. Index -1);
+  hold := Value;
+  val := hold mod 128;
+  num := byte'val(Integer'pos(val));
+  Result(5) := num;
+
+
+  hold := hold / 128;
+  val := hold mod 128;
+  num := byte'val(Integer'pos(val));
+  num := num + 128;
+  Result(4) := num;
+
+  hold := hold / 128;
+  val := hold mod 128;
+  num := byte'val(Integer'pos(val));
+  num := num + 128;
+  Result(3) := num;
+
+hold := hold / 128;
+  val := hold mod 128;
+  num := byte'val(Integer'pos(val));
+  num := num + 128;
+  Result(2) := num;
+
+hold := hold / 128;
+  val := hold mod 128;
+  num := byte'val(Integer'pos(val));
+  num := num + 128;
+  Result(1) := num;
+
+  return result;
 end Encode_SDNV;
 
 -- test: SDNV decoding - converting back to integer 
 function Decode_SDNV(SDNV_Value : SDNV) return Integer is 
-  Result : Integer := 0;
+  result : Integer := 0;
+  counter : Integer := 1;
 begin
-  for I in SDNV_Value'Range loop
-    Result := (Result * 128) + (if SDNV_Value(I) then 1 else 0); 
+  while ((SDNV_Value(counter)) / 128 = 1) loop
+    result := result + (Integer'Val(byte'pos(SDNV_Value(counter))) mod 128);
+    result := result * 128;
+    counter := counter + 1;
   end loop;
-  return Result;
+    result := result + (Integer'Val(byte'pos(SDNV_Value(counter))) mod 128);
+  return result;
 end Decode_SDNV;
 
 end RINA_Policies;
