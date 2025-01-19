@@ -78,44 +78,34 @@ begin
 end Transmit_Data_Unit;
 
 -- test: SDNV encoding - converts an integer into an SDNV 
-function Encode_SDNV(Value : Integer) return SDNV is 
-  Result : SDNV (1 .. 5);
-  val, hold : Integer;
-  num : byte;
-  
+function Encode_SDNV(Value : Integer) return SDNV is
+   Result : SDNV (1 .. 5);
+   hold : Integer := Value;
+   val : Integer;
+   num : Byte;
+   index : Integer := Result'Last; 
 begin
-  hold := Value;
-  val := hold mod 128;
-  num := byte'val(Integer'pos(val));
-  Result(5) := num;
+   for i in Result'Range loop
+      Result(i) := 128;
+   end loop;
 
+   while hold /= 0 loop
+      val := hold mod 128; 
+      num := Byte'Val(Integer'Pos(val));
 
-  hold := hold / 128;
-  val := hold mod 128;
-  num := byte'val(Integer'pos(val));
-  num := num + 128;
-  Result(4) := num;
+      if index /= Result'Last then
+         num := num + 128;
+      end if;
 
-  hold := hold / 128;
-  val := hold mod 128;
-  num := byte'val(Integer'pos(val));
-  num := num + 128;
-  Result(3) := num;
+      Result(index) := num;
+      hold := hold / 128; 
+      index := index - 1; 
+   end loop;
 
-hold := hold / 128;
-  val := hold mod 128;
-  num := byte'val(Integer'pos(val));
-  num := num + 128;
-  Result(2) := num;
-
-hold := hold / 128;
-  val := hold mod 128;
-  num := byte'val(Integer'pos(val));
-  num := num + 128;
-  Result(1) := num;
-
-  return result;
+   return Result;
 end Encode_SDNV;
+
+
 
 -- test: SDNV decoding - converting back to integer 
 function Decode_SDNV(SDNV_Value : SDNV) return Integer is 
