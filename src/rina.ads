@@ -25,6 +25,8 @@ package Rina is
       --App_Process_Name  : Unbounded_String; -- application process name (this can be changed to endpointID)
    --end record;
 
+
+   --endpoint ids for integer value and the app process name.
    type Endpoint_ID is record
       App_Process_Name    : Unbounded_String;
       ID                  : Integer;

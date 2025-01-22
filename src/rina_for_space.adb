@@ -36,6 +36,7 @@ procedure Rina_For_Space is
    --test : SDNV (1 .. 5);
 
 begin
+   --create the data unit 
    Put_Line(" Creating Data Unit");
    Create_Data_Unit(Flow_ID, QoS, Source_Endpoint, Destination_Endpoint, Data_Unit);
 

@@ -46,7 +46,7 @@ package RINA_Policies is
    --endcode EndpointID to SDNV
    function Encode_Endpoint_ID(Endpoint : Rina.Endpoint_ID) return SDNV;
 
-   --decode endpointiD 
+   --decode endpointiD from SDNV
    function Decode_Endpoint_ID(SDNV_Value : SDNV) return Rina.Endpoint_ID;
 
 

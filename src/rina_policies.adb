@@ -5,7 +5,7 @@ with Rina;
 
 package body RINA_Policies is
 
-  --encoding logic 
+  --encoding logic for SDNV
   function Encode_SDNV(Value : Integer) return SDNV is
     Temp    : Integer  := Value;
     Result  : SDNV(1 .. 10);
