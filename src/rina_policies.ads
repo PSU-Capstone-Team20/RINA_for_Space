@@ -1,36 +1,74 @@
 with Rina;
+with Ada.Strings.Unbounded;
+with Interfaces;
 
 package RINA_Policies is
---flow and qos definitions
-   type Flow_ID is range 1 .. 100;
+
+   --for QoS parameters 
    type QoS_Parameter is record
-      Priority : Integer;
-      Latency  : Integer; 
-      Throughput : Integer;
+      Priority     : Integer;
+      Latency      : Integer;
+      Throughput   : Integer;
    end record;
 
-   type QoS_Table is array(Flow_ID range <>) of QoS_Parameter;
+   --for endpoint ID
+   type Endpoint_ID is record 
+      App_Process_Name   : Ada.Strings.Unbounded.Unbounded_String;
+      ID                 : Integer;
+   end record;
 
-   type byte is mod 2**8;
+   --flow ID
+   type Flow_ID is range 1 .. 100;
 
-   type SDNV is array (Positive range <>) of byte;
+   --SDNV type 
+   type SDNV is array (Positive range <>) of Interfaces.Unsigned_8;
 
-   --Function for encoding integer as an SDNV 
+   --data unit
+   type Data_Unit is record
+      Flow         : Flow_ID;
+      QoS          : Rina.QoS_Parameter;
+      Source       : Rina.Endpoint_ID;
+      Destination  : Rina.Endpoint_ID;
+   end record;
+
+   --encode integer into SDNV format
    function Encode_SDNV(Value : Integer) return SDNV;
 
-   -- Function to decode an SDNV to an integer
+   --decode SDNV back to int 
    function Decode_SDNV(SDNV_Value : SDNV) return Integer;
 
-   --QoS and Flow managing procedures
-   procedure Define_QoS(Flow : in Flow_ID; QoS : in QoS_Parameter);
-   procedure Schedule_Flow(Flow : in Flow_ID);
-   procedure Handle_Error(Flow : in Flow_ID; Error_Code : in Integer);
-   procedure Flow_Control(Flow : in Flow_ID; Max_Packets : in Positive);
-   procedure Relay_And_Forward(Source_Flow : in Flow_ID; Destination_Flow : in Flow_ID);
+   --encode QoS parameters to SDNV 
+   function Encode_QoS(QoS : Rina.QoS_Parameter) return SDNV;
 
-   --data unit procedures
-   procedure Create_Data_Unit(Flow : in Flow_ID; Data_Unit : out Rina.Data_Unit_T);
-   procedure Process_Data_Unit(Data_Unit : in out Rina.Data_Unit_T);
-   procedure Transmit_Data_Unit(Flow : in Flow_ID; Data_Unit : in Rina.Data_Unit_T);
+   --decode QoS from SDNV
+   function Decode_QoS(SDNV_Value : SDNV) return Rina.QoS_Parameter;
+
+   --endcode EndpointID to SDNV
+   function Encode_Endpoint_ID(Endpoint : Rina.Endpoint_ID) return SDNV;
+
+   --decode endpointiD 
+   function Decode_Endpoint_ID(SDNV_Value : SDNV) return Rina.Endpoint_ID;
+
+
+   --for creating data unit 
+   procedure Create_Data_Unit(Flow        : Flow_ID;
+                              QoS         : Rina.QoS_Parameter;
+                              Source      : Rina.Endpoint_ID;
+                              Destination : Rina.Endpoint_ID;
+                              Unit        : out Rina.Data_Unit_T);
+   
+   procedure Process_Data_Unit(Unit : in out Rina.Data_Unit_T);
+
+   procedure Transmit_Data_Unit(Flow : Flow_ID; Unit : in Rina.Data_Unit_T);
+
+   --encode data unit to SDNV
+   function Encode_Data_Unit(Unit : Data_Unit) return SDNV;
+
+   --decode a data unit from SDNV
+   function Decode_Data_Unit(SDNV_Value : SDNV) return Data_Unit;
+
+   --log data unit info
+   procedure Log_Data_Unit(Unit : Data_Unit);
+
 
 end RINA_Policies;

@@ -1,134 +1,160 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Interfaces;
 with Rina;
 
 package body RINA_Policies is
 
-Flow_QoS : QoS_Table(1 .. 100);
+  --encoding logic 
+  function Encode_SDNV(Value : Integer) return SDNV is
+    Temp    : Integer  := Value;
+    Result  : SDNV(1 .. 10);
+    Index   : Positive := Result'Last;
+  begin
+    if Value < 0 then 
+      raise Constraint_Error;
+    end if;
 
---QoS dor specific flow defined
-procedure Define_QoS(Flow : in Flow_ID; QoS : in QoS_Parameter) is 
-begin
-	Flow_QoS(Flow) := QoS;
-	Put_Line("QoS Defined for Flow " & Integer'Image(Integer(Flow)) & " : Priority= " & Integer'Image(QoS.Priority) & ", Latency=" & Integer'Image(QoS.Latency) & "ms, Throughput=" & Integer'Image(QoS.Throughput) & "kbps");
-end Define_QoS;
+    loop
+      Result(Index) := Interfaces.Unsigned_8(Temp mod 128);
+      if Index < Result'First then 
+        raise Constraint_Error;
+      end if;
 
+      Temp := Temp / 128;
 
-procedure Schedule_Flow (Flow: in Flow_ID) is
-begin
-	Put_Line("Scheduling Flow " & Integer'Image(Integer(Flow)) & " with Priorty=" & Integer'Image(Flow_QoS(Flow).Priority));
-end Schedule_Flow;
+      if Temp > 0 then 
+        Result(Index) := Result(Index) or 128;
+      end if;
 
-procedure Handle_Error (Flow : in Flow_ID; Error_Code : in Integer) is
-begin
-	Put_Line("Error on Flow " & Integer'Image(Integer(Flow)) & ": Code " & Integer'Image(Error_Code));
-end Handle_Error;
+      Index := Index - 1;
 
-procedure Flow_Control(Flow : in Flow_ID; Max_Packets : in Positive) is
-begin
-	Put_Line("Controlling Flow " & Integer'Image(Integer(Flow)) & "with max packets" & Positive'Image(Max_Packets));
-end Flow_Control;
+      exit when Temp = 0;
+    end loop;
 
-procedure Relay_And_Forward (Source_Flow : in Flow_ID; Destination_Flow : in Flow_ID) is
-begin
-	Put_Line("Relaying packets from Flow "  & Integer'Image(Integer(Source_Flow)) & " to Flow " & Integer'Image(Integer(Destination_Flow)));
-end Relay_And_Forward;
+    return Result(Index + 1 .. Result'Last);
+  end Encode_SDNV;
 
---for creating new data unit 
-procedure Create_Data_Unit(Flow : in Flow_ID; Data_Unit : out Rina.Data_Unit_T) is
-begin
-   Data_Unit.Configuration.Max_window_Size := 10;
-   Data_Unit.Configuration.Timeout := 500;
+  --decode SDNV logic 
+  function Decode_SDNV(SDNV_Value : SDNV) return Integer is 
+    Result   : Integer  := 0;
+    Shift    : Integer  := 0;
 
-   Data_Unit.Control_Info := Rina.PCI_T'
-                               (Header_Length =>
-                                  120,
-                                Header        =>
-                                  (others => 0),
-                                Length        =>
-                                  0,
-                                DRF_Flag      =>
-                                  False,
-                                ECN_Flag      =>
-                                  True,
-                                Src_Addr      =>
-                                  (DIF_ID => 1, App_Process_Name => To_Unbounded_String ("Source Application")),
-                                Dst_Addr      =>
-                                  (DIF_ID => 2, App_Process_Name => To_Unbounded_String ("Destination Application")),
-                                Seq_Num       =>
-                                  1,
-                                QoS_ID        =>
-                                  42);
+  begin
+    for Byte_Value of SDNV_Value loop
+      Result := Result + ((Byte_Value and 127) * (2 ** Shift));
+      if (Byte_Value and 128) = 0 then 
+        return Result;
+      end if;
+      Shift := Shift + 7;
+    end loop;
 
-   Put_Line("Created Data Unit for Flow" & Integer'Image(Integer(Flow)));
-end Create_Data_Unit;
+    raise Constraint_Error;
+  end Decode_SDNV;
 
---process data unit
-procedure Process_Data_Unit(Data_Unit : in out Rina.Data_Unit_T) is 
-begin
-   Data_Unit.Control_Info.Seq_Num := Data_Unit.Control_Info.Seq_Num +1;
-   Put_Line("Processed Data Unit. Sequence number incremented to " & Integer'Image(Data_Unit.Control_Info.Seq_Num));
-end Process_Data_Unit;
+  --encode QoS to SDNV
+  function Encode_QoS(QoS : Rina.QoS_Parameter) return SDNV is 
+    Priority_En      : SDNV  := Encode_SDNV(QoS.Priority);
+    Latency_En       : SDNV  := Encode_SDNV(QoS.Latency);
+    Throughput_En    : SDNV  := Encode_SDNV(QoS.Throughput);
+  begin
+    return Priority_En & Latency_En & Throughput_En;
+  end Encode_QoS;
 
---transmit data unit 
-procedure Transmit_Data_Unit(Flow : in Flow_ID; Data_Unit : in Rina.Data_Unit_T) is
-begin 
-   Put_Line("Transmitting Data unit for flow " & Integer'Image(Integer(Flow)));
-   Put_Line("Payload Length: " & Integer'Image(Data_Unit.SDU_Head.Data_Length));
-end Transmit_Data_Unit;
+  -- decode QoS SDNV
+  function Decode_QoS(SDNV_Value : SDNV) return Rina.QoS_Parameter is 
+    Priority        : SDNV  := Decode_SDNV(SDNV_Value(1 .. 2)); 
+    Latency         : SDNV  := Decode_SDNV(SDNV_Value(3 ..4));
+    Throughput      : SDNV  := Decode_SDNV(SDNV_Value(5 ..6));
+  begin 
+    return (Priority => Priority, Latency => Latency, Throughput => Throughput);
+  end Decode_QoS;
 
--- test: SDNV encoding - converts an integer into an SDNV 
-function Encode_SDNV(Value : Integer) return SDNV is 
-  Result : SDNV (1 .. 5);
-  val, hold : Integer;
-  num : byte;
-  
-begin
-  hold := Value;
-  val := hold mod 128;
-  num := byte'val(Integer'pos(val));
-  Result(5) := num;
+  --encode Endpoint ID to SDNV
+  function Encode_Endpoint_ID(Endpoint : Rina.Endpoint_ID) return SDNV is 
+    ID_En          : SDNV  := Encode_SDNV(Endpoint.ID);
+    Name_En        : SDNV  := To_String(Endpoint.App_Process_Name);
+  begin
+    return ID_En;
+  end Encode_Endpoint_ID;
 
+  --decode Endpoint SDNV 
+  function Decode_Endpoint_ID(SDNV_Value : SDNV) return Rina.Endpoint_ID is 
+    ID_Decode      : Integer  := Decode_SDNV(SDNV_Value(1 .. 2));
+  begin 
+    return (App_Process_name => To_Unbounded_String("Placeholder"),
+            ID => ID_Decode);
+  end Decode_Endpoint_ID;
 
-  hold := hold / 128;
-  val := hold mod 128;
-  num := byte'val(Integer'pos(val));
-  num := num + 128;
-  Result(4) := num;
+  --creating new data unit 
+  procedure Create_Data_Unit(Flow         : Flow_ID;
+                             QoS          : Rina.QoS_Parameter;
+                             Source       : Rina.Endpoint_ID;
+                             Destination  : Rina.Endpoint_ID;
+                             Unit         : out Rina.Data_Unit_T) is 
+  begin
+    -- assign Flow ID
+    Unit.Control_Info.Src_Endpoint := Source;
+    Unit.Control_Info.Dst_Endpoint := Destination;
+    Unit.Control_Info.QoS := QoS;
 
-  hold := hold / 128;
-  val := hold mod 128;
-  num := byte'val(Integer'pos(val));
-  num := num + 128;
-  Result(3) := num;
+   -- initialize other control information fields
+    Unit.Control_Info.Seq_Num := 0; -- Initial sequence number
+    Unit.Control_Info.PDU_Type := "Data Transfer"; -- Example PDU type
 
-hold := hold / 128;
-  val := hold mod 128;
-  num := byte'val(Integer'pos(val));
-  num := num + 128;
-  Result(2) := num;
+   -- Placeholder configuration and payload
+    Unit.Configuration.Max_Window_Size := 10;
+    Unit.Configuration.Timeout := 1000; -- in milliseconds
+    Unit.SDU_Head.Data_Length := 0; -- No payload initially
+    Unit.SDU_Tail.Data_Length := 0;
+  end Create_Data_Unit;
 
-hold := hold / 128;
-  val := hold mod 128;
-  num := byte'val(Integer'pos(val));
-  num := num + 128;
-  Result(1) := num;
+  --encoding data unit 
+  function Encode_Data_Unit(Unit : Data_Unit) return SDNV is 
+    Flow_En         : SDNV  := Encode_SDNV(Integer(Unit.Flow));
+    QoS_En          : SDNV  := Encode_QoS(Unit.QoS);
+    Source_En       : SDNV  := Encode_Endpoint_ID(Unit.Source);
+    Destination_En  : SDNV  := Encode_Endpoint_ID(Unit.Destination);
+  begin
+    return Flow_En & QoS_En & Source_En & Destination_En;
+  end Encode_Data_Unit;
 
-  return result;
-end Encode_SDNV;
+  --decode data unit SDNV 
+  function Decode_Data_Unit(SDNV_Value : SDNV) return Data_Unit is 
+    Flow          : Flow_ID       := Flow_ID(Decode_SDNV(SDNV_Value(1 .. 2)));
+    QoS           : Rina.QoS_Parameter := Decode_QoS(SDNV_Value(3 .. 6));
+    Source        : Rina.Endpoint_ID   := Decode_Endpoint_ID(SDNV_Value(7 .. 8));
+    Destination   : Rina.Endpoint_ID   := Decode_Endpoint_ID(SDNV_Value(9 .. 10));
+  begin
+    return (Flow => Flow, QoS => QoS, Source => Source, Destination => Destination);
+  end Decode_Data_Unit;
 
--- test: SDNV decoding - converting back to integer 
-function Decode_SDNV(SDNV_Value : SDNV) return Integer is 
-  result : Integer := 0;
-  counter : Integer := 1;
-begin
-  while ((SDNV_Value(counter)) / 128 = 1) loop
-    result := result + (Integer'Val(byte'pos(SDNV_Value(counter))) mod 128);
-    result := result * 128;
-    counter := counter + 1;
-  end loop;
-    result := result + (Integer'Val(byte'pos(SDNV_Value(counter))) mod 128);
-  return result;
-end Decode_SDNV;
+  procedure Process_Data_Unit(Unit : in out Rina.Data_Unit_T) is
+  begin
+    -- Increment the sequence number
+    Unit.Control_Info.Seq_Num := Unit.Control_Info.Seq_Num + 1;
+    Put_Line("Processed Data Unit: Sequence number incremented to " &
+            Integer'Image(Unit.Control_Info.Seq_Num));
+  end Process_Data_Unit;
+ 
+  procedure Transmit_Data_Unit(Flow : Flow_ID; Unit : in Rina.Data_Unit_T) is
+  begin
+    Put_Line("Transmitting Data Unit for Flow " & Integer'Image(Integer(Flow)));
+    Put_Line(" Source Endpoint: " & To_String(Unit.Control_Info.Src_Endpoint.App_Process_Name));
+    Put_Line(" Destination Endpoint: " & To_String(Unit.Control_Info.Dst_Endpoint.App_Process_Name));
+    Put_Line(" Payload Length: " & Integer'Image(Unit.SDU_Head.Data_Length));
+  end Transmit_Data_Unit;
+
+  --logging data info 
+  procedure Log_Data_Unit(Unit : Data_Unit) is 
+  begin
+    Put_Line("Data Unit Transfer");
+    Put_Line(" Flow ID: " & Integer'Image(Integer(Unit.Flow)));
+    Put_Line(" QoS: Priority:" & Integer'Image(Unit.QoS.Priority) & 
+             ", Latency:" & Integer'Image(Unit.QoS.Latency) &
+             ", Throughput:" & Integer'Image(Unit.QoS.Throughput));
+    Put_Line(" Source: " & To_String(Unit.Source.App_Process_Name));
+    Put_Line(" Destination: " & To_String(Unit.Destination.App_Process_Name));
+  end Log_Data_Unit;
 
 end RINA_Policies;
