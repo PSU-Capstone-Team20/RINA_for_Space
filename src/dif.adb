@@ -69,9 +69,9 @@ package body dif is
    
    -- creates an IPCP with specified string and adds it to the provided DIF
    procedure createIPCP(name : Unbounded_String; self : in out DIF_Access) is
-      New_IPCP : constant IPCP_Access := new ipcp.ipcp;
+      New_IPCP : constant IPCP_Access := new IPCP.IPCP_T;
       begin
-      New_IPCP.ipcpName := name;
+      New_IPCP.Name := name;
       self.MemberIPCPs.Append(New_IPCP);
    end createIPCP;
    
@@ -79,7 +79,7 @@ package body dif is
    procedure listIPCP(self : DIF_Access) is
       begin
       for I in self.MemberIPCPs.First_Index .. self.MemberIPCPs.Last_Index loop
-         Put_Line(self.MemberIPCPs(I).ipcpName'Image);
+         Put_Line(self.MemberIPCPs(I).Name'Image);
       end loop;
    end listIPCP;
    
@@ -87,7 +87,7 @@ package body dif is
    procedure disconnectIPCP(name : Unbounded_String; self : in out DIF_Access) is
       begin
       for I in self.MemberIPCPs.First_Index .. self.MemberIPCPs.Last_Index loop
-         if self.MemberIPCPs(I).ipcpName = name then
+         if self.MemberIPCPs(I).Name = name then
             self.MemberIPCPs.Delete(I);
             exit;
          end if;

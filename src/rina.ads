@@ -18,7 +18,7 @@ package Rina is
    --Dynamic addressing 
    type Address_T is record
       DIF_ID            : Integer;
-      App_Process_Name  : Unbounded_String; -- application process name 
+      App_Process_Name  : Unbounded_String; -- application process name
    end record;
 
    type PCI_T (Header_Length : Natural) is record
