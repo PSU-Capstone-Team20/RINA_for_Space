@@ -21,8 +21,9 @@ procedure Rina_For_Space is
    test : SDNV (1 .. 5);
 
 begin
-   test := RINA_Policies.Encode_SDNV(1420);
+   test := RINA_Policies.Encode_SDNV(160000);
    Put_Line (test'Image);
+   RINA_Policies.Print_SDNV(test);
    Put_Line(RINA_Policies.Decode_SDNV(test)'Image);
 end Rina_For_Space;
 

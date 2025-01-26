@@ -1,6 +1,7 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Rina;
+with System.Win32;
 
 package body RINA_Policies is
 
@@ -81,23 +82,33 @@ end Transmit_Data_Unit;
 function Encode_SDNV(Value : Integer) return SDNV is
    Result : SDNV (1 .. 5);
    hold : Integer := Value;
-   val : Integer;
+   val, bits : Integer;
    num : Byte;
    index : Integer := Result'Last; 
 begin
-   for i in Result'Range loop
-      Result(i) := 128;
+   val := value;
+   bits := 0;
+   while val /= 0 loop
+      bits := bits + 1;
+      val := val/128;
+   end loop;
+
+   for i in reverse Result'Range loop
+      if i = Result'Last then
+         Result(i) := 0;
+      elsif bits > 0 then
+         Result(i) := 128;
+      else
+         Result(i) := 0;
+      end if;
+      bits := bits-1;
    end loop;
 
    while hold /= 0 loop
       val := hold mod 128; 
       num := Byte'Val(Integer'Pos(val));
 
-      if index /= Result'Last then
-         num := num + 128;
-      end if;
-
-      Result(index) := num;
+      Result(index) := Result(index) + num;
       hold := hold / 128; 
       index := index - 1; 
    end loop;
@@ -105,13 +116,17 @@ begin
    return Result;
 end Encode_SDNV;
 
-
-
 -- test: SDNV decoding - converting back to integer 
 function Decode_SDNV(SDNV_Value : SDNV) return Integer is 
   result : Integer := 0;
-  counter : Integer := 1;
+  counter : Integer := 0;
 begin
+   for i in SDNV_Value'Range loop
+      if SDNV_Value(i) /= 0 then
+         counter := i;
+         exit;
+      end if;
+   end loop;
   while ((SDNV_Value(counter)) / 128 = 1) loop
     result := result + (Integer'Val(byte'pos(SDNV_Value(counter))) mod 128);
     result := result * 128;
@@ -120,5 +135,46 @@ begin
     result := result + (Integer'Val(byte'pos(SDNV_Value(counter))) mod 128);
   return result;
 end Decode_SDNV;
+
+-- SDNV printing - prints the provided SDNV
+procedure Print_SDNV(SDNV_Value : SDNV) is
+   counter : Integer := 0;
+   quotient : Integer;
+   printee : byte;
+   divisor : byte;
+   print : Unbounded_String;
+   firstfound : Boolean := False;
+begin
+   for i in SDNV_Value'Range loop
+      if SDNV_Value(i) /= 0 then
+         counter := i;
+         exit;
+      end if;
+   end loop;
+   while counter <= SDNV_Value'Last loop
+      printee := SDNV_Value(counter);
+      divisor := 128;
+      while divisor > 0 loop
+         quotient := Integer'Val(printee/divisor);
+         if divisor = 128 then
+            Put(quotient'Image);
+            Put(" ");
+         else
+            if quotient = 1 and not firstfound then
+               firstfound := True;
+            end if;
+            if firstfound then
+               Append (print, quotient'Image);
+            end if;
+            Put(quotient'Image);
+         end if;
+         printee := printee mod divisor;
+         divisor := divisor/2;
+      end loop;
+      counter := counter + 1;
+      Put_Line("");
+   end loop;
+   Put_Line (print'Image);
+end Print_SDNV;
 
 end RINA_Policies;

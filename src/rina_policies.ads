@@ -21,6 +21,9 @@ package RINA_Policies is
    -- Function to decode an SDNV to an integer
    function Decode_SDNV(SDNV_Value : SDNV) return Integer;
 
+   --Procedure to print SDNVs
+   procedure Print_SDNV(SDNV_Value : SDNV);
+
    --QoS and Flow managing procedures
    procedure Define_QoS(Flow : in Flow_ID; QoS : in QoS_Parameter);
    procedure Schedule_Flow(Flow : in Flow_ID);
