@@ -5,24 +5,12 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 --with Ada.Integer_Text_IO;
 with Ada.Text_IO; use Ada.Text_IO;
-with RINA_Policies; use RINA_Policies;
--- with RINA_Policies.DTN_Bundle_Protocol; 
+with Rina_BP_Bundle;
+with Ada.Streams.Stream_IO;
+with Ada.Calendar;
 
 procedure Rina_For_Space is
-   Flow_ID  : RINA_Policies.Flow_ID := 1;
-   QoS      : Rina.QoS_Parameter := (Priority   => 1,
-                                              Latency    =>  100,
-                                              Throughput => 500);
-   
-   Source_Endpoint : Rina.Endpoint_ID := (
-      App_Process_Name => To_Unbounded_String("Mars Observer"),
-      ID               => 101);
-   
-   Destination_Endpoint : Rina.Endpoint_ID := (
-      App_Process_Name => To_Unbounded_String("Ground Station"),
-      ID               => 202);
-   
-   Data_Unit : Rina.Data_Unit_T(Header_Length => 120);
+
 
    --test1 : dif.DIF_Vector;
    --num : Integer;
@@ -35,42 +23,52 @@ procedure Rina_For_Space is
    -- QoS_ID => 42);
    --test : SDNV (1 .. 5);
 
+   --testing for bundle 
+   Test_Payload : Rina.SDU_T := (Data_Length => 15, Data_Payload => "Water has been found in zone 40");
+
+   Test_Bundle : Rina_BP_Bundle.Bundle; 
+   Deserial_Bundle : Rina_BP_Bundle.Bundle;
+   Bundle_ID : Rina_BP_Bundle.Bundle_ID;
+
+   Stream : Ada.Streams.Stream_IO.File_Type;
+
 begin
-   --create the data unit 
-   Put_Line(" Creating Data Unit");
-   Create_Data_Unit(Flow_ID, QoS, Source_Endpoint, Destination_Endpoint, Data_Unit);
 
-   --for control info
-   Put_Line("Control Information: ");
-   Put_Line(" Source Address: " & To_String(Data_Unit.Control_Info.Src_Endpoint.App_Process_Name));
-   Put_Line(" Destination Address: " & To_String(Data_Unit.Control_Info.Dst_Endpoint.App_Process_Name));
-   Put_Line(" QoS: Priority:" & Integer'Image(Data_Unit.Control_Info.QoS.Priority) &
-            ", Latency:" & Integer'Image(Data_Unit.Control_Info.QoS.Latency) &
-            ", Throughput:" & Integer'Image(Data_Unit.Control_Info.QoS.Throughput));
-   Put_Line(" PDU Type: " & Data_Unit.Control_Info.PDU_Type);
+   --let's try making a bundle 
+   Test_Bundle := Rina_BP_Bundle.Create_Bundle (Source_Name => (DIF_ID => 1, APN => "Mars Observer"), Destination_Name => (DIF_ID => 2, APN => "Ground Station 1"), Payload => Test_Payload);
+   Put_Line("Bundle Creation Processing: ");
+   Put_Line(" Source is: " & Test_Bundle.Primary_Block.Src_Endpoint.APN);
+   Put_Line(" Destination is: " & Test_Bundle.Primary_Block.Dst_Endpoint.APN);
+   Put_Line(" Payload: " & Test_Bundle.Payload_Block.Data_Payload(1 .. Test_Bundle.Payload_Block.Data_Length));
 
-   --process data
-   Put_Line("Processing Data...");
-   Process_Data_Unit(Data_Unit);
-   Put_Line("Updated Sequence Number is " & Integer'Image(Data_Unit.Control_Info.Seq_Num));
+   Ada.Streams.Stream_IO.Create(Stream, Name => "test.dat", Mode => Ada.Streams.Stream_IO.Out_File);
+   Rina_BP_Bundle.Serial_Bundle(Test_Bundle, Stream'Access);
 
-   --transmit the data 
-   Put_Line("Transmitting data...");
-   Transmit_Data_Unit(Flow_ID, Data_Unit);
+   Ada.Streams.Stream_IO.Close(Stream);
 
-   --encode and decode test 
-   Put_Line("SDNV Encoding...");
-   declare
-      test_SDNV : SDNV(1 .. 5);
-      Decoded_Val : Integer;
-   begin
-      test_SDNV := Encode_SDNV(1420);
-      Put_Line("Encoded SDNV: " & test_SDNV'Image);
-      Decoded_Val := Decode_SDNV(test_SDNV);
-      Put_Line("Decdoed SDNV: " & Integer'Image(Decoded_Val));
-   end;
+   Ada.Streams.Stream_IO.Open(Stream, Name => "test.dat", Mode => Ada.Streams.Stream_IO.In_File);
+   Rina_BP_Bundle.Deserial_Bundle(Stream'Access, Deserial_Bundle);
+   Ada.Streams.Stream_IO.Close(Stream);
 
-   Put_Line("Test complete");
+   Put_Line("De-Serialized Bundle: ");
+   Put_Line(" Source: " & Deserial_Bundle.Primary_Block.Src_Endpoint.APN);
+   Put_Line(" Destination: " & Deserial_Bundle.Primary_Block.Dst_Endpoint.APN);
+   Put_Line(" Payload is: " & Deserial_Bundle.Payload_Block.Data_Payload(1 .. Deserial_Bundle.Payload_Block.Data_Length));
+
+   if Rina_BP_Bundle.Validate_Bundle(Deserial_Bundle) then
+      Put_Line("Valid Bundle");
+   else
+      Put_Line("Invalid Bundle");
+   end if;
+
+   --get bundle ID
+   Bundle_ID := Rina_BP_Bundle.Get_Bundle_ID(Deserial_Bundle);
+   Put_Line("Bundle ID is: ");
+   Put_Line(" Source: " & Bundle_ID.Source_Name);
+   Put_Line(" Destination: " & Bundle_ID.Destination_Name);
+   Put_Line(" Creation Time: " & Ada.Calendar.Image(Bundle_ID.Creation_Time));
+   Put_Line(" Sequence Number: " & Integer'Image(Bundle_ID.Sequence_Num));
+
 
 
 

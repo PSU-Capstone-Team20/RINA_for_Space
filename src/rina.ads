@@ -4,7 +4,7 @@
 -- DRF       (Data Run Flag)
 -- ECN       (Explicit Congestion Notification)
 --with Ada.Text_IO; use Ada.Text_IO;
-with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+--with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 package Rina is
 
    Max_Header_Size : Positive;
@@ -13,34 +13,26 @@ package Rina is
 
    type Header_T is array (Positive range<>) of U8_T; 
 
-   type QoS_Parameter is record
+   type QoS_Parameter is tagged record
       Priority       : Integer; 
       Latency        : Integer;
       Throughput     : Integer;
    end record;
 
    --Dynamic addressing 
-   --type Address_T is record
-      --DIF_ID            : Integer;
-      --App_Process_Name  : Unbounded_String; -- application process name (this can be changed to endpointID)
-   --end record;
-
-
-   --endpoint ids for integer value and the app process name.
-   type Endpoint_ID is record
-      App_Process_Name    : Unbounded_String;
-      ID                  : Integer;
+   type Address_T is record
+      DIF_ID    : Integer;
+      APN       : String(1 .. 255); -- application process name (this can be changed to endpointID)
    end record;
 
-
-   type PCI_T(Header_Length : Natural) is record
+   type PCI_T(Header_Length : Natural) is tagged record
       Header        : Header_T(1 .. Header_Length);
       Length        : Natural;
       DRF_Flag      : Boolean;         -- Data Run Flag
       ECN_Flag      : Boolean;         -- Explicit Congestion Notification
       -- Addressing
-      Src_Endpoint  : Endpoint_ID;       -- Source address
-      Dst_Endpoint  : Endpoint_ID;       -- Destination address
+      Src_Endpoint  : Address_T;       -- Source address
+      Dst_Endpoint  : Address_T;       -- Destination address
       -- Sequencing
       Seq_Num       : Natural;     -- Sequence number
       -- QoS
@@ -50,7 +42,7 @@ package Rina is
    end record;
 
    --SDU
-   type SDU_T is record
+   type SDU_T is tagged record
       Data_Length    : Natural;
       Data_Payload   : String(1 .. 2048); 
    end record;
