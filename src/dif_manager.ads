@@ -18,11 +18,10 @@ package dif_manager is
     procedure Create_DIF(ID : Integer; Manager : in out DIF_MANAGER);
     -- creates a DIF with argument for name and adds it to the manager
     procedure Create_Named_DIF(ID : Integer; Name : Unbounded_String; Manager : in out DIF_MANAGER);
-    -- returns the ID of the DIF in the manager
-    function Get_ID(DIF : DIF_Access) return Integer;
-    -- returns the name of the DIF in the manager
-    function Get_Name(DIF : DIF_Access) return Unbounded_String;
     -- deletes the DIF that has the specified ID from the manager
+    -- TODO Change this to disconnect via index and not the ID
     procedure Disconnect_DIF(ID : Integer; Manager : in out DIF_MANAGER);
+    -- Lsts all DIFS
+    procedure List_DIFs(Manager : DIF_MANAGER);
 
 end dif_manager;
