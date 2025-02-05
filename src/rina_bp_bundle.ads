@@ -1,39 +1,41 @@
-with Rina;
+
 with Ada.Text_IO; use Ada.Text_IO;
-with Ada.Strings.Unbounded;
+--with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Calendar; use Ada.Calendar;
 with Ada.Streams; use Ada.Streams;
+with Ada.Streams.Stream_IO; use Ada.Streams.Stream_IO;
+--with Ada.Stream_IO; use Ada.Stream_IO;
 
 package Rina_BP_Bundle is
 
    --bunde ID structure
-   type Bundle_ID is record
-      Source_Name         : Rina.Address_T;
-      Destination_Name    : Rina.Address_T;
-      Creation_Time       : Ada.Calendar.Time;
-      Sequence_Num        : Natural;
+   type Bundle_Header is tagged record
+      Version         : Natural := 6;
+      Processing_Flag : Natural;
+      Block_Length    : Natural;
    end record;
 
    --bundle structure
-   type Bundle is record 
-      Primary_Block     : Rina.PCI_T(255);
-      Payload_Block     : Rina.SDU_T;
-      Extension_Blocks   : Stream_Element_Array(1 .. 1024); 
+   type Bundle is tagged record
+      Header       : Bundle_Header;
+      Src_EID      : String(1 .. 1024); -- source endpoing ID 
+      Dst_EID      : String(1 .. 1024); -- destination endpoint ID
+      Payload      : String(1 .. 1024); -- payload
    end record;
 
-   --create a bundle function
-   function Create_Bundle (Source_Name : Rina.Address_T; Destination_Name : Rina.Address_T; Payload : Rina.SDU_T) return Bundle;
+   --create bundle function 
+   function Create_Bundle(Version : Natural; Processing_Flag : Natural; Block_Length : Natural; Src_EID : String; Dst_EID : String; Payload : String) return Bundle;
 
-   --serializing: encode bundle into a stream 
-   procedure Serial_Bundle (B : in Bundle; Stream : in out Root_Stream_Type'Class);
+   --sending bundle procedure 
+   procedure Send_Bundle(B : in Bundle);
 
-   --de-serializing: decoding bundle from a stream
-   procedure Deserial_Bundle (Stream : in out Root_Stream_Type'Class; B : out Bundle);
+   --function for receiving bundle 
+   function Receive_Bundle return Bundle; 
+   
+   --  --serializing : encode bundle into a stream
+   --  procedure Serial_Bundle(Stream : in out Ada.Streams.Stream_IO.Stream_Access; B : in Bundle); 
 
-   --validation function for bundle 
-   function Validate_Bundle (B : Bundle) return Boolean;
-
-   --function for extracting bundle ID from bundle 
-   function Get_Bundle_ID(B : Bundle) return Bundle_ID;
+   --  --de-serizliing: decode bundle from stream
+   --  function Deserial_Bundle(Stream : in out Ada.Streams.Stream_IO.Stream_Access) return Bundle;
 
 end Rina_BP_Bundle;
