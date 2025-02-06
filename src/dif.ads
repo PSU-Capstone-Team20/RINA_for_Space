@@ -47,6 +47,10 @@ package dif is
    procedure listAccessibleDIF(self : DIF_Access);
 
    -- TODO directory and pathing
+   -- TODO Application Connection logic
+   -- TODO Application Disconnect Logic
+   -- TODO Application Distance Logic
+   -- TODO Application Distance Broadcast Logic
    
    -- TODO Revist this when IPC_Manager is added in.
    -- lists all member IPCPs of a provided DIF

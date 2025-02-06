@@ -5,18 +5,17 @@ with application; use application;
 
 package body dif_manager is
 
-   -- TODO Remove debug code
-   procedure Create_DIF(Manager : in out DIF_MANAGER) is
-      -- New_DIF : DIF_Access := new DIF'(ID => ID, Name => Null_Unbounded_String);
+   procedure Create_DIF(ID : Integer; Manager : in out DIF_MANAGER) is
+      New_DIF : DIF_Access := new DIF'(DIF_ID => ID);
    begin
-      -- Manager.DIFs.Append(New_DIF);
+      Manager.DIFs.Append(New_DIF);
    end Create_DIF;
 
-   --  procedure Create_Named_DIF(ID : Integer; Name : Unbounded_String; Manager : in out DIF_MANAGER) is
-   --     New_DIF : DIF_Access := new DIF'(ID => ID, Name => Name);
-   --  begin
-   --     Manager.DIFs.Append(New_DIF);
-   --  end Create_Named_DIF;
+   procedure Create_Named_DIF(ID : Integer; Name : Unbounded_String; Manager : in out DIF_MANAGER) is
+      New_DIF : DIF_Access := new DIF'(DIF_ID => ID, DIF_Name => Name);
+   begin
+      Manager.DIFs.Append(New_DIF);
+   end Create_Named_DIF;
 
    procedure Disconnect_DIF(ID : Integer; Manager : in out DIF_MANAGER) is
       Index : Natural := Manager.DIFs.First_Index;

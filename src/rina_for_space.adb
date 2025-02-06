@@ -8,6 +8,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Rina_BP_Bundle; use Rina_BP_Bundle;
 with Ada.Streams.Stream_IO;
 with Ada.Calendar; use Ada.Calendar;
+with dif_manager; use dif_manager;
 
 procedure Rina_For_Space is
 
@@ -21,10 +22,11 @@ procedure Rina_For_Space is
    -- Latency => 100,
    -- Throughput => 500,
    -- QoS_ID => 42);
-   --test : SDNV (1 .. 5);
+   test : SDNV (1 .. 5);
 
-   --testing for bundle 
-   B : Bundle;
+   -- DIF_Manager Tests
+   Manager : DIF_manager.DIF_MANAGER;
+   Name : Unbounded_String := To_Unbounded_String("Test DIF");
 
 begin
 
@@ -54,5 +56,18 @@ begin
    --test := RINA_Policies.Encode_SDNV(1420);
    --Put_Line (test'Image);
    --Put_Line(RINA_Policies.Decode_SDNV(test)'Image);
-end Rina_For_Space;
 
+
+   -- DIF_Manager Tests
+   Put_Line("Creating DIF with ID 1");
+   Create_DIF(1, Manager);
+   Put_Line("Creating Named DIF with ID 2 and Name 'Test DIF'");
+   Create_Named_DIF(2, Name, Manager);
+   Put_Line("Listing all DIFs:");
+   List_DIFs(Manager);
+   Put_Line("Disconnecting DIF with ID 1");
+   Disconnect_DIF(1, Manager);
+   Put_Line("Listing all DIFs after disconnection:");
+   List_DIFs(Manager);
+
+end Rina_For_Space;

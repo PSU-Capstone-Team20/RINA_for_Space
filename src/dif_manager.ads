@@ -2,6 +2,7 @@ with application; use application;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Containers.Vectors;
 with Ada.Text_IO; use Ada.Text_IO;
+with dif; use dif;
 
 package dif_manager is
     type DIF_MANAGER is tagged;
@@ -14,6 +15,8 @@ package dif_manager is
         DIFs : DIF_Vector;
     end record;
 
+    -- creates a DIF with specified ID and adds it to the manager
+    procedure Create_Named_DIF(ID : Integer; Name : Unbounded_String);
     -- creates a DIF with specified ID and adds it to the manager
     procedure Create_DIF(ID : Integer; Manager : in out DIF_MANAGER);
     -- creates a DIF with argument for name and adds it to the manager
