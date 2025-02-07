@@ -20,5 +20,9 @@ package IPCP.IPC_Manager is
    function Find_DIF_Address(Manager : IPCP_List; DIF_ID : Integer) return RINA.Address_T;
 
    procedure Display_All_IPCPs(Manager : IPCP_List);
+   
+   procedure Display_All_Flows(Manager : IPCP_List);
+   
+   procedure Display_All_Resources(Manager : IPCP_List);
 
 end IPCP.IPC_Manager;

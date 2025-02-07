@@ -66,8 +66,19 @@ package body IPCP.IPC_Manager is
       end if;
    end Display_All_IPCPs;
 
-   -- TO DO:
-   -- Add Procedure/Functions for
-   -- Register
+   procedure Display_All_Flows(Manager : IPCP_List) is
+   begin
+      for IPCP_Instance of Manager loop
+         IPCP.Display_Flows(IPCP_Instance);
+      end loop;
+   end Display_All_Flows;
+
+   procedure Display_All_Resources(Manager : IPCP_List) is
+   begin
+      for IPCP_Instance of Manager loop
+         IPCP.Display_Resources(IPCP_Instance);
+      end loop;
+   end Display_All_Resources;
+
 
 end IPCP.IPC_Manager;

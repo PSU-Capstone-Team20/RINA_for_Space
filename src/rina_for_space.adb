@@ -6,6 +6,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Integer_Text_IO;
 with Ada.Text_IO; use Ada.Text_IO;
 with RINA_Policies; use RINA_Policies;
+
 -- with RINA_Policies.DTN_Bundle_Protocol; 
 
 procedure Rina_For_Space is

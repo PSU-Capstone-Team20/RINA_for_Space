@@ -26,5 +26,29 @@ package body IPCP is
       Put_Line("Address: " & Integer'Image(IPCP_Instance.DIF_ID) & ", App_Process_Name => " & To_String(IPCP_Instance.Address.App_Process_Name));
       Put_Line("QoS Parameters:  Priority => " & Integer'Image(IPCP_Instance.QoS_Params.Priority) & ", Latency => " & Integer(IPCP_Instance.QoS_Params.Latency) & ", Throughput => " & Integer'Image(IPCP_Instance.QoS_Params.Throughout));
    end Display IPCP_Info;
+
+   procedure Add_Flow(IPCP_Instance : in out IPCP_T; New_Flow : Flow_Management.Flow_T) is
+   begin
+      IPCP_Instance.Flows.Append(New_Flow);
+   end Add_Flow;
+
+   procedure Display_Flows(IPCP_Instance : in IPCP_T) is
+   begin
+      for Flow of IPCP_Instance.Flows loop
+         Flow_Management.Display_Flow(Flow);
+      end loop;
+   end Display_Flows;
+
+   procedure Allocate_Resource(IPCP_Instance : in out IPCP_T; New_Resource : Resource_Management.Resource_T) is
+   begin
+      IPCP_Instance.Resources.Append(New_Resource);
+   end Allocate_Resource;
+
+   procedure Display_Resources(IPCP_Instance : in IPCP_T) is
+   begin
+      for Resource of IPCP_Instance.Resources loop
+         Resource_Management.Display_Resource(Resource);
+      end loop;
+   end Display_Resources;
    
 end IPCP;
