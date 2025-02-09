@@ -28,4 +28,5 @@ package IPC_Manager is
    --  procedure Set_Policy(Manager : in out IPC_Manager_Record; Policy_Name : String; Policy_Value : String);
    --  procedure Get_Policy(Manager : IPC_Manager_Record; Policy_Name : String);
 
+
 end IPC_Manager;
