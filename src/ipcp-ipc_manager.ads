@@ -1,5 +1,3 @@
--- IPC_Manager.ads
-
 with Ada.Containers.Vectors;
 with IPCP;
 
