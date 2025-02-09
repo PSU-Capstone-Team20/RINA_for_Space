@@ -1,37 +1,38 @@
-with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
-with RINA;
-with RINA_Policies;
-with Flow_Management; use Flow_Management;
-with Resource_Management; use Resource_Management;
+with Ada.Containers.Vectors;
+with DIF; use DIF;
 
 package IPCP is
+
+   package IPCP_Vector is new Ada.Containers.Vectors(Index_type => Natural, Element_Type => IPCP_Record);
+
+   type IPCP_ID is new Integer;
+   type IPCP_State is (Initialized, Active, Terminated);
    
-   type IPCP_T is record
-      ID : Integer;
-      Name : String(1 .. 64);
-      DIF_ID : Integer;
-      Address : RINA.Address_T;
-      QoS_Params : RINA_Policies.QoS_Parameter;
-      Flows : Flow_Management.Flow_List;
-      Resources : Resource_Management.Resource_List;
+   -- IPCP record
+   type IPCP_Record is record
+      ID : IPCP_ID;
+      State : IPCP_State;
+      Name : String(1 .. 100);
+      Address : String(1 .. 100);
+      QoS_Params : String(1 .. 50);
+      Connected_DIF : DIF.DIF_Access := null;  -- Optional DIF Connection
+      -- Allows initialization without connecting to a DIF and support DIF connections when needed
    end record;
 
-   procedure Initialize_IPCP(
-      IPCP_Instance : in out IPCP_T; 
-      ID: Integer; 
-      Name : String;
-      DIF_ID : Integer;
-      Address : RINA.Address_T;
-      QoS : RINA.Policies.QoS_Parameter);
+   -- IPCP Operations
+   procedure Initialize_IPCP(IPCP_Instance : in out IPCP_Record; Name : String; Address : String; QoS_Params : String);
+   procedure Activate_IPCP(IPCP_Instance : in out IPCP_Record);
+   procedure Terminate_IPCP(IPCP_Instance : in out IPCP_Record);
+   function Get_IPCP_State(IPCP_Instance : IPCP_record) return IPCP_State;
 
-   procedure Display_IPCP_Info(IPCP_Instance : in IPCP_T);
+   -- DIF Communication
+   procedure Connect_To_DIF(IPCP_Instance : in out IPCP_Record; Target_DIF : DIF_Access);
+   procedure Disconnect_From_DIF(IPCP_Instance : in out IPCP_Record);
+   function Get_Connected_DIF(IPCP_Instance : IPCP_Record) return DIF_Access;
 
-   -- Flow Management
-   procedure Add_Flow(IPCP_Instance : in out IPCP_T; New_Flow : Flow_Management.Flow_T);
-   procedure Display_Flows(IPCP_Instance : in IPCP_T);
-
-   -- Resource Management
-   procedure Allocate_Resource(IPCP_Instance : in out IPCP_T; New_Resource : Resource_Management.Resource_T);
-   procedure Display_Resources(IPCP_Instance : in IPCP_T);
+   -- Communication and Acknowledgement for a single IPCP Instance
+   procedure Retry_Failed_Communication(IPCP_Instance : in out IPCP_Record; Max_Retries : Integer := 10); 
+   procedure Store_Data_Temporarily(IPCP_Instance : in out IPCP_Record; Data : String);
+   procedure Transmit_Stored_Data(IPCP_Instance : in out IPCP_Record);
 
 end IPCP;

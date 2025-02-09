@@ -1,28 +1,33 @@
-with Ada.Text_IO; use Ada.Text_IO;
+-- IPC_Manager.ads
+
 with Ada.Containers.Vectors;
 with IPCP;
-with Rina;
 
-package IPCP.IPC_Manager is
+package IPC_Manager is
 
-   package IPCP_Vector is new Ada.Containers.Vectors(Index_Type => Positive, Element_Typer => IPCP.IPCP.T);
+   package IPCP_Vector is new Ada.Containers.Vectors(Index_type => Natural, Element_Type => IPCP.IPCP_Record);
 
-   type IPCP_List is new IPCP_Vector.Vector;
+   -- IPC Manager Record
+   type IPC_Manager_Record is record
+      Managed_IPCPs : IPCP_Vector.Vector;
+   end record;
 
-   procedure Initialize_Manager(Manager : in out IPCP_List);
+   -- IPC Manager Operations
+   procedure Add_IPCP(Manager : in out IPC_Manager_Record; IPCP_Instance : IPCP.IPCP_Record);
+   procedure Remove_IPCP(Manager : in out IPC_Manager_Record; IPCP_ID : IPCP.IPCP_ID);
+   procedure Get_IPCP_Info(Manager : IPC_Manager_Record; IPCP_ID : IPCP.IPCP_ID);
+   procedure List_All_IPCPs(Manager : IPC_Manager_Record);
+   procedure Monitor_IPCP_Status(Manager : in out IPC_Manager_Record);
+   procedure Restart_IPCP(Manager : in out IPC_Manager_Record; IPCP_ID : IPCP.IPCP_ID);
 
-   procedure Add_IPCP(Manager : in out IPCP_List; IPCP_Instance : IPCP.IPCP_T);
+   -- Communication Management
+   procedure Retry_All_Failed_Communications(Manager : in out IPC_Manager_Record); -- handles multiple IPCP instances
+   procedure Transmit_All_Stored_Data(Manager : in out IPC_Manager_Record);
 
-   procedure Remove_IPCP(Manager : in out IPCP_List; ID : Integer);
+   -- Policy Management
+   -- TO-DO: Need to confirm whether if we should set Global policy in IPC Manager
+   -- Should we have flow-Specific and application-specific policies Managed by IPCP and IPC API?
+   --  procedure Set_Policy(Manager : in out IPC_Manager_Record; Policy_Name : String; Policy_Value : String);
+   --  procedure Get_Policy(Manager : IPC_Manager_Record; Policy_Name : String);
 
-   function Locate_IPCP(Manager : IPCP_List; ID : Integer) return IPCP.IPCP_T;
-
-   function Find_DIF_Address(Manager : IPCP_List; DIF_ID : Integer) return RINA.Address_T;
-
-   procedure Display_All_IPCPs(Manager : IPCP_List);
-   
-   procedure Display_All_Flows(Manager : IPCP_List);
-   
-   procedure Display_All_Resources(Manager : IPCP_List);
-
-end IPCP.IPC_Manager;
+end IPC_Manager;
