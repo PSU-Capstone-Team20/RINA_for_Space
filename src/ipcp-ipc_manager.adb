@@ -1,7 +1,7 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with IPCP;
 
-package body IPC_Manager is
+package body IPCP.IPC_Manager is
 
    -- Add a new IPCP instance to the manager
    procedure Add_IPCP(Manager : in out IPC_Manager_Record; IPCP_Instance : IPCP.IPCP_Record) is
@@ -107,4 +107,4 @@ package body IPC_Manager is
    --  end Get_Policy;
 
 
-end IPC_Manager;
+end IPCP.IPC_Manager;

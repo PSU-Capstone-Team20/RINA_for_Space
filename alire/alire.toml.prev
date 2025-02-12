@@ -10,6 +10,3 @@ website = ""
 tags = []
 
 executables = ["rina_for_space"]
-
-[[depends-on]]
-aunit = "^25.0.0"

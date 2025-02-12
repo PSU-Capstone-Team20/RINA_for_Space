@@ -1,7 +1,7 @@
 with Ada.Containers.Vectors;
 with IPCP;
 
-package IPC_Manager is
+package IPCP.IPC_Manager is
 
    package IPCP_Vector is new Ada.Containers.Vectors(Index_type => Natural, Element_Type => IPCP.IPCP_Record);
 
@@ -29,4 +29,4 @@ package IPC_Manager is
    --  procedure Get_Policy(Manager : IPC_Manager_Record; Policy_Name : String);
 
 
-end IPC_Manager;
+end IPCP.IPC_Manager;

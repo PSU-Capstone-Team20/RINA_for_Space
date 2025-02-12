@@ -49,8 +49,6 @@ begin
 
    Put_Line("Bundle has been processed successfully");
    
-
-   
    --test := RINA_Policies.Encode_SDNV(1420);
    --Put_Line (test'Image);
    --Put_Line(RINA_Policies.Decode_SDNV(test)'Image);

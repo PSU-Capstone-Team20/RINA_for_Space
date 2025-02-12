@@ -1,3 +1,4 @@
+dependency:aunit=25.0.0=6611d925c6ad71fb03c1f1c7dedf0728fd3ecf20865152adbd9d7d9a20c35706
 external:LIBRARY_TYPE=default
 external:RINA_FOR_SPACE_LIBRARY_TYPE=default
 profile:rina_for_space=DEVELOPMENT

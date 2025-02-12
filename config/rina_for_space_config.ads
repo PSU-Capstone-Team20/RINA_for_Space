@@ -8,11 +8,11 @@ package Rina_For_Space_Config is
    Crate_Version : constant String := "0.1.0-dev";
    Crate_Name : constant String := "rina_for_space";
 
-   Alire_Host_OS : constant String := "windows";
+   Alire_Host_OS : constant String := "macos";
 
    Alire_Host_Arch : constant String := "x86_64";
 
-   Alire_Host_Distro : constant String := "msys2";
+   Alire_Host_Distro : constant String := "homebrew";
 
    type Build_Profile_Kind is (release, validation, development);
    Build_Profile : constant Build_Profile_Kind := development;

@@ -5,11 +5,11 @@
 #define CRATE_VERSION "0.1.0-dev"
 #define CRATE_NAME "rina_for_space"
 
-#define ALIRE_HOST_OS "windows"
+#define ALIRE_HOST_OS "macos"
 
 #define ALIRE_HOST_ARCH "x86_64"
 
-#define ALIRE_HOST_DISTRO "msys2"
+#define ALIRE_HOST_DISTRO "homebrew"
 
 #define BUILD_PROFILE_RELEASE 1
 #define BUILD_PROFILE_VALIDATION 2
