@@ -15,6 +15,8 @@ package Rina_BP_Bundle is
       Block_Length    : Natural;
    end record;
 
+   --TODO: need to add APN instead of just src and destination EIDs
+
    --bundle structure
    type Bundle is tagged record
       Header       : Bundle_Header;
