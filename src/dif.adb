@@ -1,31 +1,41 @@
 package body dif is
 
    -- creates a DIF with specified ID and adds it to the vector
-   procedure createDIF(ID : Integer; vector : in out DIF_Vector) is
+   function createDIF return DIF is
       New_DIF : constant DIF_Access := new DIF;
       begin
-      New_DIF.DIF_ID := ID;
+
+      -- TODO Add IPCP_Manager Logic Here
+
+      New_DIF.DIF_ID := 0;
       New_DIF.AccessibleDIFs.Clear;
       New_DIF.AccessibleDIFs.Set_Length(0);
       New_DIF.Applications.Clear;
       New_DIF.Applications.Set_Length(0);
-      New_DIF.MemberIPCPs.Clear;
-      New_DIF.MemberIPCPs.Set_Length(0);
-      vector.append(New_DIF);
+
+      -- New_DIF.MemberIPCPs.Clear;
+      -- New_DIF.MemberIPCPs.Set_Length(0);
+
+      return New_DIF;
    end createDIF;
 
-   procedure createNamedDIF(ID : Integer; vector : in out DIF_Vector; name : Unbounded_String) is
+   function createNamedDIF(name : Unbounded_String) return DIF is
       New_DIF : constant DIF_Access := new DIF;
       begin
-      New_DIF.DIF_ID := ID;
+
+      -- TODO Add IPCP_Manager Logic Here
+
+      New_DIF.DIF_ID := 0;
       New_DIF.DIF_Name := name;
       New_DIF.AccessibleDIFs.Clear;
       New_DIF.AccessibleDIFs.Set_Length(0);
       New_DIF.Applications.Clear;
       New_DIF.Applications.Set_Length(0);
-      New_DIF.MemberIPCPs.Clear;
-      New_DIF.MemberIPCPs.Set_Length(0);
-      vector.append(New_DIF);
+      
+      -- New_DIF.MemberIPCPs.Clear;
+      -- New_DIF.MemberIPCPs.Set_Length(0);
+      
+      return New_DIF;
    end createNamedDIF;
 
    -- returns the ID of the inputted DIF in a vector
@@ -67,31 +77,23 @@ package body dif is
       end loop;
    end listAccessibleDIF;
    
-   -- creates an IPCP with specified string and adds it to the provided DIF
-   procedure createIPCP(name : Unbounded_String; self : in out DIF_Access) is
-      New_IPCP : constant IPCP_Access := new IPCP.IPCP_T;
-      begin
-      New_IPCP.Name := name;
-      self.MemberIPCPs.Append(New_IPCP);
-   end createIPCP;
-   
    -- lists all member IPCPs of a provided DIF
-   procedure listIPCP(self : DIF_Access) is
-      begin
-      for I in self.MemberIPCPs.First_Index .. self.MemberIPCPs.Last_Index loop
-         Put_Line(self.MemberIPCPs(I).Name'Image);
-      end loop;
-   end listIPCP;
+   --  procedure listIPCP(self : DIF_Access) is
+   --     begin
+   --     for I in self.MemberIPCPs.First_Index .. self.MemberIPCPs.Last_Index loop
+   --        Put_Line(self.MemberIPCPs(I).ipcpName'Image);
+   --     end loop;
+   --  end listIPCP;
    
    -- deletes IPCP with given name from given DIF
-   procedure disconnectIPCP(name : Unbounded_String; self : in out DIF_Access) is
-      begin
-      for I in self.MemberIPCPs.First_Index .. self.MemberIPCPs.Last_Index loop
-         if self.MemberIPCPs(I).Name = name then
-            self.MemberIPCPs.Delete(I);
-            exit;
-         end if;
-      end loop;
-   end disconnectIPCP;
+   --  procedure disconnectIPCP(name : Unbounded_String; self : in out DIF_Access) is
+   --     begin
+   --     for I in self.MemberIPCPs.First_Index .. self.MemberIPCPs.Last_Index loop
+   --        if self.MemberIPCPs(I).ipcpName = name then
+   --           self.MemberIPCPs.Delete(I);
+   --           exit;
+   --        end if;
+   --     end loop;
+   --  end disconnectIPCP;
 
 end dif;
