@@ -1,6 +1,7 @@
 with Ada.Containers.Vectors;
 with Ada.Calendar;
 with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with DIF; use DIF;
 
 package IPCP is
@@ -17,7 +18,7 @@ package IPCP is
       ID             : PDU_ID;
       PDU_T_Field    : PDU_Type;
       Src            : String(1 .. 50);
-      Dest           : String(1 .. 50);
+      Dst           : String(1 .. 50);
       PCI            : String(1 .. 128); -- Need actual PCI type record
       SDU            : String(1 .. 1024); -- Payload
       Timestamp      : Ada.Calendar.Time;
@@ -32,8 +33,8 @@ package IPCP is
    type IPCP_T is record 
       ID            : IPCP_ID;
       State         : IPCP_State;
-      Name          : String(1 .. 100);
-      Address       : String(1 .. 100);
+      Name          : Unbounded_String;
+      Address       : Unbounded_String;
       QoS_Params    : Priority_Level;
       Connected_DIF : DIF.DIF_Access := null;  -- Optional DIF Connection
       -- Allows initialization without connecting to a DIF and support DIF connections when needed
@@ -51,11 +52,11 @@ package IPCP is
 
    -- DIF Communication
    procedure Connect_To_DIF(IP : in out IPCP_T; Target_DIF : DIF_Access);
-   procedure Disconnect_From_DIF(IP : in out IPCP_T);
-   function Get_Connected_DIF(IP : IPCP_T) return DIF_Access;
+   --  procedure Disconnect_From_DIF(IP : in out IPCP_T);
+   --  function Get_Connected_DIF(IP : IPCP_T) return DIF_Access;
 
    -- PDU Handling Functions
-   --  procedure Encapsulate_PDU(SDU : String; Src : String; Dest : String; PDU_I : out PDU_T);
+   --  procedure Encapsulate_PDU(SDU : String; Src : String; Dst : String; PDU_I : out PDU_T);
    --  procedure Queue_PDU(IP : in out IPCP_T; PDU_I : PDU_T);
    --  procedure Transmit_PDU(IP : in out IPCP_T);
    --  procedure Process_Received_PDU(IP : in out IPCP_T; PDU_I : PDU_T);

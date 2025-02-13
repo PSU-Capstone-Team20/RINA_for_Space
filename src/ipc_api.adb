@@ -4,7 +4,7 @@ package body IPC_API is
    Active_Flows : Flow_Vector.Vector;
 
    -- Allocate a flow between Source and Destination with QoS
-   function Allocate(Source : String; Destination : String; QoS : QoS_Level) return Port_ID is
+   function Request_Flow(Source : String; Destination : String; QoS : QoS_Level) return Port_ID is
       New_Flow : Flow_Record;
       New_Port : Port_ID := Port_ID(Active_Flows.Length + 1);
    begin
@@ -19,10 +19,10 @@ package body IPC_API is
       
       Put_Line("Flow allocated: Port " & New_Port'Image & " Source=" & Source & " Destination=" & Destination);
       return New_Port;
-   end Allocate;
+   end Request_Flow;
 
    -- Send SDU from a flow's allocated port
-   procedure Send(Port : Port_ID; Data : String) is
+   procedure Transmit_Data_To_Dst(Port : Port_ID; Data : String) is
       Flow_Exists : Boolean := False;
    begin
       -- Check if flow exists
@@ -38,10 +38,10 @@ package body IPC_API is
       if not Flow_Exists then
          Put_Line("Error: Invalid Port " & Port'Image & " or Flow is inactive.");
       end if;
-   end Send;
+   end Transmit_Data_To_Dst;
 
    -- Receive an SDU from a given port
-   function Receive(Port : Port_ID) return String is
+   function Receive_SDU(Port : Port_ID) return String is
       Received_Data : String(1 .. 50) := (others => ' '); -- Placeholder for SDU
       Flow_Exists   : Boolean := False;
    begin
@@ -60,10 +60,10 @@ package body IPC_API is
       end if;
       
       return "";
-   end Receive;
+   end Receive_SDU;
 
    -- Deallocate a flow and free resources
-   procedure Deallocate(Port : Port_ID) is
+   procedure Deallocate_Flow(Port : Port_ID) is
    begin
       for I in Active_Flows.First_Index .. Active_Flows.Last_Index loop
          if Active_Flows(I).Port = Port then
@@ -74,6 +74,6 @@ package body IPC_API is
          end if;
       end loop;
       Put_Line("Error: Port " & Port'Image & " not found.");
-   end Deallocate;
+   end Deallocate_Flow;
 
 end IPC_API;

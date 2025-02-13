@@ -55,10 +55,10 @@ package body IPC_Manager is
    end List_All_IPCPs;
 
    -- Allocate a Flow Between Two IPCPs
-   procedure Allocate_Flow(Mgr : in out IPCM_T; Src : String; Dest : String) is
+   procedure Allocate_Flow(Mgr : in out IPCM_T; Src : String; Dst : String) is
    begin
-      Allocate_New_Flow(Src, Dest); -- Calls Flow Manager
-      Put_Line("Flow allocated between " & Src & " and " & Dest);
+      Allocate_New_Flow(Src, Dst); -- Calls Flow Manager
+      Put_Line("Flow allocated between " & Src & " and " & Dst);
    end Allocate_Flow;
 
    -- Deallocate a Flow
@@ -78,7 +78,7 @@ package body IPC_Manager is
    end Monitor_Resources;
 
    -- CDAP Handling
-   procedure Handle_CDAP_Request(Mgr : in out IPCM_T; Object_Name : String; Op : Operation_Type) is
+   procedure Handle_CDAP_Request(Manager : in out IPCM_T; Object_Name : String; Op : Operation_Type) is
       Msg : CDAP_Message;
       Result : Result_Code;
    begin

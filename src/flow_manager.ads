@@ -29,4 +29,12 @@ package Flow_Manager is
    procedure Release_Flow(Mgr : in out Flow_Mgr_T; Flow_ID : Flow_ID);
    procedure List_All_Flows(Mgr : Flow_Mgr_T);
 
+
+   -- Missing Components
+   --  Flow-to-DIF Mapping
+   --  Handling Multiple DIFs in Flow Allocation
+   --  Better Management of Flow State (Pending, Established, Closed)
+   --  Ensuring IPCPs Exist Before Creating a Flow
+   --  Error Handling for Duplicate Flows
+
 end Flow_Manager;

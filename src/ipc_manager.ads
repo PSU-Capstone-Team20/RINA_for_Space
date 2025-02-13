@@ -20,10 +20,11 @@ package IPC_Manager is
    procedure Create_IPCP(Manager : in out IPCM_T; ID : IPCP_ID; Name : String; Address : String; QoS_Params : String);
    procedure Activate_IPCP(Manager : in out IPCM_T; ID : IPCP_ID);
    procedure Terminate_IPCP(Manager : in out IPCM_T; ID : IPCP_ID);
+
    procedure List_All_IPCPs(Manager : IPCM_T);
 
    -- Flow Management
-   procedure Allocate_Flow(Manager : in out IPCM_T; Src : String; Dest : String);
+   procedure Allocate_Flow(Manager : in out IPCM_T; Src : String; Dst : String);
    procedure Deallocate_Flow(Manager : in out IPCM_T; Flow_ID : Integer);
 
    -- Resource Management

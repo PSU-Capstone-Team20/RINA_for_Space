@@ -2,15 +2,26 @@
 -- with dif;
 -- with ipcp;
 with Ada.Text_IO; use Ada.Text_IO;
---with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Integer_Text_IO;
 with Ada.Text_IO; use Ada.Text_IO;
 with Rina_BP_Bundle; use Rina_BP_Bundle;
 with Ada.Streams.Stream_IO;
 with Ada.Calendar; use Ada.Calendar;
 with IPCP; use IPCP;
+with IPC_Manager; use IPC_manager;
+with IPC_API; use IPC_API;
 
 procedure Rina_For_Space is
+
+   -- IPCP Initialization
+   IP             : IPCP.IPCP_T;
+   Port           : Port_ID;
+   Source         : constant String := "Mars_Orbiter";
+   Destination    : constant String := "Ground_Station";
+   QoS            : QoS_Level := 2;  -- High Priority QoS
+   SDU_Message    : constant String := "Telemetry Data: Water found in region 5";
+   Received_Data  : String;
 
 
    --test1 : dif.DIF_Vector;
@@ -57,10 +68,19 @@ begin
    --Put_Line (test'Image);
    --Put_Line(RINA_Policies.Decode_SDNV(test)'Image);
 
+   Put_Line("===============================================");
    -- Test IPCP
-   Put_Line("Test - Initialize IPCP..");
+   Put_Line("Test - Initialize_IPCP..");
    Initialize_IPCP(IP, "IPCP_1", "4.12.1023.1700000000", 1);
-   Put_Line("IPCP Initialized: " & IP.Name & ", State: " & IPCP_State'Image(IP.State));
+   Put_Line("IPCP Initialized: " & To_String(IP.Name) & ", State: " & IPCP_State'Image(IP.State));
+   New_Line;
+   Put_Line("Test - Activate_IPCP..");
+   Activate_IPCP(IP);
+   New_Line;
+   
+
+
+
 
 
 

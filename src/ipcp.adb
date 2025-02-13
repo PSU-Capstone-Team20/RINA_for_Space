@@ -35,8 +35,8 @@ package body IPCP is
    begin
       IP.ID := Get_Next_IPCP_ID;
       IP.State := Initialized;
-      IP.Name := Name;
-      IP.Address := Address;
+      IP.Name := To_Unbounded_String(Name);
+      IP.Address := To_Unbounded_String(Name);
       IP.QoS_Params := QoS_Params;
       IP.PDU_Buffer.Clear;
    end Initialize_IPCP;
@@ -45,14 +45,14 @@ package body IPCP is
    procedure Activate_IPCP(IP : in out IPCP_T) is
    begin
       IP.State := Active;
-      Put_Line("IPCP " & IP.Name & " is now Active.");
+      Put_Line("IPCP " & To_String(IP.Name) & " is now Active.");
    end Activate_IPCP;
 
    -- Terminate an IPCP
    procedure Terminate_IPCP(IP : in out IPCP_T) is
    begin
       IP.State := Terminated;
-      Put_Line("IPCP " & IP.Name & " is now Terminated.");
+      Put_Line("IPCP " & To_String(IP.Name) & " is now Terminated.");
    end Terminate_IPCP;
 
    -- Get current state of an IPCP
@@ -65,34 +65,34 @@ package body IPCP is
    procedure Connect_To_DIF(IP : in out IPCP_T; Target_DIF : DIF_Access) is
    begin
       IP.Connected_DIF := Target_DIF;
-      Put_Line("IPCP " & IP.Name & " connected to DIF " & To_String(Target_DIF.DIF_Name));
+      Put_Line("IPCP: " & To_String(IP.Name) & " connected to DIF " & To_String(Target_DIF.DIF_Name));
    end Connect_To_DIF;
 
-   -- Disconnect IPCP from a DIF
-   procedure Disconnect_From_DIF(IP : in out IPCP_T) is
-   begin
-      if IP.Connected_DIF /= null then
-         Put_Line("IPCP " & IP.Name & " disconnected from DIF " & To_String(IP.Connected_DIF.DIF_Name));
-         IP.Connected_DIF := null;
-      else
-         Put_Line("IPCP " & IP.Name & " is not connected to any DIF.");
-      end if;
-   end Disconnect_From_DIF;
+   --  -- Disconnect IPCP from a DIF
+   --  procedure Disconnect_From_DIF(IP : in out IPCP_T) is
+   --  begin
+   --     if IP.Connected_DIF /= null then
+   --        Put_Line("IPCP " & IP.Name & " disconnected from DIF " & To_String(IP.Connected_DIF.DIF_Name));
+   --        IP.Connected_DIF := null;
+   --     else
+   --        Put_Line("IPCP " & IP.Name & " is not connected to any DIF.");
+   --     end if;
+   --  end Disconnect_From_DIF;
 
-   -- Retrieve the connected DIF
-   function Get_Connected_DIF(IP : IPCP_T) return DIF_Access is
-   begin
-      return IP.Connected_DIF;
-   end Get_Connected_DIF;
+   --  -- Retrieve the connected DIF
+   --  function Get_Connected_DIF(IP : IPCP_T) return DIF_Access is
+   --  begin
+   --     return IP.Connected_DIF;
+   --  end Get_Connected_DIF;
 
    -- Encapsulate an SDU into a PDU
-   --  procedure Encapsulate_PDU(IP : in out IPCP_T; SDU : String; Src : String; Dest : String) is
+   --  procedure Encapsulate_PDU(IP : in out IPCP_T; SDU : String; Src : String; Dst : String) is
    --     PDU_I : PDU_T; -- PDU Instance
    --  begin
    --     PDU_I.ID := PDU_ID'First; 
    --     PDU_I.PDU_T_Field := Data_Transfer;
    --     PDU_I.Src := Src;
-   --     PDU_I.Dest := Dest;
+   --     PDU_I.Dst := Dst;
    --     PDU_I.PCI := "Header Info";
    --     PDU_I.SDU := SDU;
    --     PDU_I.Timestamp := Ada.Calendar.Clock;
@@ -115,7 +115,7 @@ package body IPCP is
    --     end if;
 
    --     for P of IP.PDU_Buffer loop
-   --        Put_Line("Transmitting PDU from " & P.Src & " to " & P.Dest);
+   --        Put_Line("Transmitting PDU from " & P.Src & " to " & P.Dst);
    --     end loop;
 
    --     IP.PDU_Buffer.Clear;
