@@ -17,16 +17,9 @@ package body dif_manager is
       Manager.DIFs.Append(New_DIF);
    end Create_Named_DIF;
 
-   procedure Disconnect_DIF(ID : Integer; Manager : in out DIF_MANAGER) is
-      Index : Natural := Manager.DIFs.First_Index;
+   procedure Disconnect_DIF(Index : Integer; Manager : in out DIF_MANAGER) is
    begin
-      while Index <= Manager.DIFs.Last_Index loop
-         if Manager.DIFs.Element(Index).ID = ID then
-            Manager.DIFs.Delete(Index);
-            exit;
-         end if;
-         Index := Index + 1;
-      end loop;
+      Manager.DIFs.Delete(Index);
    end Disconnect_DIF;
 
    procedure List_DIFs(Manager : DIF_MANAGER) is
