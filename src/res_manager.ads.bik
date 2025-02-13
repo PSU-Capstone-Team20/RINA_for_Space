@@ -1,0 +1,27 @@
+with Ada.Containers.Vectors;
+with Ada.Text_IO; use Ada.Text_IO;
+
+package Res_Manager is
+
+   type Resource_Class is (Memory, Bandwidth, Processing);
+   
+   type Res_T is record
+      Resource : Resource_Class;
+      Amount   : Integer;
+      Available: Boolean;
+   end record;
+
+   package Resource_Vector is new Ada.Containers.Vectors(Index_Type => Natural, Element_Type => Res_T);
+
+   -- Resource Manager Structure
+   type Resource_T is tagged record
+      Resource_List : Resource_Vector.Vector;
+   end record;
+
+   -- Resource Management Functions
+   procedure Initialize_Res_Manager(Mgr : in out ResourceMgr_T);
+   procedure Allocate_Resource(Mgr : in out Resource_T; Resource : Resource_Class; Amount : Integer);
+   procedure Release_Resource(Mgr : in out Resource_T; Resource : Resource_Class; Amount : Integer);
+   procedure Monitor_Resource(Mgr : Resource_T);
+
+end Res_Manager;

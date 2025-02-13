@@ -1,106 +1,144 @@
+with Ada.Calendar;
+with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded; 
+with DIF;
+
 package body IPCP is
-   
-   -- Initialize an IPCP
-   procedure Initialize_IPCP(IPCP_Instance : in out IPCP_Record; Name : String; Address : String; QoS_Params : String) is
+
+    -- Global Counter for Unique IPCP IDs
+   Next_IPCP_ID : IPCP_ID := 1;  -- Start counting from 1
+
+   -- Protected type for thread safety (ensures atomic access)
+   protected type IPCP_Lock is
+      function Get_ID return IPCP_ID;
+   end IPCP_Lock;
+
+   protected body IPCP_Lock is
+      function Get_ID return IPCP_ID is
+      begin
+         Next_IPCP_ID := Next_IPCP_ID + 1;
+         return Next_IPCP_ID - 1;
+      end Get_ID;
+   end IPCP_Lock;
+
+   IPCP_Lock_I : IPCP_Lock; 
+
+   -- Function to return a unique IPCP ID
+   function Get_Next_IPCP_ID return IPCP_ID is
    begin
-      IPCP_Instance.ID := Integer'First;
-      IPCP_Instance.State := Initialized;
-      IPCP_Instance.Name := Name;
-      IPCP_Instance.Address := Address;
-      IPCP_Instance.QoS_Params := QoS_Params;
+      return IPCP_Lock_I.Get_ID;
+   end Get_Next_IPCP_ID;
+   
+   -- Initialize an IPCP instance
+   -- IP is IPCP Instance
+   procedure Initialize_IPCP(IP : in out IPCP_T; Name : String; Address : String; QoS_Params : Priority_Level) is
+   begin
+      IP.ID := Get_Next_IPCP_ID;
+      IP.State := Initialized;
+      IP.Name := Name;
+      IP.Address := Address;
+      IP.QoS_Params := QoS_Params;
+      IP.PDU_Buffer.Clear;
    end Initialize_IPCP;
 
    -- Activate an IPCP
-   procedure Activate_IPCP(IPCP_Instance : in out IPCP_Record) is
+   procedure Activate_IPCP(IP : in out IPCP_T) is
    begin
-      IPCP_Instance.State := Active;
+      IP.State := Active;
+      Put_Line("IPCP " & IP.Name & " is now Active.");
    end Activate_IPCP;
 
    -- Terminate an IPCP
-   procedure Terminate_IPCP(IPCP_Instance : in out IPCP_Record) is
+   procedure Terminate_IPCP(IP : in out IPCP_T) is
    begin
-      IPCP_Instance.State := Terminated;
+      IP.State := Terminated;
+      Put_Line("IPCP " & IP.Name & " is now Terminated.");
    end Terminate_IPCP;
 
    -- Get current state of an IPCP
-   function Get_IPCP_State(IPCP_Instance : IPCP_record) return IPCP_State is
+   function Get_IPCP_State(IP : IPCP_T) return IPCP_State is
    begin
-      return IPCP_Instance.State;
+      return IP.State;
    end Get_IPCP_State;
    
    -- Connect IPCP to a DIF
-   procedure Connect_To_DIF(IPCP_Instance : in out IPCP_Record; Target_DIF : DIF_Access) is
+   procedure Connect_To_DIF(IP : in out IPCP_T; Target_DIF : DIF_Access) is
    begin
-      IPCP_Instance.Connected_DIF := Target_DIF;
-      Put_Line("IPCP " & IPCP_Instance.Name & " connected to DIF " & To_String(Target_DIF.DIF_Name));
+      IP.Connected_DIF := Target_DIF;
+      Put_Line("IPCP " & IP.Name & " connected to DIF " & To_String(Target_DIF.DIF_Name));
    end Connect_To_DIF;
 
    -- Disconnect IPCP from a DIF
-   procedure Disconnect_From_DIF(IPCP_Instance : in out IPCP_Record) is
+   procedure Disconnect_From_DIF(IP : in out IPCP_T) is
    begin
-      if IPCP_Instance.Connected_DIF /= null then
-         Put_Line("IPCP " & IPCP_Instance.Name & " disconnected from DIF " & To_String(IPCP_Instance.Connected_DIF.DIF_Name));
-         IPCP_Instance.Connected_DIF := null;
+      if IP.Connected_DIF /= null then
+         Put_Line("IPCP " & IP.Name & " disconnected from DIF " & To_String(IP.Connected_DIF.DIF_Name));
+         IP.Connected_DIF := null;
       else
-         Put_Line("IPCP " & IPCP_Instance.Name & " is not connected to any DIF.");
+         Put_Line("IPCP " & IP.Name & " is not connected to any DIF.");
       end if;
    end Disconnect_From_DIF;
 
    -- Retrieve the connected DIF
-   function Get_Connected_DIF(IPCP_Instance : IPCP_Record) return DIF_Access is
+   function Get_Connected_DIF(IP : IPCP_T) return DIF_Access is
    begin
-      return IPCP_Instance.Connected_DIF;
+      return IP.Connected_DIF;
    end Get_Connected_DIF;
 
-   -- Retry Failed Communication
-   procedure Retry_Failed_Communication(IPCP_Instance : in out IPCP_Record; Max_Retries : Integer := 10) is
-      Retry_Count : Integer := 0;
-      Success : Boolean := False;
-   begin
-      while Retry_Count < Max_Retries and then not Success loop
-         Put_Line("Attempt " & Integer'Image(Retry_Count + 1) & ": Retrying communication from IPCP " & IPCP_Instance.Name);
-         -- TO-DO: Add actual retry logic
-         -- Simulate success after 3 attempts for demonstration
-         if Retry_Count = 2 then
-            Success := True;
-            Put_Line("Communication successful on attempt " & Integer'Image(Retry_Count + 1));
-         end if;
-         Retry_Count := Retry_Count + 1;
-      end loop;
+   -- Encapsulate an SDU into a PDU
+   --  procedure Encapsulate_PDU(IP : in out IPCP_T; SDU : String; Src : String; Dest : String) is
+   --     PDU_I : PDU_T; -- PDU Instance
+   --  begin
+   --     PDU_I.ID := PDU_ID'First; 
+   --     PDU_I.PDU_T_Field := Data_Transfer;
+   --     PDU_I.Src := Src;
+   --     PDU_I.Dest := Dest;
+   --     PDU_I.PCI := "Header Info";
+   --     PDU_I.SDU := SDU;
+   --     PDU_I.Timestamp := Ada.Calendar.Clock;
+   --     Queue_PDU(IP, PDU_I);
+   --  end Encapsulate_PDU;
 
-      if not Success then
-         Put_Line("Max retries reached for IPCP " & IPCP_Instance.Name);
-      end if;
-   end Retry_Failed_Communication;
+   --  -- Queue PDU in IPCP Buffer
+   --  procedure Queue_PDU(IP : in out IPCP_T; PDU_I : PDU_T) is
+   --  begin
+   --     IP.PDU_Buffer.Append(PDU_I);
+   --     Put_Line("PDU Queued in IPCP: " & IP.Name);
+   --  end Queue_PDU;
 
-   -- Store Data Temporarily
-   -- Storing data in DIF's data buffer/locally (no DIF connected) temporarily during network failures or transmission delays
-   procedure Store_Data_Temporarily(IPCP_Instance : in out IPCP_Record; Data : String) is
-   begin
-      if IPCP_Instance.Connected_DIF /= null then
-         if IPCP_Instance.Connected_DIF.Data_Buffer = null then
-            IPCP_Instance.Connected_DIF.Data_Buffer := new Data_Buffer.Vector;
-         end if;
-         IPCP_Instance.Connected_DIF.Data_Buffer.Append(Data);
-         Put_Line("Data stored temporarily for IPCP " & IPCP_Instance.Name);
-      else
-         Put_Line("Error: IPCP " & IPCP_Instance.Name & " is not connected to any DIF. Storing data locally.");
-      end if;
-   end Store_Data_Temporarily;
+   --  -- Transmit all stored PDUs
+   --  procedure Transmit_PDU(IP : in out IPCP_T) is
+   --  begin
+   --     if IP.PDU_Buffer.Is_Empty then
+   --        Put_Line("No PDUs to transmit.");
+   --        return;
+   --     end if;
 
-   -- Transmit Stored Data
-   -- Sends buffered data if connected to a DIF, clears the buffer after, or logs an error if disconnected or buffer is empty
-   procedure Transmit_Stored_Data(IPCP_Instance : in out IPCP_Record) is
-   begin
-      if IPCP_Instance.Connected_DIF /= null and then IPCP_Instance.Connected_DIF.Data_Buffer /= null then
-         for I in IPCP_Instance.Connected_DIF.Data_Buffer'Range loop
-            -- TO-DO: Add actual transmission logic
-            Put_Line("Transmitting stored data: " & IPCP_Instance.Connected_DIF.Data_Buffer(I));
-         end loop;
-         IPCP_Instance.Connected_DIF.Data_Buffer.Clear;
-         Put_Line("All stored data transmitted for IPCP " & IPCP_Instance.Name);
-      else
-         Put_Line("Error: No stored data to transmit or IPCP " & IPCP_Instance.Name & " is not connected to any DIF.");
-      end if;
-   end Transmit_Stored_Data;
+   --     for P of IP.PDU_Buffer loop
+   --        Put_Line("Transmitting PDU from " & P.Src & " to " & P.Dest);
+   --     end loop;
+
+   --     IP.PDU_Buffer.Clear;
+   --  end Transmit_PDU;
+
+   --  -- Process Received PDU
+   --  procedure Process_Received_PDU(IP : in out IPCP_T; PDU_I : PDU_T) is
+   --  begin
+   --     Put_Line("Processing Received PDU at IPCP: " & IP.Name);
+   --     Put_Line("Payload: " & PDU_I.SDU);
+   --  end Process_Received_PDU;
+
+   --  -- Retry Failed PDU Transmission
+   --  procedure Retry_Failed_PDU(IP : in out IPCP_T) is
+   --  begin
+   --     Put_Line("Retrying failed PDUs...");
+   --  end Retry_Failed_PDU;
+
+   --  -- Apply Security & Error Checks on SDU
+   --  procedure Apply_SDU_Protection(PDU_I : in out PDU_T) is
+   --  begin
+   --     PDU_I.PCI := PDU_I.PCI & " | IntegrityCheck=OK";
+   --  end Apply_SDU_Protection;
+
+
 end IPCP;

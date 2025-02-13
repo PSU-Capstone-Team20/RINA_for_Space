@@ -8,6 +8,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Rina_BP_Bundle; use Rina_BP_Bundle;
 with Ada.Streams.Stream_IO;
 with Ada.Calendar; use Ada.Calendar;
+with IPCP; use IPCP;
 
 procedure Rina_For_Space is
 
@@ -25,6 +26,9 @@ procedure Rina_For_Space is
 
    --testing for bundle 
    B : Bundle;
+
+   -- IPCP Test Variables
+   IP: IPCP.IPCP_T;
 
 begin
 
@@ -52,5 +56,13 @@ begin
    --test := RINA_Policies.Encode_SDNV(1420);
    --Put_Line (test'Image);
    --Put_Line(RINA_Policies.Decode_SDNV(test)'Image);
+
+   -- Test IPCP
+   Put_Line("Test - Initialize IPCP..");
+   Initialize_IPCP(IP, "IPCP_1", "4.12.1023.1700000000", 1);
+   Put_Line("IPCP Initialized: " & IP.Name & ", State: " & IPCP_State'Image(IP.State));
+
+
+
 end Rina_For_Space;
 

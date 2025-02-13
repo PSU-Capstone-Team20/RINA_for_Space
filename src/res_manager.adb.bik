@@ -1,0 +1,50 @@
+package body Res_Manager is
+
+   -- Initialize Resource Manager
+   procedure Initialize_Res_Manager(Mgr : in out Resource_T) is
+   begin
+      Mgr.Resource_List.Clear;
+      Put_Line("Resource Manager initialized.");
+   end Initialize_Res_Manager;
+
+   -- Allocate Resources
+   procedure Allocate_Resource(Mgr : in out Resource_T; Resource : Resource_Class; Amount : Integer) is
+   begin
+      for R of Mgr.Resource_List loop
+         if R.Resource = Resource then
+            if R.Available and then R.Amount >= Amount then
+               R.Amount := R.Amount - Amount;
+               Put_Line("Allocated " & Amount'Image & " units of " & Resource_Class'Image(Resource));
+               return;
+            else
+               Put_Line("Error: Not enough resources available.");
+               return;
+            end if;
+         end if;
+      end loop;
+      Put_Line("Error: Resource type not found.");
+   end Allocate;
+
+   -- Release Resources
+   procedure Release_Resource(Mgr : in out Resource_T; Resource : Resource_Class; Amount : Integer) is
+   begin
+      for R of Mgr.Resource_List loop
+         if R.Resource = Resource then
+            R.Amount := R.Amount + Amount;
+            Put_Line("Released " & Amount'Image & " units of " & Resource_Class'Image(Resource));
+            return;
+         end if;
+      end loop;
+      Put_Line("Error: Resource type not found.");
+   end Release_Resources;
+
+   -- Monitor Resource Status
+   procedure Monitor(Mgr : Resource_T) is
+   begin
+      Put_Line("Monitoring Resource Usage:");
+      for R of Mgr.Resource_List loop
+         Put_Line("Resource: " & Resource_Class'Image(R.Resource) & " Amount: " & R.Amount'Image & " Available: " & Boolean'Image(R.Available));
+      end loop;
+   end Monitor;
+
+end Res_Manager;
