@@ -1,6 +1,7 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with RIB;
 
+-- what was said in rib_daemon.ads 
 package body rib_daemon is
 
    --TODO : add CDAP functionality

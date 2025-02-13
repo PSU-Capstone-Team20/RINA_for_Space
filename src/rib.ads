@@ -75,7 +75,7 @@ package RIB is
     
     --prints the entire hashed map
     procedure Display_Map;
-    --TODO: Display procedure for specific entries that are being searched
+    --TODO: Display procedure for specific entries that are being searched.
 
     --gets the entire map
     function Get_map return Map;
