@@ -16,13 +16,10 @@ package dif_manager is
     end record;
 
     -- creates a DIF with specified ID and adds it to the manager
-    procedure Create_Named_DIF(ID : Integer; Name : Unbounded_String);
-
-    -- creates a DIF with specified ID and adds it to the manager
     procedure Create_DIF(ID : Integer; Manager : in out DIF_MANAGER_T);
 
     -- creates a DIF with argument for name and adds it to the manager
-    procedure Create_Named_DIF(ID : Integer; Name : Unbounded_String; Manager : in out DIF_MANAGER);
+    procedure Create_Named_DIF(ID : Integer; Name : Unbounded_String; Manager : in out DIF_MANAGER_T);
     
     -- deletes the DIF that has the specified ID from the manager
     procedure Disconnect_DIF(Index : Integer; Manager : in out DIF_MANAGER_T);

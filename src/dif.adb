@@ -1,7 +1,7 @@
 package body dif is
 
    -- creates a DIF with specified ID and adds it to the vector
-   function createDIF return DIF is
+   function createDIF return DIF_Access is
       New_DIF : constant DIF_Access := new DIF;
       begin
 
@@ -19,7 +19,7 @@ package body dif is
       return New_DIF;
    end createDIF;
 
-   function createNamedDIF(name : Unbounded_String) return DIF is
+   function createNamedDIF(name : Unbounded_String) return DIF_Access is
       New_DIF : constant DIF_Access := new DIF;
       begin
 
@@ -59,7 +59,6 @@ package body dif is
             end if;
          end loop;
    end disconnectDIF;
-
 
    -- adds a pair of DIFs to each other's accessible DIFs
    procedure pairDIF(first : in out DIF_Access; second : in out DIF_Access) is
