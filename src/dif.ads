@@ -31,9 +31,9 @@ package dif is
    end record;
 
    -- creates a DIF with specified ID and adds it to the vector
-   function createDIF return DIF;
+   function createDIF return DIF_Access;
    -- creates a DIF with argument for name and adds it to the vector.
-   procedure createNamedDIF(ID : Integer; vector : in out DIF_Vector; name : Unbounded_String);
+   function createNamedDIF(name : Unbounded_String) return DIF_Access;
    -- returns the ID of the inputted DIF in a vector
    function getID(self : DIF_Access) return Integer;
    -- returns the name of the inputted DIF

@@ -12,6 +12,7 @@ with IPCP; use IPCP;
 with IPC_Manager; use IPC_manager;
 with IPC_API; use IPC_API;
 
+
 procedure Rina_For_Space is
 
    -- IPCP Initialization
