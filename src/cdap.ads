@@ -11,9 +11,9 @@ package CDAP is
    type Result_Code is (Success, Failure, Not_Found, Access_Denied);
 
    type Object_Instance is record
-      Name : String(1 .. 1024);
-      Class : String(1 .. 1024);
-      Value : String(1 .. 1024);
+      Name : Unbounded_String;
+      Class : Unbounded_String;
+      Value : Unbounded_String;
    end record;
 
    type Object_Instance_Access is access Object_Instance;
@@ -25,19 +25,24 @@ package CDAP is
       Result : Result_Code;
    end record;
 
-   -- Function to create a request message
-   function Create_Request (Object_Name : String; Object_Class : String) return CDAP_Message;
-   -- Function to create a delete request message
-   function Delete_Request (Object_Name : String) return CDAP_Message;
-   -- Function to create a read request message
-   function Read_Request (Object_Name : String) return CDAP_Message;
-   -- Function to create a write request message
-   function Write_Request (Object_Name : String; Value : String) return CDAP_Message;
-   -- Procedure to process a received message
+   type Request_Params is record
+      Name  : Unbounded_String := Null_Unbounded_String;
+      Class : Unbounded_String := Null_Unbounded_String;
+      Value : Unbounded_String := Null_Unbounded_String;
+   end record;
+
+   function Build_Request (Op : Operation_Type; Params : Request_Params) return CDAP_Message;
+
+   function Create_Request (Params : Request_Params) return CDAP_Message;
+   function Delete_Request (Params : Request_Params) return CDAP_Message;
+   function Read_Request (Params : Request_Params) return CDAP_Message;
+   function Write_Request (Params : Request_Params) return CDAP_Message;
+
+
    procedure Process_Message (Message : in CDAP_Message; Result : out Result_Code);
-   -- Procedure to establish a connection
-   procedure Connect (Address : String; Port : Natural; Result : out Result_Code);
-   -- Procedure to disconnect
+
+   -- TODO: Get this working
+   procedure Connect;
    procedure Disconnect;
 
 end CDAP;
