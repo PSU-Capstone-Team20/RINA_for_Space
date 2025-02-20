@@ -20,28 +20,71 @@ package body RIB is
     procedure Add_Entry(Name : Unbounded_String) is
       item : RIB_Entry;
     begin
-      map.Include(Name, item);
+      if not map.Contains(Name) then
+         item.Name := Name;
+         map.Insert(Name, item);
+         Put_Line("New RIB Entry: " & To_String(Name));
+      else
+         Put_Line("Existing RIB entry for: " & To_String(Name));
+      end if;
+      
     end Add_Entry;
 
-    procedure Add_DIF(dif : Unbounded_String; item : out RIB_Entry) is
+    procedure Add_DIF(Name : Unbounded_String; dif : Unbounded_String) is
     begin
-      item.Obj_Type.Connected_DIFs.Append(dif);
+      if map.Contains(Name) then
+         declare
+            Capture : RIB_Obj renames map.Element(Name);            
+         begin
+            Capture.Connected_DIFs.Append(dif);
+            Put_Line("Added DIF " & To_String(dif) & " to " & To_String(Name));
+         end;
+      else
+         Put_Line("RIB Entry could not be found for: " & To_String(Name));
+      end if;
+      
     end Add_DIF;
     
-    procedure Add_IPCP(ipcp : Unbounded_String; item : out RIB_Entry) is
+    procedure Add_IPCP(Name : Unbounded_String; ipcp : Unbounded_String) is
     begin
-      item.Obj_Type.Accessible_IPCPs.Append(ipcp);
+      if map.Contains(Name) then
+         declare
+            Capture : RIB_Obj renames map.Element(Name);
+         begin
+            Capture.Accessible_IPCPs.Append(ipcp);
+            Put_Line("Added IPCP " & To_String(ipcp) & " to " & To_String(Name));
+         end;
+      else
+         Put_Line("RIB Entry could not be found for: " & To_String(Name));
+      end if;
+      
     end Add_IPCP;
-    procedure Add_APN(APN : Unbounded_String; item : out RIB_Entry) is
+
+    procedure Add_APN(Name : Unbounded_String; APN : Unbounded_String) is
     begin
-      item.Obj_Type.Active_APNs.Append(APN);
+      if map.Contains(Name) then
+         declare
+            Capture : RIB_Obj renames map.Element(Name);
+         begin
+            Capture.Active_APNs.Append(APN);
+            Put_Line("Added APN " & To_String(APN) & " to " & To_String(Name));
+         end;
+      else
+         Put_Line("RIB Entry could not be found for: " & To_String(Name));
+      end if;
+      
     end Add_APN;
 
     --get functions for RIB_Entry/DIF/IPCP/APN
     function Get_Entry(Name: Unbounded_String) return RIB_Entry is
     begin
-      return map(Name);
+      if map.Contains(Name) then
+         return (Name, map.Element(Name));
+      else
+         raise Constraint_Error with "RIB Entry does not exist for: " & To_String(Name);
+      end if;
     end Get_Entry;
+
     function Get_DIF(index : Integer; item : RIB_Entry) return Unbounded_String is
     begin
       return item.Obj_Type.Connected_DIFs(index);
@@ -58,17 +101,26 @@ package body RIB is
     --delete procedures for RIB_Entry/DIF/IPCP/APN
     procedure Delete_Entry(Name: Unbounded_String) is
     begin
+      if map.Contains(Name) then
+         map.Delete(Name);
+         Put_Line("Deleted RIB Entry: " & To_String(Name));
+      else
+         Put_Line("There is no RIB Entry for: " & To_String(Name));
+      end if;
       RIB_Hashed_Maps.Delete(map, Name);
     end Delete_Entry;
-    procedure Delete_DIF(index : Integer; item : out RIB_Entry) is
+
+    procedure Delete_DIF(index : Integer; item : in out RIB_Entry) is
     begin
       item.Obj_Type.Connected_DIFs.Delete(index);
     end Delete_DIF;
-    procedure Delete_IPCP(index : Integer; item : out RIB_Entry) is
+
+    procedure Delete_IPCP(index : Integer; item : in out RIB_Entry) is
     begin
       item.Obj_Type.Accessible_IPCPs.Delete(index);
     end Delete_IPCP;
-    procedure Delete_APN(index : Integer; item : out RIB_Entry) is
+
+    procedure Delete_APN(index : Integer; item : in out RIB_Entry) is
     begin
       item.Obj_Type.Active_APNs.Delete(index);
     end Delete_APN;
@@ -76,25 +128,37 @@ package body RIB is
     --update procedures for RIB_Entry/DIF/IPCP/APN
     procedure Update_Entry(Name: Unbounded_String; item : RIB_Entry) is
     begin
-      map(Name) := item;
+      if map.Contains(Name) then
+         map(Name) := item.Obj_Type;
+      else
+         Put_Line("No RIB Entry for: " & To_String(Name));
+      end if;
     end Update_Entry;
-    procedure Update_DIF(index : Integer; item : out RIB_Entry; dif : Unbounded_String) is
+
+    procedure Update_DIF(index : Integer; item : in out RIB_Entry; dif : Unbounded_String) is
     begin
       item.Obj_Type.Connected_DIFs(index) := dif;
     end Update_DIF;
-    procedure Update_IPCP(index : Integer; item : out RIB_Entry; ipcp : Unbounded_String) is
+
+    procedure Update_IPCP(index : Integer; item : in out RIB_Entry; ipcp : Unbounded_String) is
     begin
       item.Obj_Type.Accessible_IPCPs(index) := ipcp;
     end Update_IPCP;
-    procedure Update_APN(index : Integer; item : out RIB_Entry; APN : Unbounded_String) is
+    
+    procedure Update_APN(index : Integer; item : in out RIB_Entry; APN : Unbounded_String) is
     begin
       item.Obj_Type.Active_APNs(index) := APN;
     end Update_APN;
     
     --prints the entire hashed map
     procedure Display_Map is
+      Iter : RIB_Hashed_Maps.Cursor := map.First;
     begin
-      null;
+      while RIB_Hashed_Maps.Has_Element(Iter) loop
+         Put_Line("RIB Entries: " & To_String(RIB_Hashed_Maps.Key(Iter)));
+         Iter := RIB_Hashed_Maps.Next(Iter);
+      end loop;
+      
     end Display_Map;
     --TODO: adding procedure for displaying specific map that is being searched.
 
