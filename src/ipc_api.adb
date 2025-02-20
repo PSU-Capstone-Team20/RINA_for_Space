@@ -7,6 +7,7 @@ with IPC_Manager; use IPC_Manager;
 
 package body IPC_API is
 
+   -- may use a different data structure
    package Port_Map is new Ada.Containers.Indefinite_Hashed_Maps
      (Key_Type => Port_ID, Element_Type => IPCP_Access, Hash => Ada.Containers.Hash_Type'Input);
    Port_Table : Port_Map.Map;

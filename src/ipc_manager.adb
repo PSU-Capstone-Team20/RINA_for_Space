@@ -20,7 +20,7 @@ package body IPC_Manager is
    function Find_IPCP(Manager : IPCP_Manager_T; ID : Unbounded_String) return IPCP_Access is
    begin
       for IPCP_Instance of Manager.Managed_IPCPs loop
-         if To_String(IPCP_Instance.ID) = To_String(ID) then  -- ✅ Correct `To_String`
+         if To_String(IPCP_Instance.ID) = To_String(ID) then
             return IPCP_Instance;
          end if;
       end loop;
