@@ -1,6 +1,7 @@
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Containers.Vectors;
 with Ada.Real_Time;         use Ada.Real_Time;
+with Ada.Text_IO; use Ada.Text_IO;
 
 package body CDAP is
 
@@ -84,9 +85,9 @@ package body CDAP is
       end case;
    end Process_Message;
 
-   procedure Connect (Address : String; Port : Natural; Result : out Result_Code) is
+   procedure Connect is
    begin
-      Result := Success;
+      null;
    end Connect;
 
    procedure Disconnect is
