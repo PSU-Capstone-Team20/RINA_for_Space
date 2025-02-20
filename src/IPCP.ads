@@ -19,16 +19,14 @@ package IPCP is
    end record;
 
    -- Define the PDU_Type enumeration with representations
-   type PDU_Type is (Data_Transfer, Control, Acknowledgement, Error_Control)
-   with
-      Representation => (Data_Transfer => 0, Control => 1, Acknowledgement => 2, Error_Control => 3);
+   type PDU_Type is (DT, CTL, ACK, ERR);
 
    -- Define the PDU_T type
    type PDU_T is record
-      ID        : String(1 .. 20);         -- Unique identifier for the PDU
-      PDU_Type  : PDU_Type;                -- Type of PDU
-      Src_Addr  : String(1 .. 45);         -- Source address, IPv6 address length
-      Dst_Addr  : String(1 .. 45);         -- Destination address, IPv6 address length
+      ID        : String(1 .. 7);         -- Unique identifier for the PDU
+      P_Type    : PDU_Type;                -- Type of PDU
+      Src_Addr  : String(1 .. 11);         -- Source address, IPv6 address length
+      Dst_Addr  : String(1 .. 11);         -- Destination address, IPv6 address length
       PCI       : PCI_T;                   -- Protocol Control Information
       SDU       : String(1 .. 1024);       -- The actual payload
       Timestamp : Ada.Calendar.Time;       -- Time of creation or reception
@@ -55,7 +53,7 @@ package IPCP is
 
    -- Creates a new PDU instance
    function Create_PDU(ID : String;
-                       PDU_Type : PDU_Type;
+                       P_Type : PDU_Type;
                        Src_Addr : String;
                        Dst_Addr : String;
                        PCI      : PCI_T;

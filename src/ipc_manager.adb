@@ -16,16 +16,22 @@ package body IPC_Manager is
       end loop;
    end List_IPCPs;
 
-   --  procedure Connect_IPCP_to_DIF(IPCP_ID : Unbounded_String; DIF : in out DIF_T; Manager : in out IPCP_Manager_T) is
-   --  begin
-   --     for I in Manager.Managed_IPCPs.First_Index .. Manager.Managed_IPCPs.Last_Index loop
-   --        if Manager.Managed_IPCPs(I).ID = IPCP_ID then
-   --           Manager.Managed_IPCPs(I).Connected_DIF := DIF'Access;
-   --           DIF.Member_IPCPs.Append(Manager.Managed_IPCPs(I));
-   --           Put_Line("IPCP " & To_String(Manager.Managed_IPCPs(I).Name) & " connected to DIF " & To_String(DIF.DIF_Name));
-   --           exit;
-   --        end if;
-   --     end loop;
-   --  end Connect_IPCP_to_DIF;
+   -- Finds an IPCP instance by ID
+   function Find_IPCP(Manager : IPCP_Manager_T; ID : Unbounded_String) return IPCP_Access is
+   begin
+      for IPCP_Instance of Manager.Managed_IPCPs loop
+         if To_String(IPCP_Instance.ID) = To_String(ID) then  -- ✅ Correct `To_String`
+            return IPCP_Instance;
+         end if;
+      end loop;
+      return null; -- IPCP not found
+   end Find_IPCP;
+
+   -- Assign a PDU to an IPCP (avoids circular dependency)
+   procedure Assign_PDU(IPCP_Instance : IPCP_Access; PDU : PDU_T) is
+   begin
+      Put_Line("Assigning PDU ID: " & PDU.ID & " to IPCP: " & To_String(IPCP_Instance.Name));
+      IPCP_Instance.PDUs.Append(PDU);
+   end Assign_PDU;
 
 end IPC_Manager;

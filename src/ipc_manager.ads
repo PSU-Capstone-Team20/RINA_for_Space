@@ -9,7 +9,7 @@ package IPC_Manager is
    subtype IPCP_Vector is IPCP_Vectors.Vector;
 
    type IPCP_Manager_T is tagged record
-   Managed_IPCPs : IPCP_Vector;
+      Managed_IPCPs : IPCP_Vector;
    end record;
 
    -- Creates an IPCP and adds it to the manager
@@ -18,8 +18,10 @@ package IPC_Manager is
    -- Lists all IPCPs managed
    procedure List_IPCPs(Manager : IPCP_Manager_T);
 
-   -- Centralized method to connect an IPCP to a DIF
-   --  procedure Connect_IPCP_to_DIF(IPCP_ID : Unbounded_String; DIF : in out DIF; Manager : in out IPCP_Manager_T);
+   -- Assigns a PDU to an IPCP instance (avoids circular dependency)
+   procedure Assign_PDU(IPCP_Instance : IPCP_Access; PDU : PDU_T);
 
+   -- Finds an IPCP by ID
+   function Find_IPCP(Manager : IPCP_Manager_T; ID : Unbounded_String) return IPCP_Access;
 
 end IPC_Manager;
