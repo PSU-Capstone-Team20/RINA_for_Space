@@ -2,7 +2,7 @@ with application; use application;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Containers.Vectors;
 with Ada.Text_IO; use Ada.Text_IO;
-with dif; use dif;
+with DIF; use DIF;
 
 package dif_manager is
     type DIF_MANAGER_T is tagged;
