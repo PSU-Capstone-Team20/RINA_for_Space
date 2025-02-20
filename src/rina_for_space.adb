@@ -70,10 +70,6 @@ begin
    List_IPCPs(IPC_M);
    Put_Line("");
 
-   -- Connect IPCPs to their respective DIFs
-   --  Connect_IPCP_to_DIF(To_Unbounded_String("IPCP_A_for_DIF_1"), DIF_M.DIFs.Element(1).all, IPC_M);
-   --  Connect_IPCP_to_DIF(To_Unbounded_String("IPCP_B_for_DIF_1"), DIF_M.DIFs.Element(1).all, IPC_M);
-   --  Connect_IPCP_to_DIF(To_Unbounded_String("IPCP_C_for_DIF_2"), DIF_M.DIFs.Element(2).all, IPC_M);
 
 
    Put_Line("Test completed successfully.");
