@@ -42,7 +42,7 @@ package IPCP is
       Name          : Unbounded_String;
       Address       : Unbounded_String;
       QoS_Params    : Priority_Level;
-      Connected_DIF : DIF_Access := null;  -- Optional DIF Connection
+      Connected_DIF : Unbounded_String;  -- Optional DIF Connection
       PDUs          : PDU_Buffer; -- PDU Queue for storing pending transmissions
    end record;
 

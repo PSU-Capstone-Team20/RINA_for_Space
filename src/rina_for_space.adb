@@ -14,12 +14,118 @@ with IPC_Manager; use IPC_Manager;
 with IPCP; use IPCP;
 -- with IPC_API; use IPC_API;
 with RIB; use RIB;
+with Ada.Containers.Vectors;
 
 
 procedure Rina_For_Space is
 
    DIF_M : DIF_MANAGER_T;
    IPC_M : IPCP_Manager_T;
+
+   IPC_M_Joe : IPCP_Manager_T;
+   --  task Joe_Comp;
+   --  task body Joe_Comp is
+   --     begin
+   --     null;
+   --  end Joe_Comp;
+
+   IPC_M_Steve : IPCP_Manager_T;
+   --  task Steve_Comp;
+   --  task body Steve_Comp is
+   --     begin
+   --     null;
+   --  end Steve_Comp;
+   
+   IPC_M_Chad : IPCP_Manager_T;
+   --  task Chad_Comp;
+   --  task body Chad_Comp is
+   --     begin
+   --     while true loop
+   --        Put_Line ("Operating IPC Manager");
+   --     end loop;
+   --  end Chad_Comp;
+
+   package IPCP_Manager_Vectors is new Ada.Containers.Vectors
+     (Index_Type => Natural, Element_Type => IPCP_Manager_T);
+
+   IPCP_M_S : IPCP_Manager_Vectors.Vector;
+
+   package DIF_Vectors is new Ada.Containers.Vectors
+      (Index_Type => Natural, Element_Type => DIF_Access);
+   
+   
+
+   flag : Integer := 0;
+
+   task RIB_Daemon;
+   task body RIB_Daemon is
+      temp : IPCP_obj;
+      Active_Entry : RIB_Entry;
+      IPCPFlag : Integer := 0;
+      DeleteFlag : Integer := 1;
+      begin
+      loop
+         if flag = 0 then
+            --for loop over all the managers to crossreference actual manager info with RIB info
+            for I in DIF_M.DIFs.First_Index .. DIF_M.DIFs.Last_Index loop
+               --crossreference DIF info
+               --  Active_Entry := RIB.Get_Entry(DIF_M.DIFs(I).DIF_Name);
+
+               --  if not (DIF_M.DIFs(I).DIF_Name = Active_Entry.Name) then
+               --     RIB.Add_Entry(DIF_M.DIFs(I).DIF_Name);
+               --  end if;
+
+               --  for J in DIF_M.DIFs(I).Applications.First_Index .. DIF_M.DIFs(I).Applications.Last_Index loop
+               --     if DIF_M.DIFs(I).Applications(J).Name /= Active_Entry.Obj_Type.Connected_DIFs.Name then
+               --        RIB.Update_DIF(J, Active_Entry, DIF_M.DIFs(I).Applications(J));
+               --     end if;
+               --  end loop;
+               null;
+            end loop;
+            for I in IPCP_M_S.First_Index .. IPCP_M_S.Last_Index loop
+
+               --the following if statement should be executed on the list of tasks, not list of IPC Managers even though they are 1:1
+               if not (IPCP_M_S(I).Name = RIB.Get_Entry(IPCP_M_S(I).Name).Name) then
+                  RIB.Add_Entry (IPCP_M_S(I).Name);
+               end if;
+
+               for J in IPCP_M_S(I).Managed_IPCPs.First_Index .. IPCP_M_S(I).Managed_IPCPs.Last_Index loop
+                  --crossreference IPCP info
+                  temp.IPCP := IPCP_M_S(I).Managed_IPCPs(J).Name;
+                  temp.Associated_DIF := IPCP_M_S(I).Managed_IPCPs(J).Connected_DIF;
+                  Active_Entry := RIB.Get_Entry (IPCP_M_S(I).Name);
+                  for K in Active_Entry.Obj_Type.Accessible_IPCPs.First_Index .. Active_Entry.Obj_Type.Accessible_IPCPs.Last_Index loop
+                     for L in IPCP_M_S(I).Managed_IPCPs.First_Index .. IPCP_M_S(I).Managed_IPCPs.Last_Index loop
+                        --find items in RIB that should not exist
+                        if IPCP_M_S(I).Managed_IPCPs(L).Name = Active_Entry.Obj_Type.Accessible_IPCPs(K).IPCP then
+                           DeleteFlag := 0;
+                        end if;
+                        if DeleteFlag = 1 then
+                           RIB.Delete_IPCP (K, Active_Entry);
+                           exit;
+                        end if;
+                     end loop;
+
+                     --updates RIB entry with new information regardless if it is the same
+                     if Active_Entry.Obj_Type.Accessible_IPCPs(K).IPCP = IPCP_M_S(I).Managed_IPCPs(J).Name then
+                        Update_IPCP(K, Active_Entry, temp);
+                     end if;
+
+                  end loop;
+                  if IPCPFlag = 0 then
+                     RIB.Add_IPCP(IPCP_M_S(I).Name, temp);
+                  end if;
+                  IPCPFlag := 0;
+                  null;
+               end loop;
+            end loop;
+            --everthing else the RIB Daemon needs to do
+            null;
+         else 
+            exit;
+         end if;
+      end loop;
+   end RIB_Daemon;
 
    -- IPC API Test 
    --  Port : IPC_API.Port_ID;
@@ -135,8 +241,15 @@ begin
       Put_Line("PDU ID: " & P.ID & ", Src: " & P.Src_Addr & ", Dst: " & P.Dst_Addr);
    end loop;
 
+   IPC_M_Chad.Name := To_Unbounded_String("Chad");
+   IPC_M_Joe.Name := To_Unbounded_String("Joe");
+   IPC_M_Steve.Name := To_Unbounded_String("Steve");
+   
+   IPCP_M_S.Append(IPC_M_Chad);
+   IPCP_M_S.Append(IPC_M_Joe);
+   IPCP_M_S.Append(IPC_M_Steve);
 
-
+   
 
 
 
@@ -147,5 +260,6 @@ begin
    --test := RINA_Policies.Encode_SDNV(1420);
    --Put_Line (test'Image);
    --Put_Line(RINA_Policies.Decode_SDNV(test)'Image);
+   flag := 1;
 end Rina_For_Space;
 

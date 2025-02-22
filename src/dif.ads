@@ -4,6 +4,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Containers.Vectors;
 with Ada.Text_IO; use Ada.Text_IO;
 
+
 package dif is
    type DIF is tagged;
 
@@ -23,10 +24,10 @@ package dif is
 
    type DIF is tagged record
       DIF_ID          : Integer;
-      DIF_Name       : Unbounded_String;
+      DIF_Name        : Unbounded_String;
       --MemberIPCPs    : IPCP_Vector;        
       Applications    : Application_Vector; 
-      AccessibleDIFs : DIF_Vector; 
+      AccessibleDIFs  : DIF_Vector; 
       -- TODO: Will need to add policies here when branches are merged        
    end record;
 

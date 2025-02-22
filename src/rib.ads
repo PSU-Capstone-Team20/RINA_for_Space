@@ -3,21 +3,24 @@ with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Containers.Indefinite_Hashed_Maps;
 with Ada.Strings.Unbounded.Hash;
-with dif;
-with ipcp;
-with application;
 
 with Ada.Text_IO; use Ada.Text_IO;
 
 package RIB is
     
+    type IPCP_obj is record
+      IPCP : Unbounded_String := To_Unbounded_String ("");
+      Associated_DIF : Unbounded_String := To_Unbounded_String ("");
+    end record;
+
     -- vectors that contain the applications/difs/ipcps that exist on each rib object
     package Application_Vectors is new Ada.Containers.Vectors
      (Index_Type => Natural, Element_Type => Ada.Strings.Unbounded.Unbounded_String);
     package DIF_Vectors is new Ada.Containers.Vectors
      (Index_Type => Natural, Element_Type => Ada.Strings.Unbounded.Unbounded_String);
+    
     package IPCP_Vectors is new Ada.Containers.Vectors
-     (Index_Type => Natural, Element_Type => Ada.Strings.Unbounded.Unbounded_String);
+     (Index_Type => Natural, Element_Type => IPCP_obj);
 
     -- represents a live computer in the system as a RIB object
     type RIB_Obj is record
@@ -37,12 +40,11 @@ package RIB is
     package RIB_Hashed_Maps is new Ada.Containers.Indefinite_Hashed_Maps
     (
       Key_Type => Unbounded_String,
-      Element_Type => RIB_Obj,
+      Element_Type => RIB_Entry,
       Hash => Ada.Strings.Unbounded.Hash,
       Equivalent_Keys => "="
     );
     use RIB_Hashed_Maps;
-
 
 
    --test procedure: example for how to add and access 
@@ -57,15 +59,15 @@ package RIB is
 
     --add procedures for RIB_Entry/DIF/IPCP/APN
     procedure Add_Entry(Name : Unbounded_String);
-    procedure Add_DIF(Name : Unbounded_String; dif : Unbounded_String);
-    procedure Add_IPCP(Name : Unbounded_String; ipcp : Unbounded_String);
-    procedure Add_APN(Name : Unbounded_String; APN : out Unbounded_String);
+    procedure Add_DIF(Name : Unbounded_String; dif : in out Unbounded_String);
+    procedure Add_IPCP(Name : Unbounded_String; ipcp : in out IPCP_obj);
+    procedure Add_APN(Name : Unbounded_String; APN : in out Unbounded_String);
 
 
     --get functions for RIB_Entry/DIF/IPCP/APN
     function Get_Entry(Name : Unbounded_String) return RIB_Entry;
     function Get_DIF(index : Integer; item : RIB_Entry) return Unbounded_String;
-    function Get_IPCP(index : Integer; item : RIB_Entry) return Unbounded_String;
+    function Get_IPCP(index : Integer; item : RIB_Entry) return IPCP_obj;
     function Get_APN(index : Integer; item : RIB_Entry) return Unbounded_String;
 
 
@@ -84,7 +86,7 @@ package RIB is
     --update procedures for RIB_Entry/DIF/IPCP/APN
     procedure Update_Entry(Name : Unbounded_String; item : RIB_Entry);
     procedure Update_DIF(index : Integer; item : in out RIB_Entry; dif : Unbounded_String);
-    procedure Update_IPCP(index : Integer; item : in out RIB_Entry; ipcp : Unbounded_String);
+    procedure Update_IPCP(index : Integer; item : in out RIB_Entry; ipcp : IPCP_obj);
     procedure Update_APN(index : Integer; item : in out RIB_Entry; APN : Unbounded_String);
 
 

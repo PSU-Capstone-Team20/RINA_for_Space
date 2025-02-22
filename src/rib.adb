@@ -13,8 +13,6 @@ with Ada.Text_IO; use Ada.Text_IO;
 package body RIB is
 
    -- TODO: logic into each procedure and functions 
-
-      map : RIB_Hashed_Maps.Map;
    
     --add procedures for RIB_Entry/DIF/IPCP/APN
     procedure Add_Entry(Name : Unbounded_String) is
@@ -30,13 +28,13 @@ package body RIB is
       
     end Add_Entry;
 
-    procedure Add_DIF(Name : Unbounded_String; dif : Unbounded_String) is
+    procedure Add_DIF(Name : Unbounded_String; dif : in out Unbounded_String) is
     begin
       if map.Contains(Name) then
          declare
-            Capture : RIB_Obj renames map.Element(Name);            
+            Capture : RIB_Entry renames map(Name);            
          begin
-            Capture.Connected_DIFs.Append(dif);
+            Capture.Obj_Type.Connected_DIFs.Append(dif);
             Put_Line("Added DIF " & To_String(dif) & " to " & To_String(Name));
          end;
       else
@@ -45,14 +43,14 @@ package body RIB is
       
     end Add_DIF;
     
-    procedure Add_IPCP(Name : Unbounded_String; ipcp : Unbounded_String) is
+    procedure Add_IPCP(Name : Unbounded_String; ipcp : in out IPCP_obj) is
     begin
       if map.Contains(Name) then
          declare
-            Capture : RIB_Obj renames map.Element(Name);
+            Capture : RIB_Entry renames map(Name);
          begin
-            Capture.Accessible_IPCPs.Append(ipcp);
-            Put_Line("Added IPCP " & To_String(ipcp) & " to " & To_String(Name));
+            Capture.Obj_Type.Accessible_IPCPs.Append(ipcp);
+            Put_Line("Added IPCP " & To_String(ipcp.IPCP) & " to " & To_String(Name));
          end;
       else
          Put_Line("RIB Entry could not be found for: " & To_String(Name));
@@ -60,13 +58,13 @@ package body RIB is
       
     end Add_IPCP;
 
-    procedure Add_APN(Name : Unbounded_String; APN : Unbounded_String) is
+    procedure Add_APN(Name : Unbounded_String; APN : in out Unbounded_String) is
     begin
       if map.Contains(Name) then
          declare
-            Capture : RIB_Obj renames map.Element(Name);
+            Capture : RIB_Entry renames map(Name);
          begin
-            Capture.Active_APNs.Append(APN);
+            Capture.Obj_Type.Active_APNs.Append(APN);
             Put_Line("Added APN " & To_String(APN) & " to " & To_String(Name));
          end;
       else
@@ -79,7 +77,7 @@ package body RIB is
     function Get_Entry(Name: Unbounded_String) return RIB_Entry is
     begin
       if map.Contains(Name) then
-         return (Name, map.Element(Name));
+         return map(Name);
       else
          raise Constraint_Error with "RIB Entry does not exist for: " & To_String(Name);
       end if;
@@ -89,7 +87,7 @@ package body RIB is
     begin
       return item.Obj_Type.Connected_DIFs(index);
     end Get_DIF;
-    function Get_IPCP(index : Integer; item : RIB_Entry) return Unbounded_String is
+    function Get_IPCP(index : Integer; item : RIB_Entry) return IPCP_obj is
     begin
       return item.Obj_Type.Accessible_IPCPs(index);
     end Get_IPCP;
@@ -129,7 +127,7 @@ package body RIB is
     procedure Update_Entry(Name: Unbounded_String; item : RIB_Entry) is
     begin
       if map.Contains(Name) then
-         map(Name) := item.Obj_Type;
+         map(Name) := item;
       else
          Put_Line("No RIB Entry for: " & To_String(Name));
       end if;
@@ -140,7 +138,7 @@ package body RIB is
       item.Obj_Type.Connected_DIFs(index) := dif;
     end Update_DIF;
 
-    procedure Update_IPCP(index : Integer; item : in out RIB_Entry; ipcp : Unbounded_String) is
+    procedure Update_IPCP(index : Integer; item : in out RIB_Entry; ipcp : IPCP_obj) is
     begin
       item.Obj_Type.Accessible_IPCPs(index) := ipcp;
     end Update_IPCP;

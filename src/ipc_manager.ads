@@ -9,6 +9,7 @@ package IPC_Manager is
    subtype IPCP_Vector is IPCP_Vectors.Vector;
 
    type IPCP_Manager_T is tagged record
+      Name : Unbounded_String;
       Managed_IPCPs : IPCP_Vector;
    end record;
 
@@ -17,6 +18,9 @@ package IPC_Manager is
 
    -- Lists all IPCPs managed
    procedure List_IPCPs(Manager : IPCP_Manager_T);
+
+   -- gets IPCP at specified index
+   --  function Get_IPCP(Manager : IPCP_Manager_T; index : Integer) return IPCP_Access;
 
    -- Assigns a PDU to an IPCP instance (avoids circular dependency)
    procedure Assign_PDU(IPCP_Instance : IPCP_Access; PDU : PDU_T);
