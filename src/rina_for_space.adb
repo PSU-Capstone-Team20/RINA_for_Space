@@ -29,6 +29,8 @@ procedure Rina_For_Space is
    --     null;
    --  end Joe_Comp;
 
+
+
    IPC_M_Steve : IPCP_Manager_T;
    --  task Steve_Comp;
    --  task body Steve_Comp is
@@ -63,12 +65,14 @@ procedure Rina_For_Space is
       temp : IPCP_obj;
       blank : RIB_Obj;
       begin
+      --delay 1.0;
       loop
          if flag = 0 then
             --for loop over all the managers to crossreference actual manager info with RIB info
             for I in IPCP_M_S.First_Index .. IPCP_M_S.Last_Index loop
             -- get entry name
                Active_Entry.Name := IPCP_M_S(I).Name;
+               delay 1.0;
             -- get DIFs connected to the appropriate system
                if Active_Entry.Name = "Joe" then
                   Active_Entry.Obj_Type.Connected_DIFs.Append (DIF_M.DIFs(0).DIF_Name);
@@ -105,6 +109,7 @@ procedure Rina_For_Space is
             exit;
          end if;
       end loop;
+       
    end RIB_Daemon;
 
    -- IPC API Test 
@@ -116,47 +121,61 @@ procedure Rina_For_Space is
    Test_PDU  : IPCP.PDU_T;
    PCI_Data  : IPCP.PCI_T := (Seq_Num => 1, DRF_Flag => True, ECN_Flag => False, QoS_ID => 3);
 
-
-   --test1 : dif.DIF_Vector;
-   --num : Integer;
-   --choice : Character;
-   -- Flow		: RINA_Policies.Flow_ID := 1;
-   -- QoS		: RINA_Policies.QoS_Parameter := (
-   -- Priority => 1,
-   -- Latency => 100,
-   -- Throughput => 500,
-   -- QoS_ID => 42);
-   --test : SDNV (1 .. 5);
-
    --testing for bundle 
    B : Bundle;
 
+   
+
 begin
+
+   IPC_M_Chad.Name := To_Unbounded_String("Chad");
+   Create_IPCP (To_Unbounded_String("IPCP 1"), To_Unbounded_String("Test"), IPC_M_Chad);
+   IPC_M_Joe.Name := To_Unbounded_String("Joe");
+   Create_IPCP (To_Unbounded_String("IPCP 2"), To_Unbounded_String("Test"), IPC_M_Joe);
+   IPC_M_Steve.Name := To_Unbounded_String("Steve");
+   Create_IPCP (To_Unbounded_String("IPCP 3"), To_Unbounded_String("Test"), IPC_M_Steve);
+   
+   IPCP_M_S.Append(IPC_M_Chad);
+   IPCP_M_S.Append(IPC_M_Joe);
+   IPCP_M_S.Append(IPC_M_Steve);
+
+   Create_Named_DIF(0, To_Unbounded_String("DIF 1"), DIF_M);
+   Create_Named_DIF(1, To_Unbounded_String("DIF 2"), DIF_M);
+   Create_Named_DIF(2, To_Unbounded_String("DIF 3"), DIF_M);
+
+   delay 10.0;
+
+   RIB.Display_Map;
+
+   
+
+   
+
    --create the bundle 
-   B := Rina_BP_Bundle.Create_Bundle(Version => 6, 
-                                     Processing_Flag => 2, 
-                                     Block_Length => 512, 
-                                     Src_EID => "Mars Observer", 
-                                     Dst_EID => "Ground Station 1", 
-                                     Payload => "Water found in region 5");
+   --  B := Rina_BP_Bundle.Create_Bundle(Version => 6, 
+   --                                    Processing_Flag => 2, 
+   --                                    Block_Length => 512, 
+   --                                    Src_EID => "Mars Observer", 
+   --                                    Dst_EID => "Ground Station 1", 
+   --                                    Payload => "Water found in region 5");
 
 
-   --serialize bundle
-   Send_Bundle(B);
+   --  --serialize bundle
+   --  Send_Bundle(B);
 
-   --receive the bundle
-   --B := Receive_Bundle;
+   --  --receive the bundle
+   --  --B := Receive_Bundle;
 
-   --details of bundle printout 
-   Put_Line("Received Data from Bundle: ");
-   Put_Line("Version: " & Natural'Image(B.Header.Version));
-   Put_Line("Processing Flag: " & Natural'Image(B.Header.Processing_Flag));
-   Put_Line("Block Length: " & Natural'Image(B.Header.Block_Length));
-   Put_Line("Source: " & B.Src_EID);
-   Put_Line("Destination: " & B.Dst_EID);
-   Put_Line("Payload: " & B.Payload);
+   --  --details of bundle printout 
+   --  Put_Line("Received Data from Bundle: ");
+   --  Put_Line("Version: " & Natural'Image(B.Header.Version));
+   --  Put_Line("Processing Flag: " & Natural'Image(B.Header.Processing_Flag));
+   --  Put_Line("Block Length: " & Natural'Image(B.Header.Block_Length));
+   --  Put_Line("Source: " & B.Src_EID);
+   --  Put_Line("Destination: " & B.Dst_EID);
+   --  Put_Line("Payload: " & B.Payload);
 
-   Put_Line("Bundle has been processed successfully");
+   --  Put_Line("Bundle has been processed successfully");
 
    -- Testing DIF & IPCP creation without connection 
    --  Create_Named_DIF (1, To_Unbounded_String("DIF_1"), DIF_M);
@@ -199,6 +218,8 @@ begin
    --     Put_Line("Flow deallocated for Port ID: " & Port'Image);
    --  end if;
 
+   Put_Line(" ");
+
    Create_IPCP(To_Unbounded_String("IPCP_Test"), To_Unbounded_String("IPCP_Test_ID"), IPC_M);
    Test_IPCP := Find_IPCP(IPC_M, To_Unbounded_String("IPCP_Test_ID"));
    Test_PDU := Create_PDU(ID        => "PDU_001",
@@ -221,13 +242,7 @@ begin
       Put_Line("PDU ID: " & P.ID & ", Src: " & P.Src_Addr & ", Dst: " & P.Dst_Addr);
    end loop;
 
-   IPC_M_Chad.Name := To_Unbounded_String("Chad");
-   IPC_M_Joe.Name := To_Unbounded_String("Joe");
-   IPC_M_Steve.Name := To_Unbounded_String("Steve");
-   
-   IPCP_M_S.Append(IPC_M_Chad);
-   IPCP_M_S.Append(IPC_M_Joe);
-   IPCP_M_S.Append(IPC_M_Steve);
+
 
    
 
@@ -241,5 +256,6 @@ begin
    --Put_Line (test'Image);
    --Put_Line(RINA_Policies.Decode_SDNV(test)'Image);
    flag := 1;
+   delay 1.0;
 end Rina_For_Space;
 

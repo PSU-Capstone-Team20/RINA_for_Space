@@ -36,7 +36,7 @@ package body RIB is
             Capture : RIB_Entry renames map(Name);            
          begin
             Capture.Obj_Type.Connected_DIFs.Append(dif);
-            Put_Line("Added DIF " & To_String(dif) & " to " & To_String(Name));
+            Put_Line("Added DIF: " & To_String(dif) & " to " & To_String(Name));
          end;
       else
          Put_Line("RIB Entry could not be found for: " & To_String(Name));
@@ -51,7 +51,7 @@ package body RIB is
             Capture : RIB_Entry renames map(Name);
          begin
             Capture.Obj_Type.Accessible_IPCPs.Append(ipcp);
-            Put_Line("Added IPCP " & To_String(ipcp.IPCP) & " to " & To_String(Name));
+            Put_Line("Added IPCP: " & To_String(ipcp.IPCP) & " to " & To_String(Name));
          end;
       else
          Put_Line("RIB Entry could not be found for: " & To_String(Name));
@@ -66,7 +66,7 @@ package body RIB is
             Capture : RIB_Entry renames map(Name);
          begin
             Capture.Obj_Type.Active_APNs.Append(APN);
-            Put_Line("Added APN " & To_String(APN) & " to " & To_String(Name));
+            Put_Line("Added APN: " & To_String(APN) & " to " & To_String(Name));
          end;
       else
          Put_Line("RIB Entry could not be found for: " & To_String(Name));
@@ -159,11 +159,23 @@ package body RIB is
     
     --prints the entire hashed map
     procedure Display_Map is
-      Iter : RIB_Hashed_Maps.Cursor := map.First;
+      --  Iter : RIB_Hashed_Maps.Cursor := map.First;
+      temp : Unbounded_String;
     begin
-      while RIB_Hashed_Maps.Has_Element(Iter) loop
-         Put_Line("RIB Entries: " & To_String(RIB_Hashed_Maps.Key(Iter)));
-         Iter := RIB_Hashed_Maps.Next(Iter);
+      --  while RIB_Hashed_Maps.Has_Element(Iter) loop
+      --     Put_Line("RIB Entries: " & To_String(RIB_Hashed_Maps.Key(Iter)));
+      --     Iter := RIB_Hashed_Maps.Next(Iter);
+      --  end loop;
+      Put_Line("Current Map is: ");
+      for C in map.Iterate loop
+         Put_Line (map(C).Name'Image);
+         for i in map(C).Obj_Type.Connected_DIFs.First_Index .. map(C).Obj_Type.Connected_DIFs.Last_Index loop
+            temp := map(C).Obj_Type.Connected_DIFs(i);
+            Put_Line (temp'Image);
+         end loop;
+         for i in map(C).Obj_Type.Accessible_IPCPs.First_Index .. map(C).Obj_Type.Accessible_IPCPs.Last_Index loop
+            Put_Line (map(C).Obj_Type.Accessible_IPCPs(i).IPCP'Image);
+         end loop;
       end loop;
       
     end Display_Map;
