@@ -70,7 +70,8 @@ package RIB is
     function Get_IPCP(index : Integer; item : RIB_Entry) return IPCP_obj;
     function Get_APN(index : Integer; item : RIB_Entry) return Unbounded_String;
 
-
+   --finds if an entry exists
+    function Find_Entry(Name :Unbounded_String) return Boolean;
 
     --delete procedures for RIB_Entry/DIF/IPCP/APN
     procedure Delete_Entry(Name : Unbounded_String);

@@ -4,6 +4,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Containers.Indefinite_Hashed_Maps;
 with Ada.Strings.Hash;
 with dif;
+with GNAT.Table;
 with ipcp;
 with application;
 
@@ -82,6 +83,14 @@ package body RIB is
          raise Constraint_Error with "RIB Entry does not exist for: " & To_String(Name);
       end if;
     end Get_Entry;
+
+    function Find_Entry(Name : Unbounded_String) return Boolean is
+    begin
+      if map.Contains (Name) then
+         return true;
+      end if;
+      return false;
+   end Find_Entry;
 
     function Get_DIF(index : Integer; item : RIB_Entry) return Unbounded_String is
     begin

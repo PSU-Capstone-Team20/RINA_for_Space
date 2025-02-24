@@ -59,68 +59,48 @@ procedure Rina_For_Space is
 
    task RIB_Daemon;
    task body RIB_Daemon is
-      temp : IPCP_obj;
       Active_Entry : RIB_Entry;
-      IPCPFlag : Integer := 0;
-      DeleteFlag : Integer := 1;
+      temp : IPCP_obj;
+      blank : RIB_Obj;
       begin
       loop
          if flag = 0 then
             --for loop over all the managers to crossreference actual manager info with RIB info
-            for I in DIF_M.DIFs.First_Index .. DIF_M.DIFs.Last_Index loop
-               --crossreference DIF info
-               --  Active_Entry := RIB.Get_Entry(DIF_M.DIFs(I).DIF_Name);
-
-               --  if not (DIF_M.DIFs(I).DIF_Name = Active_Entry.Name) then
-               --     RIB.Add_Entry(DIF_M.DIFs(I).DIF_Name);
-               --  end if;
-
-               --  for J in DIF_M.DIFs(I).Applications.First_Index .. DIF_M.DIFs(I).Applications.Last_Index loop
-               --     if DIF_M.DIFs(I).Applications(J).Name /= Active_Entry.Obj_Type.Connected_DIFs.Name then
-               --        RIB.Update_DIF(J, Active_Entry, DIF_M.DIFs(I).Applications(J));
-               --     end if;
-               --  end loop;
-               null;
-            end loop;
             for I in IPCP_M_S.First_Index .. IPCP_M_S.Last_Index loop
-
-               --the following if statement should be executed on the list of tasks, not list of IPC Managers even though they are 1:1
-               if not (IPCP_M_S(I).Name = RIB.Get_Entry(IPCP_M_S(I).Name).Name) then
-                  RIB.Add_Entry (IPCP_M_S(I).Name);
+            -- get entry name
+               Active_Entry.Name := IPCP_M_S(I).Name;
+            -- get DIFs connected to the appropriate system
+               if Active_Entry.Name = "Joe" then
+                  Active_Entry.Obj_Type.Connected_DIFs.Append (DIF_M.DIFs(0).DIF_Name);
+                  Active_Entry.Obj_Type.Connected_DIFs.Append (DIF_M.DIFs(2).DIF_Name);
+               elsif Active_Entry.Name = "Steve" then 
+                  Active_Entry.Obj_Type.Connected_DIFs.Append (DIF_M.DIFs(0).DIF_Name);
+                  Active_Entry.Obj_Type.Connected_DIFs.Append (DIF_M.DIFs(1).DIF_Name);
+                  Active_Entry.Obj_Type.Connected_DIFs.Append (DIF_M.DIFs(2).DIF_Name);
+               elsif Active_Entry.Name ="Chad" then
+                  Active_Entry.Obj_Type.Connected_DIFs.Append (DIF_M.DIFs(0).DIF_Name);
+                  Active_Entry.Obj_Type.Connected_DIFs.Append (DIF_M.DIFs(1).DIF_Name);
                end if;
-
-               for J in IPCP_M_S(I).Managed_IPCPs.First_Index .. IPCP_M_S(I).Managed_IPCPs.Last_Index loop
-                  --crossreference IPCP info
-                  temp.IPCP := IPCP_M_S(I).Managed_IPCPs(J).Name;
-                  temp.Associated_DIF := IPCP_M_S(I).Managed_IPCPs(J).Connected_DIF;
-                  Active_Entry := RIB.Get_Entry (IPCP_M_S(I).Name);
-                  for K in Active_Entry.Obj_Type.Accessible_IPCPs.First_Index .. Active_Entry.Obj_Type.Accessible_IPCPs.Last_Index loop
-                     for L in IPCP_M_S(I).Managed_IPCPs.First_Index .. IPCP_M_S(I).Managed_IPCPs.Last_Index loop
-                        --find items in RIB that should not exist
-                        if IPCP_M_S(I).Managed_IPCPs(L).Name = Active_Entry.Obj_Type.Accessible_IPCPs(K).IPCP then
-                           DeleteFlag := 0;
-                        end if;
-                        if DeleteFlag = 1 then
-                           RIB.Delete_IPCP (K, Active_Entry);
-                           exit;
-                        end if;
-                     end loop;
-
-                     --updates RIB entry with new information regardless if it is the same
-                     if Active_Entry.Obj_Type.Accessible_IPCPs(K).IPCP = IPCP_M_S(I).Managed_IPCPs(J).Name then
-                        Update_IPCP(K, Active_Entry, temp);
-                     end if;
-
-                  end loop;
-                  if IPCPFlag = 0 then
-                     RIB.Add_IPCP(IPCP_M_S(I).Name, temp);
-                  end if;
-                  IPCPFlag := 0;
-                  null;
+            -- get IPCPs connect to the appropriate system
+               for j in IPCP_M_S(i).Managed_IPCPs.First_Index .. IPCP_M_S(i).Managed_IPCPs.Last_Index loop
+                  temp.IPCP := IPCP_M_S(i).Managed_IPCPs(j).Name;
+                  Active_Entry.Obj_Type.Accessible_IPCPs.Append (temp);
                end loop;
+            -- adds or updates an entry in the RIB
+               if RIB.Find_Entry(Active_Entry.Name) then
+                  RIB.Update_Entry (Active_Entry.Name, Active_Entry);
+               else
+                  RIB.Add_Entry (Active_Entry.Name);
+                  for i in Active_Entry.Obj_Type.Accessible_IPCPs.First_Index .. Active_Entry.Obj_Type.Accessible_IPCPs.Last_Index loop
+                     RIB.Add_IPCP (Active_Entry.Name, Active_Entry.Obj_Type.Accessible_IPCPs(i));
+                  end loop;
+                  for i in Active_Entry.Obj_Type.Connected_DIFs.First_Index .. Active_Entry.Obj_Type.Connected_DIFs.Last_Index loop
+                     RIB.Add_DIF (Active_Entry.Name, Active_Entry.Obj_Type.Connected_DIFs(i));
+                  end loop;
+               end if;
+               Active_Entry.Obj_Type := blank;
             end loop;
             --everthing else the RIB Daemon needs to do
-            null;
          else 
             exit;
          end if;
