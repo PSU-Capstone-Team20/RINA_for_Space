@@ -14,6 +14,7 @@ with IPC_Manager; use IPC_Manager;
 with IPCP; use IPCP;
 -- with IPC_API; use IPC_API;
 with RIB; use RIB;
+with fakeComp;
 with Ada.Containers.Vectors;
 
 
@@ -47,70 +48,37 @@ procedure Rina_For_Space is
    --     end loop;
    --  end Chad_Comp;
 
-   package IPCP_Manager_Vectors is new Ada.Containers.Vectors
-     (Index_Type => Natural, Element_Type => IPCP_Manager_T);
-
-   IPCP_M_S : IPCP_Manager_Vectors.Vector;
-
    package DIF_Vectors is new Ada.Containers.Vectors
       (Index_Type => Natural, Element_Type => DIF_Access);
    
-   
+   type Task_Comp_Access is access all fakeComp.fake_comp;
 
-   flag : Integer := 0;
+   package Task_Comp_Vectors is new Ada.Containers.Vectors
+      (Index_Type => Natural, Element_Type => Task_Comp_Access);
 
-   task RIB_Daemon;
-   task body RIB_Daemon is
-      Active_Entry : RIB_Entry;
-      temp : IPCP_obj;
-      blank : RIB_Obj;
-      begin
-      --delay 1.0;
-      loop
-         if flag = 0 then
-            --for loop over all the managers to crossreference actual manager info with RIB info
-            for I in IPCP_M_S.First_Index .. IPCP_M_S.Last_Index loop
-            -- get entry name
-               Active_Entry.Name := IPCP_M_S(I).Name;
-               delay 1.0;
-            -- get DIFs connected to the appropriate system
-               if Active_Entry.Name = "Joe" then
-                  Active_Entry.Obj_Type.Connected_DIFs.Append (DIF_M.DIFs(0).DIF_Name);
-                  Active_Entry.Obj_Type.Connected_DIFs.Append (DIF_M.DIFs(2).DIF_Name);
-               elsif Active_Entry.Name = "Steve" then 
-                  Active_Entry.Obj_Type.Connected_DIFs.Append (DIF_M.DIFs(0).DIF_Name);
-                  Active_Entry.Obj_Type.Connected_DIFs.Append (DIF_M.DIFs(1).DIF_Name);
-                  Active_Entry.Obj_Type.Connected_DIFs.Append (DIF_M.DIFs(2).DIF_Name);
-               elsif Active_Entry.Name ="Chad" then
-                  Active_Entry.Obj_Type.Connected_DIFs.Append (DIF_M.DIFs(0).DIF_Name);
-                  Active_Entry.Obj_Type.Connected_DIFs.Append (DIF_M.DIFs(1).DIF_Name);
-               end if;
-            -- get IPCPs connect to the appropriate system
-               for j in IPCP_M_S(i).Managed_IPCPs.First_Index .. IPCP_M_S(i).Managed_IPCPs.Last_Index loop
-                  temp.IPCP := IPCP_M_S(i).Managed_IPCPs(j).Name;
-                  Active_Entry.Obj_Type.Accessible_IPCPs.Append (temp);
-               end loop;
-            -- adds or updates an entry in the RIB
-               if RIB.Find_Entry(Active_Entry.Name) then
-                  RIB.Update_Entry (Active_Entry.Name, Active_Entry);
-               else
-                  RIB.Add_Entry (Active_Entry.Name);
-                  for i in Active_Entry.Obj_Type.Accessible_IPCPs.First_Index .. Active_Entry.Obj_Type.Accessible_IPCPs.Last_Index loop
-                     RIB.Add_IPCP (Active_Entry.Name, Active_Entry.Obj_Type.Accessible_IPCPs(i));
-                  end loop;
-                  for i in Active_Entry.Obj_Type.Connected_DIFs.First_Index .. Active_Entry.Obj_Type.Connected_DIFs.Last_Index loop
-                     RIB.Add_DIF (Active_Entry.Name, Active_Entry.Obj_Type.Connected_DIFs(i));
-                  end loop;
-               end if;
-               Active_Entry.Obj_Type := blank;
-            end loop;
-            --everthing else the RIB Daemon needs to do
-         else 
-            exit;
-         end if;
+   TC_V : Task_Comp_Vectors.Vector;
+
+   killflag : Integer := 0;
+
+
+   -- ****NEW****
+   Task running;
+   task body running is
+   begin
+      while killflag = 0 loop
+      for i in TC_V.First_Index .. TC_V.Last_Index loop
+         TC_V.Reference(i).operate;
       end loop;
-       
-   end RIB_Daemon;
+      end loop;
+   end running;
+
+   procedure newfakecomp is
+      New_Task : constant Task_Comp_Access := new fakeComp.fake_comp;
+   begin
+      TC_V.Append (New_Task);
+   end;
+   -- ****NEW****
+
 
    -- IPC API Test 
    --  Port : IPC_API.Port_ID;
@@ -128,22 +96,10 @@ procedure Rina_For_Space is
 
 begin
 
-   IPC_M_Chad.Name := To_Unbounded_String("Chad");
-   Create_IPCP (To_Unbounded_String("IPCP 1"), To_Unbounded_String("Test"), IPC_M_Chad);
-   IPC_M_Joe.Name := To_Unbounded_String("Joe");
-   Create_IPCP (To_Unbounded_String("IPCP 2"), To_Unbounded_String("Test"), IPC_M_Joe);
-   IPC_M_Steve.Name := To_Unbounded_String("Steve");
-   Create_IPCP (To_Unbounded_String("IPCP 3"), To_Unbounded_String("Test"), IPC_M_Steve);
-   
-   IPCP_M_S.Append(IPC_M_Chad);
-   IPCP_M_S.Append(IPC_M_Joe);
-   IPCP_M_S.Append(IPC_M_Steve);
+   newfakecomp;
+   TC_V.Reference(0).change_name(To_Unbounded_String("Joe"));
 
-   Create_Named_DIF(0, To_Unbounded_String("DIF 1"), DIF_M);
-   Create_Named_DIF(1, To_Unbounded_String("DIF 2"), DIF_M);
-   Create_Named_DIF(2, To_Unbounded_String("DIF 3"), DIF_M);
-
-   delay 10.0;
+   delay 1.0;
 
    RIB.Display_Map;
 
@@ -255,7 +211,7 @@ begin
    --test := RINA_Policies.Encode_SDNV(1420);
    --Put_Line (test'Image);
    --Put_Line(RINA_Policies.Decode_SDNV(test)'Image);
-   flag := 1;
+   killflag := 1;
    delay 1.0;
 end Rina_For_Space;
 
