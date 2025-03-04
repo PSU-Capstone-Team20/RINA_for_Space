@@ -103,9 +103,11 @@ begin
 
    RIB.Display_Map;
 
-   
+   TC_V.Reference(0).change_name(To_Unbounded_String("Steve"));
 
-   
+   delay 1.0;
+
+   RIB.Display_Map;
 
    --create the bundle 
    --  B := Rina_BP_Bundle.Create_Bundle(Version => 6, 

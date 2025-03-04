@@ -17,7 +17,7 @@ package body fakeComp is
             --input a string, change the name of the fake computer
             accept change_name(newName : Unbounded_String) do
                Name := newName;
-               RIB_E.Name := Name;
+               RIB_E.Name := newName;
             end change_name;
          or
             --call everytime the computer would normally operate

@@ -114,7 +114,8 @@ package body RIB is
       else
          Put_Line("There is no RIB Entry for: " & To_String(Name));
       end if;
-      RIB_Hashed_Maps.Delete(map, Name);
+      --  RIB_Hashed_Maps.Delete(map, Name);
+      --  above line caused execution to freeze when the procedure was called successfully
     end Delete_Entry;
 
     procedure Delete_DIF(index : Integer; item : in out RIB_Entry) is
