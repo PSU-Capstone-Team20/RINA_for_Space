@@ -6,18 +6,20 @@ with Ada.Strings.Unbounded.Hash;
 
 with Ada.Text_IO; use Ada.Text_IO;
 
+with RINA; use RINA;
+
 package RIB is
     
     type IPCP_obj is record
-      IPCP : Unbounded_String := To_Unbounded_String ("");
-      Associated_DIF : Unbounded_String := To_Unbounded_String ("");
+      IPCP : UString := +"";
+      Associated_DIF : UString := +"";
     end record;
 
 
 
     -- vectors that contain the applications/difs/ipcps that exist on each rib object
     package Application_Vectors is new Ada.Containers.Vectors
-     (Index_Type => Natural, Element_Type => Ada.Strings.Unbounded.Unbounded_String);
+     (Index_Type => Natural, Element_Type => UString);
     package DIF_Vectors is new Ada.Containers.Vectors
      (Index_Type => Natural, Element_Type => Ada.Strings.Unbounded.Unbounded_String);
     

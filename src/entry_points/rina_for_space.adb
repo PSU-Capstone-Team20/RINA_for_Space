@@ -1,7 +1,7 @@
 -- with Rina;
 -- with dif;
 -- with ipcp;
-with cdap;
+with RINA.cdap;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Integer_Text_IO;
@@ -14,8 +14,11 @@ with IPC_Manager; use IPC_Manager;
 with IPCP; use IPCP;
 -- with IPC_API; use IPC_API;
 with RIB; use RIB;
-with fakeComp;
+with Fake_Comp;
 with Ada.Containers.Vectors;
+
+
+with DIF;
 
 
 procedure Rina_For_Space is
@@ -48,10 +51,8 @@ procedure Rina_For_Space is
    --     end loop;
    --  end Chad_Comp;
 
-   package DIF_Vectors is new Ada.Containers.Vectors
-      (Index_Type => Natural, Element_Type => DIF_Access);
    
-   type Task_Comp_Access is access all fakeComp.fake_comp;
+   type Task_Comp_Access is access all Fake_Comp.fake_comp;
 
    package Task_Comp_Vectors is new Ada.Containers.Vectors
       (Index_Type => Natural, Element_Type => Task_Comp_Access);
@@ -72,8 +73,8 @@ procedure Rina_For_Space is
       end loop;
    end running;
 
-   procedure newfakecomp is
-      New_Task : constant Task_Comp_Access := new fakeComp.fake_comp;
+   procedure newFake_Comp is
+      New_Task : constant Task_Comp_Access := new Fake_Comp.fake_comp;
    begin
       TC_V.Append (New_Task);
    end;
@@ -96,7 +97,7 @@ procedure Rina_For_Space is
 
 begin
 
-   newfakecomp;
+   newFake_Comp;
    TC_V.Reference(0).change_name(To_Unbounded_String("Joe"));
 
    delay 1.0;

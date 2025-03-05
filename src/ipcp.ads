@@ -5,7 +5,7 @@ with Ada.Calendar; use Ada.Calendar;
 
 package IPCP is
 
-   type DIF_Access is access all DIF.DIF;
+   -- type DIF_Access is access all DIF.DIF;
    type IPCP_State is (Initialized, Active, Inactive, Disconnected);
    type Priority_Level is range 0 .. 2;
 

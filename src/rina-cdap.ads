@@ -1,8 +1,7 @@
-with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
---with Ada.Containers.Vectors;
+
 with Ada.Text_IO; use Ada.Text_IO;
 
-package CDAP is
+package RINA.CDAP is
 
    type Operation_Type is (Create, Delete, Read, Write, Start, Stop, Connect);
 
@@ -11,9 +10,9 @@ package CDAP is
    type Result_Code is (Success, Failure, Not_Found, Access_Denied);
 
    type Object_Instance is record
-      Name : Unbounded_String;
-      Class : Unbounded_String;
-      Value : Unbounded_String;
+      Name : UString;
+      Class : UString;
+      Value : UString;
    end record;
 
    type Object_Instance_Access is access Object_Instance;
@@ -26,9 +25,9 @@ package CDAP is
    end record;
 
    type Request_Params is record
-      Name  : Unbounded_String := Null_Unbounded_String;
-      Class : Unbounded_String := Null_Unbounded_String;
-      Value : Unbounded_String := Null_Unbounded_String;
+      Name  : UString := Null_UString;
+      Class : UString := Null_UString;
+      Value : UString := Null_UString;
    end record;
 
    function Build_Request (Op : Operation_Type; Params : Request_Params) return CDAP_Message;
@@ -45,4 +44,4 @@ package CDAP is
    procedure Connect;
    procedure Disconnect;
 
-end CDAP;
+end RINA.CDAP;

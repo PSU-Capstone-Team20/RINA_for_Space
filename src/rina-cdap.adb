@@ -3,7 +3,7 @@ with Ada.Containers.Vectors;
 with Ada.Real_Time;         use Ada.Real_Time;
 with Ada.Text_IO; use Ada.Text_IO;
 
-package body CDAP is
+package body RINA.CDAP is
 
    function Build_Request (Op : Operation_Type; Params : Request_Params) return CDAP_Message is
       Obj : aliased Object_Instance := (
@@ -95,4 +95,4 @@ package body CDAP is
       null;
    end Disconnect;
 
-end CDAP;
+end RINA.CDAP;
