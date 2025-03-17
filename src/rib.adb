@@ -7,6 +7,7 @@ with dif;
 with GNAT.Table;
 with ipcp;
 with application;
+with fakeComp;
 
 
 with Ada.Text_IO; use Ada.Text_IO;
@@ -29,20 +30,20 @@ package body RIB is
       
     end Add_Entry;
 
-    procedure Add_DIF(Name : Unbounded_String; dif : in out Unbounded_String) is
-    begin
-      if map.Contains(Name) then
-         declare
-            Capture : RIB_Entry renames map(Name);            
-         begin
-            Capture.Obj_Type.Connected_DIFs.Append(dif);
-            Put_Line("Added DIF: " & To_String(dif) & " to " & To_String(Name));
-         end;
-      else
-         Put_Line("RIB Entry could not be found for: " & To_String(Name));
-      end if;
+   --   procedure Add_DIF(Name : Unbounded_String; dif : in out Unbounded_String) is
+   --   begin
+   --     if map.Contains(Name) then
+   --        declare
+   --           Capture : RIB_Entry renames map(Name);            
+   --        begin
+   --           Capture.Obj_Type.Connected_DIFs.Append(dif);
+   --           Put_Line("Added DIF: " & To_String(dif) & " to " & To_String(Name));
+   --        end;
+   --     else
+   --        Put_Line("RIB Entry could not be found for: " & To_String(Name));
+   --     end if;
       
-    end Add_DIF;
+   --   end Add_DIF;
     
     procedure Add_IPCP(Name : Unbounded_String; ipcp : in out IPCP_obj) is
     begin
@@ -58,6 +59,20 @@ package body RIB is
       end if;
       
     end Add_IPCP;
+    
+    procedure Add_Comp(Name : Unbounded_String; Comp : in out Unbounded_String) is 
+    begin
+      if map.Contains(Name) then
+         declare
+            Capture : RIB_Entry renames map(Name);
+         begin 
+            Capture.Obj_Type.Comp_Connection.Append(Comp);
+            Put_Line("Added Computer connection: " & To_String(Comp));
+         end;
+      else
+         Put_Line("RIB Entry could not be found for: " & To_String(Name));
+      end if;
+    end Add_Comp;
 
     procedure Add_APN(Name : Unbounded_String; APN : in out Unbounded_String) is
     begin
@@ -92,10 +107,10 @@ package body RIB is
       return false;
    end Find_Entry;
 
-    function Get_DIF(index : Integer; item : RIB_Entry) return Unbounded_String is
-    begin
-      return item.Obj_Type.Connected_DIFs(index);
-    end Get_DIF;
+   --   function Get_DIF(index : Integer; item : RIB_Entry) return Unbounded_String is
+   --   begin
+   --     return item.Obj_Type.Connected_DIFs(index);
+   --   end Get_DIF;
     function Get_IPCP(index : Integer; item : RIB_Entry) return IPCP_obj is
     begin
       return item.Obj_Type.Accessible_IPCPs(index);
@@ -118,10 +133,10 @@ package body RIB is
       --  above line caused execution to freeze when the procedure was called successfully
     end Delete_Entry;
 
-    procedure Delete_DIF(index : Integer; item : in out RIB_Entry) is
-    begin
-      item.Obj_Type.Connected_DIFs.Delete(index);
-    end Delete_DIF;
+   --   procedure Delete_DIF(index : Integer; item : in out RIB_Entry) is
+   --   begin
+   --     item.Obj_Type.Connected_DIFs.Delete(index);
+   --   end Delete_DIF;
 
     procedure Delete_IPCP(index : Integer; item : in out RIB_Entry) is
     begin
@@ -136,17 +151,18 @@ package body RIB is
     --update procedures for RIB_Entry/DIF/IPCP/APN
     procedure Update_Entry(Name: Unbounded_String; item : RIB_Entry) is
     begin
-      if map.Contains(Name) then
-         map(Name) := item;
-      else
-         Put_Line("No RIB Entry for: " & To_String(Name));
-      end if;
+       map.Include(Name, item);
+      --  if map.Contains(Name) then
+      --     map(Name) := item;
+      --  else
+      --     Put_Line("No RIB Entry for: " & To_String(Name));
+      --  end if;
     end Update_Entry;
 
-    procedure Update_DIF(index : Integer; item : in out RIB_Entry; dif : Unbounded_String) is
-    begin
-      item.Obj_Type.Connected_DIFs(index) := dif;
-    end Update_DIF;
+   --   procedure Update_DIF(index : Integer; item : in out RIB_Entry; dif : Unbounded_String) is
+   --   begin
+   --     item.Obj_Type.Connected_DIFs(index) := dif;
+   --   end Update_DIF;
 
     procedure Update_IPCP(index : Integer; item : in out RIB_Entry; ipcp : IPCP_obj) is
     begin
@@ -170,13 +186,18 @@ package body RIB is
       Put_Line("Current Map is: ");
       for C in map.Iterate loop
          Put_Line (map(C).Name'Image);
-         for i in map(C).Obj_Type.Connected_DIFs.First_Index .. map(C).Obj_Type.Connected_DIFs.Last_Index loop
-            temp := map(C).Obj_Type.Connected_DIFs(i);
+         
+         
+         for i in map(C).Obj_Type.Comp_Connection.First_Index .. map(C).Obj_Type.Comp_Connection.Last_Index loop
+            temp := map(C).Obj_Type.Comp_Connection(i);
             Put_Line (temp'Image);
          end loop;
+         
+
          for i in map(C).Obj_Type.Accessible_IPCPs.First_Index .. map(C).Obj_Type.Accessible_IPCPs.Last_Index loop
             Put_Line (map(C).Obj_Type.Accessible_IPCPs(i).IPCP'Image);
          end loop;
+        
       end loop;
       
     end Display_Map;

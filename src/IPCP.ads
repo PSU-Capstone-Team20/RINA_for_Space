@@ -25,8 +25,10 @@ package IPCP is
    type PDU_T is record
       ID        : String(1 .. 7);         -- Unique identifier for the PDU
       P_Type    : PDU_Type;                -- Type of PDU
-      Src_Addr  : String(1 .. 11);         -- Source address, IPv6 address length
-      Dst_Addr  : String(1 .. 11);         -- Destination address, IPv6 address length
+      --Src_Addr  : String(1 .. 11);         -- Source address, IPv6 address length
+      --RINA desires a complete lack of handshaking, this makes the Src_Addr uneccessary 
+      Dst_EID   : String(1 .. 11);         -- End point ID address, IPv6 address length
+      --Omit DIF only for the PDU address to allow a PDU to take any DIF to its destination regardless of what DIFs are active
       PCI       : PCI_T;                   -- Protocol Control Information
       SDU       : String(1 .. 1024);       -- The actual payload
       Timestamp : Ada.Calendar.Time;       -- Time of creation or reception
@@ -37,25 +39,25 @@ package IPCP is
    subtype PDU_Buffer is PDU_Vector.Vector;
 
    type IPCP_T is tagged record
-      ID            : Unbounded_String;
+      --ID            : Unbounded_String;
       State         : IPCP_State := Initialized;
       Name          : Unbounded_String;
       Address       : Unbounded_String;
       QoS_Params    : Priority_Level;
-      Connected_DIF : Unbounded_String;  -- Optional DIF Connection
+      Connected_Computer : Unbounded_String;  -- Optional DIF Connection
       PDUs          : PDU_Buffer; -- PDU Queue for storing pending transmissions
    end record;
 
    type IPCP_Access is access all IPCP_T;
 
    -- Creates a new IPCP instance
-   function Create_IPCP(Name : Unbounded_String; ID : Unbounded_String) return IPCP_Access;
+   function Create_IPCP(Name : Unbounded_String) return IPCP_Access;
 
    -- Creates a new PDU instance
    function Create_PDU(ID : String;
                        P_Type : PDU_Type;
-                       Src_Addr : String;
-                       Dst_Addr : String;
+                      
+                       Dst_EID : String;
                        PCI      : PCI_T;
                        SDU      : String) return PDU_T;
 

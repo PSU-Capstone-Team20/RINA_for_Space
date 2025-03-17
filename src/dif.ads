@@ -17,9 +17,12 @@ package dif is
      (Index_Type => Natural, Element_Type => DIF_Access);
    -- package IPCP_Vectors is new Ada.Containers.Vectors
    --  (Index_Type => Natural, Element_Type => IPCP_Access);
+   package computer_connections is new Ada.Containers.Vectors
+      (Index_Type => Natural, Element_Type => Unbounded_String);
 
    subtype Application_Vector is Application_Vectors.Vector;
    subtype DIF_Vector is DIF_Vectors.Vector;
+   subtype computer_connection is computer_connections.Vector;
    -- subtype IPCP_Vector is IPCP_Vectors.Vector;
 
    type DIF is tagged record
@@ -28,6 +31,7 @@ package dif is
       --MemberIPCPs    : IPCP_Vector;        
       Applications    : Application_Vector; 
       AccessibleDIFs  : DIF_Vector; 
+      Computers       : computer_connection;
       -- TODO: Will need to add policies here when branches are merged        
    end record;
 

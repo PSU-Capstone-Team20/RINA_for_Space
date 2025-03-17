@@ -14,7 +14,7 @@ package IPC_Manager is
    end record;
 
    -- Creates an IPCP and adds it to the manager
-   procedure Create_IPCP(Name : Unbounded_String; ID : Unbounded_String; Manager : in out IPCP_Manager_T);
+   procedure Create_IPCP(Name : Unbounded_String; Manager : in out IPCP_Manager_T);
 
    -- Lists all IPCPs managed
    procedure List_IPCPs(Manager : IPCP_Manager_T);
@@ -26,6 +26,6 @@ package IPC_Manager is
    procedure Assign_PDU(IPCP_Instance : IPCP_Access; PDU : PDU_T);
 
    -- Finds an IPCP by ID
-   function Find_IPCP(Manager : IPCP_Manager_T; ID : Unbounded_String) return IPCP_Access;
+   function Find_IPCP(Manager : IPCP_Manager_T; Name : Unbounded_String) return IPCP_Access;
 
 end IPC_Manager;

@@ -20,7 +20,6 @@ with Ada.Containers.Vectors;
 
 procedure Rina_For_Space is
 
-   DIF_M : DIF_MANAGER_T;
    IPC_M : IPCP_Manager_T;
 
    IPC_M_Joe : IPCP_Manager_T;
@@ -62,13 +61,17 @@ procedure Rina_For_Space is
 
 
    -- ****NEW****
-   Task running;
+   Task running is
+      entry start;
+   end running;
    task body running is
    begin
+      accept start;
       while killflag = 0 loop
       for i in TC_V.First_Index .. TC_V.Last_Index loop
          TC_V.Reference(i).operate;
       end loop;
+      accept start;
       end loop;
    end running;
 
@@ -99,15 +102,23 @@ begin
    newfakecomp;
    TC_V.Reference(0).change_name(To_Unbounded_String("Joe"));
 
+   dif_manager.Create_Named_DIF(0, To_Unbounded_String("DIF 1"));
+
+   TC_V.Reference(0).add_IPCP(To_Unbounded_String("IPCP 1"));
+   TC_V.Reference(0).connect_DIF(dif_manager.DIFs(0).DIF_Name);
+
+   running.start;
    delay 1.0;
 
    RIB.Display_Map;
 
    TC_V.Reference(0).change_name(To_Unbounded_String("Steve"));
+   running.start;
 
    delay 1.0;
 
    RIB.Display_Map;
+   
 
    --create the bundle 
    --  B := Rina_BP_Bundle.Create_Bundle(Version => 6, 
@@ -176,29 +187,29 @@ begin
    --     Put_Line("Flow deallocated for Port ID: " & Port'Image);
    --  end if;
 
-   Put_Line(" ");
+   --  Put_Line(" ");
 
-   Create_IPCP(To_Unbounded_String("IPCP_Test"), To_Unbounded_String("IPCP_Test_ID"), IPC_M);
-   Test_IPCP := Find_IPCP(IPC_M, To_Unbounded_String("IPCP_Test_ID"));
-   Test_PDU := Create_PDU(ID        => "PDU_001",
-                           P_Type    => DT,
-                           Src_Addr  => "192.168.1.1",
-                           Dst_Addr  => "192.168.1.2",
-                           PCI       => PCI_Data,
-                           SDU       => "This is a test payload." & (1 .. 1024 - 23 => ' '));
+   --  Create_IPCP(To_Unbounded_String("IPCP_Test"), To_Unbounded_String("IPCP_Test_ID"), IPC_M);
+   --  Test_IPCP := Find_IPCP(IPC_M, To_Unbounded_String("IPCP_Test_ID"));
+   --  Test_PDU := Create_PDU(ID        => "PDU_001",
+   --                          P_Type    => DT,
+   --                          Src_Addr  => "192.168.1.1",
+   --                          Dst_Addr  => "192.168.1.2",
+   --                          PCI       => PCI_Data,
+   --                          SDU       => "This is a test payload." & (1 .. 1024 - 23 => ' '));
 
-   Put_Line("Created PDU Details:");
-   Put_Line("PDU ID: " & Test_PDU.ID);
-   Put_Line("PDU Type: " & PDU_Type'Image(Test_PDU.P_Type));
-   Put_Line("Source Address: " & Test_PDU.Src_Addr);
-   Put_Line("Destination Address: " & Test_PDU.Dst_Addr);
-   Put_Line("Payload: " & Test_PDU.SDU);
-   Put_Line("Processing the PDU...");
-   Process_PDU(Test_IPCP.all, Test_PDU);
-   Put_Line("Stored PDUs in IPCP:");
-   for P of Test_IPCP.PDUs loop
-      Put_Line("PDU ID: " & P.ID & ", Src: " & P.Src_Addr & ", Dst: " & P.Dst_Addr);
-   end loop;
+   --  Put_Line("Created PDU Details:");
+   --  Put_Line("PDU ID: " & Test_PDU.ID);
+   --  Put_Line("PDU Type: " & PDU_Type'Image(Test_PDU.P_Type));
+   --  Put_Line("Source Address: " & Test_PDU.Src_Addr);
+   --  Put_Line("Destination Address: " & Test_PDU.Dst_Addr);
+   --  Put_Line("Payload: " & Test_PDU.SDU);
+   --  Put_Line("Processing the PDU...");
+   --  Process_PDU(Test_IPCP.all, Test_PDU);
+   --  Put_Line("Stored PDUs in IPCP:");
+   --  for P of Test_IPCP.PDUs loop
+   --     Put_Line("PDU ID: " & P.ID & ", Src: " & P.Src_Addr & ", Dst: " & P.Dst_Addr);
+   --  end loop;
 
 
 
@@ -214,6 +225,7 @@ begin
    --Put_Line (test'Image);
    --Put_Line(RINA_Policies.Decode_SDNV(test)'Image);
    killflag := 1;
+   running.start;
    delay 1.0;
 end Rina_For_Space;
 

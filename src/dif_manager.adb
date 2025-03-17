@@ -6,30 +6,30 @@ with Dif; use Dif;
 
 package body DIF_Manager is
 
-   procedure Create_DIF(ID : Integer; Manager : in out DIF_MANAGER_T) is
+   procedure Create_DIF(ID : Integer) is
       New_DIF : DIF_Access := createDIF;
    begin
       New_DIF.DIF_ID := ID;
-      Manager.DIFs.Append(New_DIF);
+      DIFs.Append(New_DIF);
    end Create_DIF;
 
-   procedure Create_Named_DIF(ID : Integer; Name : Unbounded_String; Manager : in out DIF_MANAGER_T) is
+   procedure Create_Named_DIF(ID : Integer; Name : Unbounded_String) is
       New_DIF : DIF_Access := createNamedDIF(Name);
    begin
       New_DIF.DIF_ID := ID;
-      Manager.DIFs.Append(New_DIF);
+      DIFs.Append(New_DIF);
    end Create_Named_DIF;
 
-   procedure Disconnect_DIF(Index : Integer; Manager : in out DIF_MANAGER_T) is
+   procedure Disconnect_DIF(Index : Integer) is
    begin
-      Manager.DIFs.Delete(Index);
+      DIFs.Delete(Index);
    end Disconnect_DIF;
 
-   procedure List_DIFs(Manager : DIF_MANAGER_T) is
+   procedure List_DIFs is
    begin
-      for Index in Manager.DIFs.First_Index .. Manager.DIFs.Last_Index loop
-         Put_Line("DIF ID: " & Integer'Image(Manager.DIFs.Element(Index).DIF_ID) &
-                ", Name: " & To_String(Manager.DIFs.Element(Index).DIF_Name));
+      for Index in DIFs.First_Index .. DIFs.Last_Index loop
+         Put_Line("DIF ID: " & Integer'Image(DIFs.Element(Index).DIF_ID) &
+                ", Name: " & To_String(DIFs.Element(Index).DIF_Name));
       end loop;
    end List_DIFs;
 

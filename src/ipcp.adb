@@ -7,23 +7,23 @@ with Ada.Calendar.Time_Zones; use Ada.Calendar.Time_Zones;
 package body IPCP is
 
    -- Create a new IPCP Instance
-   function Create_IPCP(Name : Unbounded_String; ID : Unbounded_String) return IPCP_Access is
+   function Create_IPCP(Name : Unbounded_String) return IPCP_Access is
    begin
-      return new IPCP_T'(ID => ID, Name => Name, others => <>);
+      return new IPCP_T'(Name => Name, others => <>);
    end Create_IPCP;
 
    -- Function to create a new PDU instance
    function Create_PDU(ID : String;
                        P_Type : PDU_Type;
-                       Src_Addr : String;
-                       Dst_Addr : String;
+                       
+                       Dst_EID : String;
                        PCI      : PCI_T;
                        SDU      : String) return PDU_T is
    begin
       return (ID => ID,
               P_Type => P_Type,
-              Src_Addr => Src_Addr,
-              Dst_Addr => Dst_Addr,
+              
+              Dst_EID => Dst_EID,
               PCI => PCI,
               SDU => SDU,
               Timestamp => Clock);
@@ -35,8 +35,8 @@ package body IPCP is
    begin
       Put_Line("Processing PDU ID: " & PDU.ID);
       Put_Line("PDU Type: " & PDU_Type'Image(PDU.P_Type));
-      Put_Line("Source Address: " & PDU.Src_Addr);
-      Put_Line("Destination Address: " & PDU.Dst_Addr);
+      
+      Put_Line("Destination Address: " & PDU.Dst_EID);
 
       Put_Line("Timestamp: " & Time_Image);
 

@@ -3,8 +3,8 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package body IPC_Manager is
 
-   procedure Create_IPCP(Name : Unbounded_String; ID : Unbounded_String; Manager : in out IPCP_Manager_T) is
-      New_IPCP : IPCP_Access := IPCP.Create_IPCP(Name, ID);
+   procedure Create_IPCP(Name : Unbounded_String; Manager : in out IPCP_Manager_T) is
+      New_IPCP : IPCP_Access := IPCP.Create_IPCP(Name);
    begin
       Manager.Managed_IPCPs.Append(New_IPCP);
    end Create_IPCP;
@@ -12,15 +12,15 @@ package body IPC_Manager is
    procedure List_IPCPs(Manager : IPCP_Manager_T) is
    begin
       for I in Manager.Managed_IPCPs.First_Index .. Manager.Managed_IPCPs.Last_Index loop
-         Put_Line("IPCP ID: " & To_String(Manager.Managed_IPCPs(I).ID) & ", Name: " & To_String(Manager.Managed_IPCPs(I).Name));
+         Put_Line("IPCP Name: " & To_String(Manager.Managed_IPCPs(I).Name));
       end loop;
    end List_IPCPs;
 
-   -- Finds an IPCP instance by ID
-   function Find_IPCP(Manager : IPCP_Manager_T; ID : Unbounded_String) return IPCP_Access is
+   -- Finds an IPCP instance by Name
+   function Find_IPCP(Manager : IPCP_Manager_T; Name : Unbounded_String) return IPCP_Access is
    begin
       for IPCP_Instance of Manager.Managed_IPCPs loop
-         if To_String(IPCP_Instance.ID) = To_String(ID) then
+         if To_String(IPCP_Instance.Name) = To_String(Name) then
             return IPCP_Instance;
          end if;
       end loop;
