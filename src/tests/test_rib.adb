@@ -1,0 +1,12 @@
+with Ada.Assertions; use Ada.Assertions;
+with Ada.Exceptions;   use Ada.Exceptions;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Ada.Text_IO; use Ada.Text_IO;
+with Test_Utils; use Test_Utils;
+
+procedure Test_RIB is
+   pragma Assertion_Policy (Assert => Ignore);
+
+begin
+
+end Test_RIB;

@@ -1,0 +1,30 @@
+{
+    "configurations": [
+        
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Launch",
+            "program": "${workspaceFolder}/bin/test_dif",
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+    {
+        "type": "cppdbg",
+        "request": "launch",
+        "name": "Ada: Debug Test DIF",
+        "program": "${workspaceFolder}/bin/test_dif",
+        "args": [],
+        "cwd": "${workspaceFolder}",
+        "stopAtEntry": false,
+        "externalConsole": false,
+        "preLaunchTask": "ada: Build current project",
+        "setupCommands": [{
+            "description": "Enable pretty-printing for gdb",
+            "text": "-enable-pretty-printing",
+            "ignoreFailures": true
+        }],
+        "miDebuggerPath": "${extensionInstallFolder:ms-vscode.cpptools}/debugAdapters/lldb-mi/bin/lldb-mi"
+    }
+    ]
+}
