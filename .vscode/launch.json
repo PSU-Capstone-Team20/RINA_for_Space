@@ -1,5 +1,13 @@
 {
     "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Launch",
+            "program": "${workspaceFolder}/bin/test_dif",
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
     {
         "type": "cppdbg",
         "request": "launch",
@@ -14,7 +22,8 @@
             "description": "Enable pretty-printing for gdb",
             "text": "-enable-pretty-printing",
             "ignoreFailures": true
-        }]
+        }],
+        "miDebuggerPath": "${extensionInstallFolder:ms-vscode.cpptools}/debugAdapters/lldb-mi/bin/lldb-mi"
     }
     ]
 }
