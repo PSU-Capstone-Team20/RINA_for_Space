@@ -1,6 +1,6 @@
 with Ada.Assertions; use Ada.Assertions;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
-
+with RIB; use RIB;
 with DIF; use DIF;
 
 package body Test_Utils is
@@ -69,5 +69,18 @@ package body Test_Utils is
    --     Mock_DIF_Vec.Append(DIF3);
    --     return Mock_DIF_Vec;
    --  end Create_Mock_DIF_Vector;
+
+
+   function Create_Mock_RIB_Entry(Name : Unbounded_String) return RIB_Entry is
+      Mock_Entry : RIB_Entry;
+   begin
+      -- Initialize the mock entry with default values
+      Mock_Entry.Name := Name;
+      Mock_Entry.Obj_Type := (Connected_DIFs => <>,  -- Empty vector or default value
+                              Accessible_IPCPs => <>, -- Empty vector or default value
+                              Active_APNs => <>);     -- Empty vector or default value
+      return Mock_Entry;
+   end Create_Mock_RIB_Entry;
+
 
 end Test_Utils;

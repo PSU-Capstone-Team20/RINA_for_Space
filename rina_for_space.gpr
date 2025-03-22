@@ -6,8 +6,8 @@ project Rina_For_Space is
    for Create_Missing_Dirs use "True";
    for Exec_Dir use "bin";
    for Main use ("rina_for_space.adb",
-                 "test_dif.adb");
-              -- "test_ipc.adb");
+                 "test_dif.adb",
+                 "test_rib.adb");
 
    package Compiler is
       for Default_Switches ("Ada") use Rina_For_Space_Config.Ada_Compiler_Switches & ("-gnat2022");
