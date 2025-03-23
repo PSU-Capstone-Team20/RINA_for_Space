@@ -3,8 +3,8 @@ with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Containers.Indefinite_Hashed_Maps;
 with Ada.Strings.Unbounded.Hash;
-
 with Ada.Text_IO; use Ada.Text_IO;
+
 
 package RIB is
     
