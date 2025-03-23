@@ -1,5 +1,6 @@
 with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with IPC_Manager.IPCP; use IPC_Manager.IPCP;
 
 package IPC_Manager is
    type IPCP_Access is private;
@@ -21,9 +22,6 @@ package IPC_Manager is
 
    -- gets IPCP at specified index
    --  function Get_IPCP(Manager : IPCP_Manager_T; index : Integer) return IPCP_Access;
-
-   -- Assigns a PDU to an IPCP instance (avoids circular dependency)
-   procedure Assign_PDU(IPCP_Instance : IPCP_Access; PDU : PDU_T);
 
    -- Finds an IPCP by ID
    function Find_IPCP(Manager : IPCP_Manager_T; Name : Unbounded_String) return IPCP_Access;

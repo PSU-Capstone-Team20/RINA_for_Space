@@ -51,6 +51,13 @@ package body IPC_Manager.IPCP is
       Log.Info("PDU appended to IPCP: " & To_String(IPCP.Name));
    end Process_PDU;
 
+   -- Assign a PDU to an IPCP
+   procedure Assign_PDU(IPCP_Instance : IPCP_Access; PDU : PDU_T) is
+   begin
+      Put_Line("Assigning PDU ID: " & PDU.ID & " to IPCP: " & To_String(IPCP_Instance.Name));
+      IPCP_Instance.PDUs.Append(PDU);
+   end Assign_PDU;
+
    function Peek_PDU(IPCP : IPCP_T) return PDU_T is
    begin
       if IPCP.PDUs.Is_Empty then
@@ -58,7 +65,7 @@ package body IPC_Manager.IPCP is
          raise Constraint_Error with "PDU buffer is empty.";
       end if;
       return IPCP.PDUs.First_Element;
-      
+
    end Peek_PDU;
 
    procedure Clear_PDU_Queue(IPCP : in out IPCP_T) is

@@ -5,7 +5,6 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Streams.Stream_IO;
 with Ada.Calendar; use Ada.Calendar;
 with Ada.Containers.Vectors;
-with IPC_Manager.IPCP;
 with IPC_Manager; use IPC_Manager;
 with DIF_Manager; use DIF_Manager;
 with DIF; use DIF;

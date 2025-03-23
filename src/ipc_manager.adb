@@ -48,13 +48,6 @@ package body IPC_Manager is
       return null; -- IPCP not found
    end Find_IPCP;
 
-   -- Assign a PDU to an IPCP
-   procedure Assign_PDU(IPCP_Instance : IPCP_Access; PDU : PDU_T) is
-   begin
-      Put_Line("Assigning PDU ID: " & PDU.ID & " to IPCP: " & To_String(IPCP_Instance.Name));
-      IPCP_Instance.PDUs.Append(PDU);
-   end Assign_PDU;
-
    -- Procedure to delete an IPCP by name
    procedure Delete_IPCP(Manager : in out IPCP_Manager_T; Name : Unbounded_String) is
    begin

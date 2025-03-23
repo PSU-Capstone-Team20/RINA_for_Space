@@ -20,7 +20,7 @@ package IPC_Manager.IPCP is
    type PDU_Type is (DT, CTL, ACK, ERR);
 
    -- Define the PDU_T type
-   type PDU_T is tagged record
+   type PDU_T is record
       ID        : String(1 .. 7);         -- Unique identifier for the PDU
       P_Type    : PDU_Type;                -- Type of PDU
       --Src_Addr  : String(1 .. 11);         -- Source address, IPv6 address length
@@ -57,6 +57,9 @@ package IPC_Manager.IPCP is
 
    -- Handles internal data flow within the IPCP
    procedure Process_PDU(IPCP : in out IPCP_T; PDU : in PDU_T);
+
+   -- Assigns a PDU to an IPCP instance (avoids circular dependency)
+   procedure Assign_PDU(IPCP_Instance : IPCP_Access; PDU : PDU_T);
 
    -- Safe Peek PDU to prevent null access
    function Peek_PDU(IPCP : IPCP_T) return PDU_T;
