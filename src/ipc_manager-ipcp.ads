@@ -1,11 +1,9 @@
-limited with DIF;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Containers.Vectors;
 with Ada.Calendar; use Ada.Calendar;
 
-package IPCP is
+package IPC_Manager.IPCP is
 
-   type DIF_Access is access all DIF.DIF;
    type IPCP_State is (Initialized, Active, Inactive, Disconnected);
    type Priority_Level is range 0 .. 2;
 
@@ -39,7 +37,6 @@ package IPCP is
    subtype PDU_Buffer is PDU_Vector.Vector;
 
    type IPCP_T is tagged record
-      --ID            : Unbounded_String;
       State         : IPCP_State := Initialized;
       Name          : Unbounded_String;
       Address       : Unbounded_String;
@@ -48,20 +45,25 @@ package IPCP is
       PDUs          : PDU_Buffer; -- PDU Queue for storing pending transmissions
    end record;
 
-   type IPCP_Access is access all IPCP_T;
-
    -- Creates a new IPCP instance
-   function Create_IPCP(Name : Unbounded_String) return IPCP_Access;
+   function Make_IPCP(Name : Unbounded_String) return IPCP_T;
 
    -- Creates a new PDU instance
-   function Create_PDU(ID : String;
-                       P_Type : PDU_Type;
-                      
-                       Dst_EID : String;
-                       PCI      : PCI_T;
-                       SDU      : String) return PDU_T;
+   function Create_PDU(ID        : String;
+                       P_Type    : PDU_Type;
+                       Dst_EID   : String;
+                       PCI       : PCI_T;
+                       SDU       : String) return PDU_T;
 
    -- Handles internal data flow within the IPCP
    procedure Process_PDU(IPCP : in out IPCP_T; PDU : in PDU_T);
 
-end IPCP;
+   -- Assigns a PDU to an IPCP instance (avoids circular dependency)
+   procedure Assign_PDU(IPCP_Instance : IPCP_Access; PDU : PDU_T);
+
+   -- Safe Peek PDU to prevent null access
+   function Peek_PDU(IPCP : IPCP_T) return PDU_T;
+   -- Cleanup memory for PDU Buffer
+   procedure Clear_PDU_Buffer(IPCP : in out IPCP_T);
+
+end IPC_Manager.IPCP;

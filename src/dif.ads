@@ -1,15 +1,16 @@
-Limited with IPCP;
 with application; use application; 
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Containers.Vectors;
 with Ada.Text_IO; use Ada.Text_IO;
+
+with IPC_Manager.IPCP; use IPC_Manager.IPCP;
 
 
 package dif is
    type DIF is tagged;
 
    type DIF_Access is access all DIF;
-   type IPCP_Access is access all IPCP.IPCP_T;
+   type IPCP_Access is access all IPCP_T;
 
    package Application_Vectors is new Ada.Containers.Vectors
      (Index_Type => Natural, Element_Type => application.application);
