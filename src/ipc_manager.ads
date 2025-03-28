@@ -1,6 +1,7 @@
 with IPCP; use IPCP;
 with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with RINA;
 
 package IPC_Manager is
 
@@ -14,8 +15,9 @@ package IPC_Manager is
    end record;
 
    -- Creates an IPCP and adds it to the manager
-   procedure Create_IPCP(Name : Unbounded_String; Manager : in out IPCP_Manager_T);
+   procedure Create_IPCP(Name : in Unbounded_String; Addr : in Address_Element; Manager : in out IPCP_Manager_T);
 
+   --procedure Destroy_IPCP(ID : in Natural; Manager : in out IPCP_Manager_T);
    -- Lists all IPCPs managed
    procedure List_IPCPs(Manager : IPCP_Manager_T);
 

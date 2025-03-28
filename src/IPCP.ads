@@ -2,6 +2,7 @@ limited with DIF;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Containers.Vectors;
 with Ada.Calendar; use Ada.Calendar;
+with RINA;
 
 package IPCP is
 
@@ -42,7 +43,7 @@ package IPCP is
       --ID            : Unbounded_String;
       State         : IPCP_State := Initialized;
       Name          : Unbounded_String;
-      Address       : Unbounded_String;
+      Address       : Address_Element;
       QoS_Params    : Priority_Level;
       Connected_Computer : Unbounded_String;  -- Optional DIF Connection
       PDUs          : PDU_Buffer; -- PDU Queue for storing pending transmissions

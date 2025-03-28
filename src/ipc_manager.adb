@@ -1,10 +1,23 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with RINA;
 
 package body IPC_Manager is
 
-   procedure Create_IPCP(Name : Unbounded_String; Manager : in out IPCP_Manager_T) is
-      New_IPCP : IPCP_Access := IPCP.Create_IPCP(Name);
+   procedure Create_IPCP(Name : in Unbounded_String; Addr : in Address_Element; Manager : in out IPCP_Manager_T) is
+      New_IPCP : IPCP_Access := new IPCP_T'
+                                      (State =>
+                                         IPCP_State,
+                                       Name =>
+                                         Unbounded_String,
+                                       Address =>
+                                         Address_Element,
+                                       QoS_Params =>
+                                         Priority_Level,
+                                       Connected_Computer =>
+                                         Unbounded_String,
+                                       PDUs =>
+                                         PDU_Buffer);
    begin
       Manager.Managed_IPCPs.Append(New_IPCP);
    end Create_IPCP;
