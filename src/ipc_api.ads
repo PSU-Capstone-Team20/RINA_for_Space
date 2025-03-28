@@ -1,30 +1,31 @@
-with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
-with IPCP; use IPCP;
-with DIF_Manager; use DIF_Manager;
-with IPC_Manager; use IPC_Manager;
+with IPC_Manager;
+with IPCP_Types; use IPCP_Types;
 
 package IPC_API is
 
-   type Port_ID is new Natural;
+   -- Exceptions for Error Handling
+   IPC_Error : exception;
+   Allocation_Error : exception;
+   Deallocation_Error : exception;
 
-   -- Allocates resources to support a flow between source and destination with a certain QoS
-   function Allocate(Src_Application : Unbounded_String;
-                      Dst_Application : Unbounded_String;
-                      QoS             : Priority_Level;
-                      DIF_M           : in out DIF_MANAGER_T;
-                      IPC_M           : in out IPCP_Manager_T) return Port_ID;
+   procedure Allocate_Flow(Manager : in out IPC_Manager.IPCP_Manager_T; 
+                           Name : Unbounded_String;
+                           Src_CEP_ID : String; 
+                           QoS : Natural; 
+                           Flow_Handle : out Flow_Info_T);
+   
+   procedure Send(Manager : in out IPC_Manager.IPCP_Manager_T; 
+                  Name : Unbounded_String; 
+                  Flow_Handle : Flow_Info_T;
+                  Data : String);
 
-   -- Sends data to the destination application on the specified port
-   procedure Send(Port : Port_ID;
-                   SDU  : String;
-                   IPC_M : in out IPCP_Manager_T);
+   procedure Receive(Manager : in out IPC_Manager.IPCP_Manager_T; 
+                     Name : Unbounded_String; 
+                     Flow_Handle : Flow_Info_T;
+                     Data : out String);
 
-   -- Receives an SDU from the destination application on the specified port
-   function Receive(Port : Port_ID;
-                     IPC_M : in out IPCP_Manager_T) return String;
-
-   -- Terminates the flow and frees all communication resources
-   procedure Deallocate(Port : Port_ID;
-                         IPC_M : in out IPCP_Manager_T);
+   procedure Deallocate_Flow(Manager : in out IPC_Manager.IPCP_Manager_T; 
+                             Name : Unbounded_String; 
+                             Flow_Handle : Flow_Info_T);
 
 end IPC_API;

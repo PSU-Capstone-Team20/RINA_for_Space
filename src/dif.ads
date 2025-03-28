@@ -2,8 +2,9 @@ with application; use application;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Containers.Vectors;
 with Ada.Text_IO; use Ada.Text_IO;
+with IPCP_Types; use IPCP_Types;
+-- with IPC_Manager.IPCP; use IPC_Manager.IPCP;
 
-with IPC_Manager.IPCP; use IPC_Manager.IPCP;
 
 
 package dif is

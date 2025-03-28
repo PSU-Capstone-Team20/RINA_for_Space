@@ -5,7 +5,7 @@ with Ada.Containers.Indefinite_Hashed_Maps;
 with Ada.Strings.Hash;
 with dif;
 with GNAT.Table;
-with ipcp;
+with IPC_Manager.IPCP;
 with application;
 with fakeComp;
 

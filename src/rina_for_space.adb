@@ -8,18 +8,17 @@ with Ada.Containers.Vectors;
 with IPC_Manager; use IPC_Manager;
 with DIF_Manager; use DIF_Manager;
 with DIF; use DIF;
-
---  with Rina_BP_Bundle; use Rina_BP_Bundle;
---  with CDAP;
---  with RIB; use RIB;
---  with fakeComp;
+with Rina_BP_Bundle; use Rina_BP_Bundle;
+with CDAP;
+ with RIB; use RIB;
+--with fakeComp;
 
 
 procedure Rina_For_Space is
 
-   IPC_M : IPCP_Manager_T;
+  -- IPC_M : IPCP_Manager_T;
 
-   IPC_M_Joe : IPCP_Manager_T;
+   --IPC_M_Joe : IPCP_Manager_T;
    --  task Joe_Comp;
    --  task body Joe_Comp is
    --     begin
@@ -44,38 +43,38 @@ procedure Rina_For_Space is
    --     end loop;
    --  end Chad_Comp;
 
-   package DIF_Vectors is new Ada.Containers.Vectors
-      (Index_Type => Natural, Element_Type => DIF_Access);
+   --  package DIF_Vectors is new Ada.Containers.Vectors
+   --     (Index_Type => Natural, Element_Type => DIF_Access);
    
-   type Task_Comp_Access is access all fakeComp.fake_comp;
+   --  type Task_Comp_Access is access all fakeComp.fake_comp;
 
-   package Task_Comp_Vectors is new Ada.Containers.Vectors
-      (Index_Type => Natural, Element_Type => Task_Comp_Access);
+   --  package Task_Comp_Vectors is new Ada.Containers.Vectors
+   --     (Index_Type => Natural, Element_Type => Task_Comp_Access);
 
-   TC_V : Task_Comp_Vectors.Vector;
+   --  TC_V : Task_Comp_Vectors.Vector;
 
-   killflag : Integer := 0;
+   --  killflag : Integer := 0;
 
    -- ****NEW****
-   Task running is
-      entry start;
-   end running;
-   task body running is
-   begin
-      accept start;
-      while killflag = 0 loop
-      for i in TC_V.First_Index .. TC_V.Last_Index loop
-         TC_V.Reference(i).operate;
-      end loop;
-      accept start;
-      end loop;
-   end running;
+   --  Task running is
+   --     entry start;
+   --  end running;
+   --  task body running is
+   --  begin
+   --     accept start;
+   --     while killflag = 0 loop
+   --     for i in TC_V.First_Index .. TC_V.Last_Index loop
+   --        TC_V.Reference(i).operate;
+   --     end loop;
+   --     accept start;
+   --     end loop;
+   --  end running;
 
-   procedure newfakecomp is
-      New_Task : constant Task_Comp_Access := new fakeComp.fake_comp;
-   begin
-      TC_V.Append (New_Task);
-   end;
+   --  procedure newfakecomp is
+   --     New_Task : constant Task_Comp_Access := new fakeComp.fake_comp;
+   --  begin
+   --     TC_V.Append (New_Task);
+   --  end;
    -- ****NEW****
 
    --testing for bundle 
@@ -84,25 +83,25 @@ procedure Rina_For_Space is
 
 begin
 
-   newfakecomp;
-   TC_V.Reference(0).change_name(To_Unbounded_String("Joe"));
+   --  newfakecomp;
+   --  TC_V.Reference(0).change_name(To_Unbounded_String("Joe"));
 
-   dif_manager.Create_Named_DIF(0, To_Unbounded_String("DIF 1"));
+   --  dif_manager.Create_Named_DIF(0, To_Unbounded_String("DIF 1"));
 
-   TC_V.Reference(0).add_IPCP(To_Unbounded_String("IPCP 1"));
-   TC_V.Reference(0).connect_DIF(dif_manager.DIFs(0).DIF_Name);
+   --  TC_V.Reference(0).add_IPCP(To_Unbounded_String("IPCP 1"));
+   --  TC_V.Reference(0).connect_DIF(dif_manager.DIFs(0).DIF_Name);
 
-   running.start;
-   delay 1.0;
+   --  running.start;
+   --  delay 1.0;
 
-   RIB.Display_Map;
+   --  RIB.Display_Map;
 
-   TC_V.Reference(0).change_name(To_Unbounded_String("Steve"));
-   running.start;
+   --  TC_V.Reference(0).change_name(To_Unbounded_String("Steve"));
+   --  running.start;
 
-   delay 1.0;
+   --  delay 1.0;
 
-   RIB.Display_Map;
+   --  RIB.Display_Map;
    
 
    --create the bundle 
@@ -134,8 +133,9 @@ begin
    --test := RINA_Policies.Encode_SDNV(1420);
    --Put_Line (test'Image);
    --Put_Line(RINA_Policies.Decode_SDNV(test)'Image);
-   killflag := 1;
-   running.start;
-   delay 1.0;
+   --  killflag := 1;
+   --  running.start;
+   --  delay 1.0;
+   NULL;
 end Rina_For_Space;
 

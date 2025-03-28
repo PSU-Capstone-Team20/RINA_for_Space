@@ -1,14 +1,19 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
-with IPC_Manager.IPCP;
+with IPC_Manager.IPCP; use IPC_Manager.IPCP;
+with Ada.Unchecked_Deallocation;
 
 package body IPC_Manager is
-   use IPCP_Manager.IPCP;
 
    procedure Free_IPCP is new Ada.Unchecked_Deallocation(IPCP_T, IPCP_Access);
 
    -- Create_IPCP allocates a new IPCP using Make_IPCP and adds it to the manager's list
-   procedure Create_IPCP(Name : Unbounded_String; Manager : in out IPCP_Manager_T) is
+   procedure Create_IPCP(
+      Name               : Unbounded_String;
+      --Address            : Unbounded_String;
+      --Connected_Computer : Unbounded_String;
+      Manager            : in out IPCP_Manager_T
+   ) is
    begin
       if Find_IPCP(Manager, Name) /= null then
          Log.Error("Create Failed: IPCP '" & To_String(Name) & "' already exists.");
@@ -16,10 +21,11 @@ package body IPC_Manager is
       end if;
 
       declare
-         New_IPCP : IPCP_Access := new IPCP_T'(Make_IPCP(Name));
+         New_IPCP : IPCP_Access := new IPCP_T'(
+            IPC_Manager.IPCP.Make_IPCP(Name)
+         );
       begin
          Manager.Managed_IPCPs.Append(New_IPCP);
-         Log.Info("Created IPCP: " & To_String(Name));
       exception
          when Storage_Error =>
             Log.Error("Out of memory while creating IPCP: " & To_String(Name));
