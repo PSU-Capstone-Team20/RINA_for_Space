@@ -1,4 +1,5 @@
 with Ada.Calendar; use Ada.Calendar;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package Transport_Types is
 
@@ -11,8 +12,8 @@ package Transport_Types is
 
    -- Define the PCI_T type
    type PCI_T is record
-      Src_CEP_ID  : String(1 .. 11);          -- Local EID of the sending app/IPCP, CEP = Connection End Point
-      Dst_CEP_ID  : String(1 .. 11);          -- Local EID of the receiving app/IPCP
+      Src_CEP_ID  : Unbounded_String;          -- Local EID of the sending app/IPCP, CEP = Connection End Point
+      Dst_CEP_ID  : Unbounded_String;          -- Local EID of the receiving app/IPCP
       Seq_Num     : Natural;                 -- Sequence number
       DRF_Flag    : Boolean;                  -- Data Run Flag
       ECN_Flag    : Boolean;                  -- Explicit Congestion Notification(flow control)
@@ -33,7 +34,6 @@ package Transport_Types is
       ID        : String(1 .. 7);          -- Unique identifier for the PDU
       PCI       : PCI_T;                   -- Protocol Control Information
       Data      : String(1 .. 1024);       -- The actual payload
-      Timestamp : Ada.Calendar.Time;       -- Optional: Time of creation or reception for delay tracking
       --P_Type    : PDU_Type;              -- Type of PDU
       --Omit DIF only for the PDU address to allow a PDU to take any DIF to its destination regardless of what DIFs are active
    end record;
