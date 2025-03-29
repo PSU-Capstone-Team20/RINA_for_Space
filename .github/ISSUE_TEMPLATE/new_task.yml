@@ -1,0 +1,34 @@
+---
+name: "New Task"
+about: "Use this template to create a new task"
+title: "[Task]: "
+labels: ["Task (New)"]
+assignees: ""
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Summary
+        <!-- Please provide a detailed summary of this feature. -->
+
+  - type: textarea
+    id: subtasks
+    attributes:
+      label: "Subtasks"
+      description: "Add subtasks as a checklist (e.g., - [ ] Task 1)."
+      value: |
+        - [ ] 
+
+  - type: markdown
+    attributes:
+      value: |
+        ## Design documents/references
+        <!-- Please link any relevant documents, Teams links, etc. -->
+  - type: textarea
+    id: references
+    attributes:
+      label: "References"
+      description: "Add links to relevant documents or references."
+      value: |
+        * ...
+        * ...
