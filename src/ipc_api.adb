@@ -84,6 +84,7 @@ package body IPC_API is
          PDU := Pop_PDU(IPCP_Instance.all, From_Outgoing => False);
 
          -- Trim trailing spaces to find valid data length
+         -- this can delete once we get a proper length field
          while Valid_End > 0 and then PDU.Data(Valid_End) = ' ' loop
             Valid_End := Valid_End - 1;
          end loop;

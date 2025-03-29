@@ -16,7 +16,7 @@ package IPC_API is
       Flow_Handle : out IPCP_Types.Flow_Info_T
    );
 
-   -- Sends a message over an existing flow
+   -- Sends data over an existing flow
    procedure Send(
       Manager     : in out IPCP_Manager_T;
       Name        : Unbounded_String;
@@ -24,7 +24,7 @@ package IPC_API is
       Data        : Unbounded_String
    );
 
-   -- Receives a message from an existing flow
+   -- Receives data from an existing flow
    procedure Receive(
       Manager     : in out IPCP_Manager_T;
       Name        : Unbounded_String;
