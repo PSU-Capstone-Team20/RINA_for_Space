@@ -10,7 +10,7 @@ package IPCP_Types is
       Flow_ID       : Natural;
       Port_ID       : Natural;
       QoS_ID        : Natural;
-      Remote_CEP_ID : String(1 .. 11);
+      Remote_CEP_ID : Unbounded_String;
    end record;
 
    package Flow_Vector is new Ada.Containers.Vectors (Index_Type => Natural, Element_Type => Flow_Info_T);

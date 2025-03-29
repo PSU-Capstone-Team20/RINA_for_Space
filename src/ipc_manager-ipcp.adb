@@ -21,6 +21,36 @@ package body IPC_Manager.IPCP is
       return New_IPCP;
    end Make_IPCP;
 
+      -- Flow Management procedures
+   procedure Add_Flow(IPCP : in out IPCP_T; Flow : Flow_Info_T) is
+   begin
+      IPCP.Active_Flows.Append(Flow);
+   end Add_Flow;
+
+   procedure Remove_Flow(IPCP : in out IPCP_T; Flow_ID : Natural) is
+   begin
+      for Index in IPCP.Active_Flows.First_Index .. IPCP.Active_Flows.Last_Index loop
+         if IPCP.Active_Flows(Index).Flow_ID = Flow_ID then
+            IPCP.Active_Flows.Delete(Index);
+            return;
+         end if;
+      end loop;
+   end Remove_Flow;
+
+   -- Checks if a flow with the given Flow_ID exists in the IPCP
+   function Flow_Exists(IPCP : IPCP_T; Flow_ID : Natural) return Boolean is
+   begin
+      for Flow of IPCP.Active_Flows loop
+         if Flow.Flow_ID = Flow_ID then
+            return True;
+         end if;
+      end loop;
+      return False;
+   end Flow_Exists;
+
+   -- Buffer Management procedures
+
+   -- Assigns a PDU to the outgoing or incoming buffer of the IPCP instance
    procedure Assign_PDU(IPCP_Instance : in out IPCP_T; PDU : PDU_T; To_Outgoing : Boolean := True) is
    begin
       if To_Outgoing then
@@ -30,6 +60,7 @@ package body IPC_Manager.IPCP is
       end if;
    end Assign_PDU;
 
+   -- Returns the first PDU from either the outgoing or incoming buffer (non-destructive)
    function Get_PDU(IPCP : in out IPCP_T; From_Outgoing : Boolean := True) return PDU_T is
    begin
       if From_Outgoing then
@@ -39,6 +70,7 @@ package body IPC_Manager.IPCP is
       end if;
    end Get_PDU;
 
+   -- Returns and removes the first PDU from the selected buffer (destructive read)
    function Pop_PDU(IPCP : in out IPCP_T; From_Outgoing : Boolean := True) return PDU_T is
       PDU : PDU_T;
    begin
@@ -52,6 +84,7 @@ package body IPC_Manager.IPCP is
       return PDU;
    end Pop_PDU;
 
+   -- Clears the incoming and/or outgoing PDU buffers of the IPCP
    procedure Clear_PDU_Buffer(IPCP : in out IPCP_T; Clear_Incoming : Boolean := True; Clear_Outgoing : Boolean := True) is
    begin
       if Clear_Incoming then
@@ -62,6 +95,5 @@ package body IPC_Manager.IPCP is
          IPCP.Outgoing_PDUs.Clear;
       end if;
    end Clear_PDU_Buffer;
-
 
 end IPC_Manager.IPCP;

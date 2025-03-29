@@ -1,31 +1,42 @@
-with IPC_Manager;
-with IPCP_Types; use IPCP_Types;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with IPCP_Types;
+with Transport_Types; use Transport_Types;
+with IPC_Manager; use IPC_Manager;
 
 package IPC_API is
 
-   -- Exceptions for Error Handling
    IPC_Error : exception;
-   Allocation_Error : exception;
-   Deallocation_Error : exception;
 
-   procedure Allocate_Flow(Manager : in out IPC_Manager.IPCP_Manager_T; 
-                           Name : Unbounded_String;
-                           Src_CEP_ID : String; 
-                           QoS : Natural; 
-                           Flow_Handle : out Flow_Info_T);
-   
-   procedure Send(Manager : in out IPC_Manager.IPCP_Manager_T; 
-                  Name : Unbounded_String; 
-                  Flow_Handle : Flow_Info_T;
-                  Data : String);
+   -- Allocates a new flow from a source IPCP
+   procedure Allocate_Flow(
+      Manager     : in out IPCP_Manager_T;
+      Name        : Unbounded_String;
+      Src_CEP_ID  : Unbounded_String;
+      QoS         : Natural;
+      Flow_Handle : out IPCP_Types.Flow_Info_T
+   );
 
-   procedure Receive(Manager : in out IPC_Manager.IPCP_Manager_T; 
-                     Name : Unbounded_String; 
-                     Flow_Handle : Flow_Info_T;
-                     Data : out String);
+   -- Sends a message over an existing flow
+   procedure Send(
+      Manager     : in out IPCP_Manager_T;
+      Name        : Unbounded_String;
+      Flow_Handle : IPCP_Types.Flow_Info_T;
+      Data        : Unbounded_String
+   );
 
-   procedure Deallocate_Flow(Manager : in out IPC_Manager.IPCP_Manager_T; 
-                             Name : Unbounded_String; 
-                             Flow_Handle : Flow_Info_T);
+   -- Receives a message from an existing flow
+   procedure Receive(
+      Manager     : in out IPCP_Manager_T;
+      Name        : Unbounded_String;
+      Flow_Handle : IPCP_Types.Flow_Info_T;
+      Data        : out Unbounded_String
+   );
+
+   -- Deallocates a flow by its handle
+   procedure Deallocate_Flow(
+      Manager     : in out IPCP_Manager_T;
+      Name        : Unbounded_String;
+      Flow_Handle : IPCP_Types.Flow_Info_T
+   );
 
 end IPC_API;

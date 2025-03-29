@@ -26,7 +26,7 @@ package Transport_Types is
 
    type SDU_T is record
       PCI  : PCI_T;
-      Data : String(1 .. 1024);
+      Data : Unbounded_String;
    end record;
 
    -- Define the PDU_T type

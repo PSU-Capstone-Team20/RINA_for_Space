@@ -73,4 +73,27 @@ package body IPC_Manager is
       Log.Warning("Delete Failed: IPCP '" & To_String(Name) & "' not found.");
    end Delete_IPCP;
 
+   -- Allocates a new flow from a source IPCP to a destination IPCP
+   -- TO-DO : Add in CDAP Logic
+   procedure Allocate_Flow(
+      Manager  : in out IPCP_Manager_T;
+      Src_Name : Unbounded_String;
+      Dst_Name : Unbounded_String;
+      Flow     : Flow_Info_T
+   ) is
+      Src_IPCP : IPCP_Access := Find_IPCP(Manager, Src_Name);
+      Dst_IPCP : IPCP_Access := Find_IPCP(Manager, Dst_Name);
+   begin
+      if Src_IPCP = null or else Dst_IPCP = null then
+         Log.Error("One or both IPCPs not found for flow allocation.");
+         return;
+      end if;
+
+      IPC_Manager.IPCP.Add_Flow(Src_IPCP.all, Flow);
+      IPC_Manager.IPCP.Add_Flow(Dst_IPCP.all, Flow);
+
+      Log.Info("Flow ID " & Flow.Flow_ID'Image & " allocated between "
+         & To_String(Src_Name) & " and " & To_String(Dst_Name));
+   end Allocate_Flow;
+
 end IPC_Manager;

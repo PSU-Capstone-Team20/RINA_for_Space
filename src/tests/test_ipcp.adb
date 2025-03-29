@@ -38,13 +38,13 @@ procedure Test_IPCP is
          Assert(Fetched = Mock_PDU, "Outgoing PDU mismatch after assignment");
 
          Put_Line("Fetched PDU PCI Info:");
-         Put_Line("  Source CEP ID: " & To_String(Fetched.PCI.Src_CEP_ID));
-         Put_Line("  Destination CEP ID: " & To_String(Fetched.PCI.Dst_CEP_ID));
-         Put_Line("  Sequence Number: " & Integer'Image(Fetched.PCI.Seq_Num));
-         Put_Line("  DRF Flag: " & Boolean'Image(Fetched.PCI.DRF_Flag));
-         Put_Line("  ECN Flag: " & Boolean'Image(Fetched.PCI.ECN_Flag));
-         Put_Line("  QoS ID: " & Integer'Image(Fetched.PCI.QoS_ID));
-         Put_Line("  TTL: " & Integer'Image(Fetched.PCI.TTL));
+         Put_Line("Source CEP ID: " & To_String(Fetched.PCI.Src_CEP_ID));
+         Put_Line("Destination CEP ID: " & To_String(Fetched.PCI.Dst_CEP_ID));
+         Put_Line("Sequence Number: " & Integer'Image(Fetched.PCI.Seq_Num));
+         Put_Line("DRF Flag: " & Boolean'Image(Fetched.PCI.DRF_Flag));
+         Put_Line("ECN Flag: " & Boolean'Image(Fetched.PCI.ECN_Flag));
+         Put_Line("QoS ID: " & Integer'Image(Fetched.PCI.QoS_ID));
+         Put_Line("TTL: " & Integer'Image(Fetched.PCI.TTL));
       end;
 
       declare

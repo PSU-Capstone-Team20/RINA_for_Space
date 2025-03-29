@@ -34,7 +34,12 @@ package IPC_Manager is
    -- Deletes an IPCP from the manager
    procedure Delete_IPCP(Manager : in out IPCP_Manager_T; Name : Unbounded_String);
 
-   -- Allocates a flow to an IPCP
-   --function Allocate_Flow(Local_IPCP : IPCP_Access; Remote_IPCP : IPCP_Access) return Boolean;
+   procedure Allocate_Flow(
+      Manager          : in out IPCP_Manager_T;
+      Src_Name         : Unbounded_String;
+      Dst_Name         : Unbounded_String;
+      Flow             : Flow_Info_T
+   );
+
 
 end IPC_Manager;

@@ -1,124 +1,117 @@
-with IPC_Manager; use IPC_Manager;
-with IPCP_Types; use IPCP_Types;
-with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
-with Ada.Text_IO; use Ada.Text_IO;
+with IPC_Manager;            use IPC_Manager;
+with IPCP_Types;             use IPCP_Types;
+with IPC_Manager.IPCP;       use IPC_Manager.IPCP;
+with Ada.Strings.Unbounded;  use Ada.Strings.Unbounded;
+with Ada.Containers;         use Ada.Containers;
+with Ada.Text_IO;            use Ada.Text_IO;
 
 package body IPC_API is
 
-   -- Procedure to allocate a new flow
-   procedure Allocate_Flow(Manager : in out IPCP_Manager_T;
-                          Name : Unbounded_String;
-                          Src_CEP_ID : String;
-                          QoS : Natural;
-                          Flow_Handle : out Flow_Info_T) is
+   -- Allocate a flow
+   procedure Allocate_Flow(
+      Manager     : in out IPCP_Manager_T;
+      Name        : Unbounded_String;
+      Src_CEP_ID  : Unbounded_String;
+      QoS         : Natural;
+      Flow_Handle : out Flow_Info_T
+   ) is
       IPCP_Instance : IPCP_Access := Find_IPCP(Manager, Name);
+      Flow_ID       : Natural;
    begin
       if IPCP_Instance = null then
          raise IPC_Error with "IPCP instance not found.";
       end if;
 
-      -- Create a new flow
-      Flow_Handle := (Flow_ID       => IPCP_Instance.Active_Flows.Length + 1,
-                     Port_ID       => 1, -- Placeholder
-                     QoS_ID        => QoS,
-                     Remote_CEP_ID => Src_CEP_ID);
+      Flow_ID := Natural(IPCP_Instance.Active_Flows.Length) + 1;
 
-      -- Add the flow to the active flows list
-      IPCP_Instance.Active_Flows.Append(Flow_Handle);
+      Flow_Handle := (
+         Flow_ID       => Flow_ID,
+         Port_ID       => 1,
+         QoS_ID        => QoS,
+         Remote_CEP_ID => Src_CEP_ID
+      );
 
-   exception
-      when others =>
-         raise IPC_Error with "Error allocating flow.";
+      Add_Flow(IPCP_Instance.all, Flow_Handle);
    end Allocate_Flow;
 
-   -- Procedure to send data over a flow
-   procedure Send(Manager : in out IPCP_Manager_T;
-                 Name : Unbounded_String;
-                 Flow_Handle : Flow_Info_T;
-                 Data : String) is
+   -- Send data over a flow
+   procedure Send(
+      Manager     : in out IPCP_Manager_T;
+      Name        : Unbounded_String;
+      Flow_Handle : Flow_Info_T;
+      Data        : Unbounded_String
+   ) is
       IPCP_Instance : IPCP_Access := Find_IPCP(Manager, Name);
-      PDU : PDU_T;
+      PDU           : PDU_T;
+      Raw_Data      : constant String := To_String(Data);
+      Len           : constant Natural := Raw_Data'Length;
    begin
       if IPCP_Instance = null then
          raise IPC_Error with "IPCP instance not found.";
       end if;
 
-      -- Check if the flow exists
-      for Flow of IPCP_Instance.Active_Flows loop
-         if Flow.Flow_ID = Flow_Handle.Flow_ID then
-            -- Create a PDU and add it to the outgoing buffer
-            PDU.Data := To_Unbounded_String(Data);
-            Assign_PDU(IPCP_Instance.all, PDU);
-            return;
-         end if;
-      end loop;
+      if not Flow_Exists(IPCP_Instance.all, Flow_Handle.Flow_ID) then
+         raise IPC_Error with "Flow not found.";
+      end if;
 
-      raise IPC_Error with "Flow not found.";
+      -- Copy into fixed-length Data field
+      PDU.Data := (others => ' ');
+      PDU.Data(1 .. Len) := Raw_Data;
 
-   exception
-      when others =>
-         raise IPC_Error with "Error sending data.";
+      Assign_PDU(IPCP_Instance.all, PDU);
    end Send;
 
-   -- Procedure to receive data from a flow
-   procedure Receive(Manager : in out IPCP_Manager_T;
-                    Name : Unbounded_String;
-                    Flow_Handle : Flow_Info_T;
-                    Data : out String) is
+   -- Receive data from a flow
+   procedure Receive(
+      Manager     : in out IPCP_Manager_T;
+      Name        : Unbounded_String;
+      Flow_Handle : Flow_Info_T;
+      Data        : out Unbounded_String
+   ) is
       IPCP_Instance : IPCP_Access := Find_IPCP(Manager, Name);
-      PDU : PDU_T;
+      PDU           : PDU_T;
+      Valid_End     : Natural := 1024;
    begin
       if IPCP_Instance = null then
          raise IPC_Error with "IPCP instance not found.";
       end if;
 
-      -- Check if the flow exists
-      for Flow of IPCP_Instance.Active_Flows loop
-         if Flow.Flow_ID = Flow_Handle.Flow_ID then
-            -- Check if there is incoming data
-            if IPCP_Instance.Incoming_PDUs.Length > 0 then
-               PDU := Pop_PDU(IPCP_Instance.all, From_Outgoing => False);
-               Data := To_String(PDU.Data);
-               return;
-            else
-               Data := "No data available";
-               return;
-            end if;
+      if not Flow_Exists(IPCP_Instance.all, Flow_Handle.Flow_ID) then
+         raise IPC_Error with "Flow not found.";
+      end if;
+
+      if IPCP_Instance.Incoming_PDUs.Length > 0 then
+         PDU := Pop_PDU(IPCP_Instance.all, From_Outgoing => False);
+
+         -- Trim trailing spaces to find valid data length
+         while Valid_End > 0 and then PDU.Data(Valid_End) = ' ' loop
+            Valid_End := Valid_End - 1;
+         end loop;
+
+         if Valid_End = 0 then
+            Data := To_Unbounded_String("");
+         else
+            Data := To_Unbounded_String(PDU.Data(1 .. Valid_End));
          end if;
-      end loop;
 
-      raise IPC_Error with "Flow not found.";
-
-   exception
-      when others =>
-         raise IPC_Error with "Error receiving data.";
+      else
+         Data := To_Unbounded_String("No data available");
+      end if;
    end Receive;
 
-   -- Procedure to deallocate a flow
-   procedure Deallocate_Flow(Manager : in out IPCP_Manager_T;
-                            Name : Unbounded_String;
-                            Flow_Handle : Flow_Info_T) is
+   -- Deallocate a flow
+   procedure Deallocate_Flow(
+      Manager     : in out IPCP_Manager_T;
+      Name        : Unbounded_String;
+      Flow_Handle : Flow_Info_T
+   ) is
       IPCP_Instance : IPCP_Access := Find_IPCP(Manager, Name);
-      Index : Natural := IPCP_Instance.Active_Flows.First_Index;
    begin
       if IPCP_Instance = null then
          raise IPC_Error with "IPCP instance not found.";
       end if;
 
-      -- Find and remove the flow
-      for Flow of IPCP_Instance.Active_Flows loop
-         if Flow.Flow_ID = Flow_Handle.Flow_ID then
-            IPCP_Instance.Active_Flows.Delete(Index);
-            return;
-         end if;
-         Index := Index + 1;
-      end loop;
-
-      raise IPC_Error with "Flow not found.";
-
-   exception
-      when others =>
-         raise IPC_Error with "Error deallocating flow.";
+      Remove_Flow(IPCP_Instance.all, Flow_Handle.Flow_ID);
    end Deallocate_Flow;
 
 end IPC_API;
