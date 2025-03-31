@@ -2,9 +2,9 @@ with application; use application;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Containers.Vectors;
 with Ada.Text_IO; use Ada.Text_IO;
-with DIF; use DIF;
+with DIF_Manager.Dif; use DIF_Manager.Dif;
 
-package dif_manager is
+package DIF_Manager is
 
     package DIF_Vectors is new Ada.Containers.Vectors
       (Index_Type => Natural, Element_Type => DIF_Access);

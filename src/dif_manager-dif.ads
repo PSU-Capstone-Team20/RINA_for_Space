@@ -5,7 +5,7 @@ with Ada.Containers.Vectors;
 with Ada.Text_IO; use Ada.Text_IO;
 
 
-package dif is
+package DIF_Manager.Dif is
    type DIF is tagged;
 
    type DIF_Access is access all DIF;
@@ -36,20 +36,20 @@ package dif is
    end record;
 
    -- creates a DIF with specified ID and adds it to the vector
-   function createDIF return DIF_Access;
+   function Create_DIF return DIF_Access;
    -- creates a DIF with argument for name and adds it to the vector.
-   function createNamedDIF(name : Unbounded_String) return DIF_Access;
+   function Create_Named_DIF(name : Unbounded_String) return DIF_Access;
    -- returns the ID of the inputted DIF in a vector
-   function getID(self : DIF_Access) return Integer;
+   function Get_ID(self : DIF_Access) return Integer;
    -- returns the name of the inputted DIF
-   function getName(self : DIF_Access) return Unbounded_String;
+   function Get_Name(self : DIF_Access) return Unbounded_String;
    -- deletes the DIF that has the specified ID if possible
-   procedure disconnectDIF(ID : Integer; vector : in out DIF_Vector);
+   procedure Disconnect_DIF(ID : Integer; vector : in out DIF_Vector);
    -- adds a pair of DIFs to each other's accessible DIFs
    -- TODO so this is using broadcasting to find other available DIFs - Needs tasking
-   procedure pairDIF(first : in out DIF_Access; second : in out DIF_Access);
+   procedure Pair_DIF(first : in out DIF_Access; second : in out DIF_Access);
    -- lists the IDs of accessible DIFs
-   procedure listAccessibleDIF(self : DIF_Access);
+   procedure List_Accessible_DIF(self : DIF_Access);
 
    -- TODO directory and pathing
    -- TODO Application Connection logic
@@ -63,4 +63,4 @@ package dif is
    -- deletes IPCP with given name from given DIF
    -- procedure disconnectIPCP(name : Unbounded_String; self : in out DIF_Access);
 
-end dif;
+end DIF_Manager.Dif;
