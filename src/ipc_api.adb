@@ -1,70 +1,118 @@
-with Ada.Text_IO; use Ada.Text_IO;
-with Ada.Calendar; use Ada.Calendar;
-with Ada.Containers;
-with Ada.Containers.Indefinite_Hashed_Maps;
-with IPCP; use IPCP;
-with IPC_Manager; use IPC_Manager;
+with IPC_Manager;            use IPC_Manager;
+with IPCP_Types;             use IPCP_Types;
+with IPC_Manager.IPCP;       use IPC_Manager.IPCP;
+with Ada.Strings.Unbounded;  use Ada.Strings.Unbounded;
+with Ada.Containers;         use Ada.Containers;
+with Ada.Text_IO;            use Ada.Text_IO;
 
 package body IPC_API is
 
-   -- may use a different data structure
-   package Port_Map is new Ada.Containers.Indefinite_Hashed_Maps
-     (Key_Type => Port_ID, Element_Type => IPCP_Access, Hash => Ada.Containers.Hash_Type'Input);
-   Port_Table : Port_Map.Map;
-
-   function Allocate (Src_Application : Unbounded_String;
-                      Dst_Application : Unbounded_String;
-                      QoS             : Priority_Level;
-                      DIF_M           : in out DIF_MANAGER_T;
-                      IPC_M           : in out IPCP_Manager_T) return Port_ID is
-      Src_IPCP, Dst_IPCP : IPCP_Access;
-      New_Port : Port_ID := Port_ID(Port_Table.Length + 1);
+   -- Allocate a flow
+   procedure Allocate_Flow(
+      Manager     : in out IPCP_Manager_T;
+      Name        : Unbounded_String;
+      Src_CEP_ID  : Unbounded_String;
+      QoS         : Natural;
+      Flow_Handle : out Flow_Info_T
+   ) is
+      IPCP_Instance : IPCP_Access := Find_IPCP(Manager, Name);
+      Flow_ID       : Natural;
    begin
-      Src_IPCP := IPC_Manager.Find_IPCP(IPC_M, Src_Application);
-      Dst_IPCP := IPC_Manager.Find_IPCP(IPC_M, Dst_Application);
-
-      if Src_IPCP /= null and Dst_IPCP /= null then
-         Port_Table.Insert(New_Port, Dst_IPCP);
-         return New_Port;
-      else
-         return 0;
+      if IPCP_Instance = null then
+         raise IPC_Error with "IPCP instance not found.";
       end if;
-   end Allocate;
 
-   procedure Send (Port : Port_ID; SDU : String; IPC_M : in out IPCP_Manager_T) is
-      Dst_IPCP : IPCP_Access;
-      PDU : PDU_T;
-      PCI : PCI_T := (Seq_Num => 1, DRF_Flag => False, ECN_Flag => False, QoS_ID => 1);
+      Flow_ID := Natural(IPCP_Instance.Active_Flows.Length) + 1;
+
+      Flow_Handle := (
+         Flow_ID       => Flow_ID,
+         Port_ID       => 1,
+         QoS_ID        => QoS,
+         Remote_CEP_ID => Src_CEP_ID
+      );
+
+      Add_Flow(IPCP_Instance.all, Flow_Handle);
+   end Allocate_Flow;
+
+   -- Send data over a flow
+   procedure Send(
+      Manager     : in out IPCP_Manager_T;
+      Name        : Unbounded_String;
+      Flow_Handle : Flow_Info_T;
+      Data        : Unbounded_String
+   ) is
+      IPCP_Instance : IPCP_Access := Find_IPCP(Manager, Name);
+      PDU           : PDU_T;
+      Raw_Data      : constant String := To_String(Data);
+      Len           : constant Natural := Raw_Data'Length;
    begin
-      if Port_Table.Contains(Port) then
-         Dst_IPCP := Port_Table.Element(Port);
-         PDU := Create_PDU(ID => "PDU_" & Port'Image, P_Type => DT,
-                           Src_Addr => "SrcApp", Dst_Addr => "DstApp",
-                           PCI => PCI, SDU => SDU);
-         Process_PDU(Dst_IPCP.all, PDU);
+      if IPCP_Instance = null then
+         raise IPC_Error with "IPCP instance not found.";
       end if;
+
+      if not Flow_Exists(IPCP_Instance.all, Flow_Handle.Flow_ID) then
+         raise IPC_Error with "Flow not found.";
+      end if;
+
+      -- Copy into fixed-length Data field
+      PDU.Data := (others => ' ');
+      PDU.Data(1 .. Len) := Raw_Data;
+
+      Assign_PDU(IPCP_Instance.all, PDU);
    end Send;
 
-   function Receive (Port : Port_ID; IPC_M : in out IPCP_Manager_T) return String is
-      Dst_IPCP : IPCP_Access;
-      Received_PDU : PDU_T;
+   -- Receive data from a flow
+   procedure Receive(
+      Manager     : in out IPCP_Manager_T;
+      Name        : Unbounded_String;
+      Flow_Handle : Flow_Info_T;
+      Data        : out Unbounded_String
+   ) is
+      IPCP_Instance : IPCP_Access := Find_IPCP(Manager, Name);
+      PDU           : PDU_T;
+      Valid_End     : Natural := 1024;
    begin
-      if Port_Table.Contains(Port) then
-         Dst_IPCP := Port_Table.Element(Port);
-         if Dst_IPCP.PDUs.Length > 0 then
-            Received_PDU := Dst_IPCP.PDUs.First_Element;
-            Dst_IPCP.PDUs.Delete_First;
-            return Received_PDU.SDU;
-         end if;
+      if IPCP_Instance = null then
+         raise IPC_Error with "IPCP instance not found.";
       end if;
-      return "";
+
+      if not Flow_Exists(IPCP_Instance.all, Flow_Handle.Flow_ID) then
+         raise IPC_Error with "Flow not found.";
+      end if;
+
+      if IPCP_Instance.Incoming_PDUs.Length > 0 then
+         PDU := Pop_PDU(IPCP_Instance.all, From_Outgoing => False);
+
+         -- Trim trailing spaces to find valid data length
+         -- this can delete once we get a proper length field
+         while Valid_End > 0 and then PDU.Data(Valid_End) = ' ' loop
+            Valid_End := Valid_End - 1;
+         end loop;
+
+         if Valid_End = 0 then
+            Data := To_Unbounded_String("");
+         else
+            Data := To_Unbounded_String(PDU.Data(1 .. Valid_End));
+         end if;
+
+      else
+         Data := To_Unbounded_String("No data available");
+      end if;
    end Receive;
 
-   procedure Deallocate (Port : Port_ID; IPC_M : in out IPCP_Manager_T) is
+   -- Deallocate a flow
+   procedure Deallocate_Flow(
+      Manager     : in out IPCP_Manager_T;
+      Name        : Unbounded_String;
+      Flow_Handle : Flow_Info_T
+   ) is
+      IPCP_Instance : IPCP_Access := Find_IPCP(Manager, Name);
    begin
-      if Port_Table.Contains(Port) then
-         Port_Table.Delete(Port);
+      if IPCP_Instance = null then
+         raise IPC_Error with "IPCP instance not found.";
       end if;
-   end Deallocate;
+
+      Remove_Flow(IPCP_Instance.all, Flow_Handle.Flow_ID);
+   end Deallocate_Flow;
 
 end IPC_API;

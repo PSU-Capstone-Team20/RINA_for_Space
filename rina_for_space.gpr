@@ -1,11 +1,14 @@
 with "config/rina_for_space_config.gpr";
 project Rina_For_Space is
 
-   for Source_Dirs use ("src/", "config/");
+   for Source_Dirs use ("src/**");
    for Object_Dir use "obj/" & Rina_For_Space_Config.Build_Profile;
    for Create_Missing_Dirs use "True";
    for Exec_Dir use "bin";
-   for Main use ("rina_for_space.adb");
+   for Main use ("rina_for_space.adb",
+                 "test_dif.adb",
+                 "test_ipcp.adb",
+                 "test_ipc_api.adb");
 
    package Compiler is
       for Default_Switches ("Ada") use Rina_For_Space_Config.Ada_Compiler_Switches & ("-gnat2022");

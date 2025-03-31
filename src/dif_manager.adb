@@ -3,6 +3,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Containers.Vectors;
 with Application; use Application;
 with DIF_Manager.Dif; use DIF_Manager.Dif;
+with IPC_Manager; use IPC_Manager;
 
 package body DIF_Manager is
 
@@ -24,6 +25,11 @@ package body DIF_Manager is
    begin
       DIFs.Delete(Index);
    end Disconnect_DIF;
+
+   procedure Enroll_IPCP(This : in out DIF_T; IPCP : IPCP_T) is 
+   begin
+      This.IPCPs.Append(IPCP);
+   end Enroll_IPCP;
 
    procedure List_DIFs is
    begin

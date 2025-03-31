@@ -1,3 +1,73 @@
 obj/
 bin/
 /.vs
+# Ada Compiler Output
+*.ali
+*.o
+*.d
+*.b
+*.lst
+*.map
+*.s
+
+# GNAT-specific files
+*.gpr
+*.gps
+*.gpi
+*.gpm
+*.gpl
+*.gpc
+*.gpe
+*.gpa
+
+# VSCode Directory
+.vscode/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+*.orig
+*.swp
+*.swo
+*.swn
+
+# Dependency directories
+dependencies/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Node modules if using any Node.js tools
+node_modules/
+
+# Python cache if using any Python tools
+__pycache__/
+*.pyc
+
+# Ignore any private keys or sensitive information
+*.key
+*.pem
+*.ppk
+
+# Ignore build artifacts
+build/
+dist/
+
+# Ignore any IDE-specific files
+.idea/
+*.suo
+*.ntvs*
+*.ncrunch*
+*.vscode*
+
+# Ignore user-specific configuration files
+*.rsuser

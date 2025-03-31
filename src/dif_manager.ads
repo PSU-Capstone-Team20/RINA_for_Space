@@ -3,6 +3,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Containers.Vectors;
 with Ada.Text_IO; use Ada.Text_IO;
 with DIF_Manager.Dif; use DIF_Manager.Dif;
+with IPC_Manager; use IPC_Manager;
 
 package DIF_Manager is
 
@@ -22,6 +23,10 @@ package DIF_Manager is
     
     -- deletes the DIF that has the specified ID from the manager
     procedure Disconnect_DIF(Index : Integer);
+
+    --enroll IPCP
+    procedure Enroll_IPCP(This : in out DIF_T; IPCP : IPCP_T);
+    
     
     -- Lsts all DIFS
     procedure List_DIFs;
