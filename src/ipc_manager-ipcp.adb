@@ -10,6 +10,7 @@ package body IPC_Manager.IPCP is
       New_IPCP : IPCP_T;
    begin
       New_IPCP.Name               := Name;
+      
       --New_IPCP.Address            := Address;
       --New_IPCP.Connected_Computer := Connected_Computer;
       New_IPCP.State              := Initialized;

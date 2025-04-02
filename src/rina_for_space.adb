@@ -8,8 +8,9 @@ with Ada.Containers.Vectors;
 with IPC_Manager; use IPC_Manager;
 with DIF_Manager; use DIF_Manager;
 with IPC_Manager.IPCP; use IPC_Manager.IPCP;
---with DIF_Manager.Dif; use DIF_Manager.Dif;
+with DIF_Manager.Dif; use DIF_Manager.Dif;
 with Rina_BP_Bundle; use Rina_BP_Bundle;
+with IPCP_Types; use IPCP_Types;
 with CDAP;
 with RIB; use RIB;
 --with fakeComp;
@@ -81,8 +82,35 @@ procedure Rina_For_Space is
    --testing for bundle 
    B : Bundle;
 
+   --DIF and IPCP instance test 
+   DIF_Instance : DIF_Manager.Dif.DIF_T;
+   IPCP_Instance : IPCP_Types.IPCP_T;
+   IPCP_Instance1 : IPCP_Types.IPCP_T;
+
 
 begin
+
+   DIF_Instance.DIF_ID := 1;
+   DIF_Instance.DIF_Name := To_Unbounded_String("DIF Test");
+   IPCP_Instance.Name := To_Unbounded_String("IPCPTest");
+   IPCP_Instance1.Name := To_Unbounded_String("IPCPTest1");
+
+   DIF_Manager.Enroll_IPCP(DIF_Instance, IPCP_Instance);
+   DIF_Manager.Enroll_IPCP(DIF_Instance, IPCP_Instance1);
+
+   Put_Line("DIF Name : " & To_String(DIF_Instance.DIF_Name));
+
+   Put_Line("IPCP Name: " & To_String(IPCP_Instance.Name));
+   Put_Line("Second IPCP Name: " & To_String(IPCP_Instance1.Name));
+   
+
+
+   Put_Line("Number of Enrolled IPCPs: " & Ada.Containers.Count_Type'Image(DIF_Instance.Enrolled_IPCPs.Length));
+   
+   for Index in DIF_Instance.Enrolled_IPCPs.First_Index .. DIF_Instance.Enrolled_IPCPs.Last_Index loop
+      Put_Line( " - " & To_String(DIF_Instance.Enrolled_IPCPs(Index).Name));
+   end loop;
+
 
    --  newfakecomp;
    --  TC_V.Reference(0).change_name(To_Unbounded_String("Joe"));

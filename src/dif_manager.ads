@@ -21,7 +21,7 @@ package DIF_Manager is
     procedure Disconnect_DIF(Index : Integer);
 
     --enroll IPCP
-    procedure Enroll_IPCP(Owner_DIF : in out DIF_Manager.Dif.DIF_T);
+    procedure Enroll_IPCP(Owner_DIF : in out DIF_Manager.Dif.DIF_T; IPCP_Inst : in IPCP_Types.IPCP_T);
     
     
     -- Lsts all DIFS

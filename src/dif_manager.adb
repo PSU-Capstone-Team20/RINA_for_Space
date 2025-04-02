@@ -4,7 +4,7 @@ with Ada.Containers.Vectors;
 with Application; use Application;
 with DIF_Manager.Dif; use DIF_Manager.Dif;
 with IPC_Manager; use IPC_Manager;
-with IPCP_Types; use IPCP_Types;
+with IPCP_Types; 
 with IPC_Manager.IPCP; use IPC_Manager.IPCP;
 
 package body DIF_Manager is
@@ -15,7 +15,8 @@ package body DIF_Manager is
 
    --  package IPCP_Vectors is new Ada.Containers.Vectors
    --    (Index_Type => Natural, Element_Type => DIF_Manager.Dif.IPCP_Access);
-   
+
+   --  subtype IPCP_Vector is IPCP_Vectors.Vector;
    --  IPCPs : IPCP_Vector;
 
    
@@ -43,11 +44,13 @@ package body DIF_Manager is
 
    -- WIP:Create_IPCP and Make_IPCP need clarification. Access issues as it needs to 
    -- have the manager tagged to each instance of IPCP? 
-   procedure Enroll_IPCP(Owner_DIF : in out DIF_T) is
-      New_IPCP : IPCP_T := Make_IPCP.To_Unbounded_String(Owner_DIF.DIF_Name);
+   procedure Enroll_IPCP(Owner_DIF : in out DIF_Manager.Dif.DIF_T; IPCP_Inst : in IPCP_Types.IPCP_T) is
+      New_IPCP : DIF_Manager.Dif.IPCP_Access := new IPCP_Types.IPCP_T'(Make_IPCP(IPCP_Inst.Name));
+      Assigned_DIF : DIF_Manager.Dif.DIF_T;
    begin
-      
-      Append(Owner_DIF, New_IPCP);
+      --New_IPCP.Name := IPCP_Inst.Name;
+      Assigned_DIF.DIF_Name := Owner_DIF.DIF_Name;
+      DIF_Manager.Dif.IPCP_Vectors.Append(Owner_DIF.Enrolled_IPCPs, New_IPCP);
    end Enroll_IPCP;
 
    procedure List_DIFs is
