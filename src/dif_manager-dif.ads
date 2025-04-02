@@ -1,34 +1,40 @@
-Limited with IPCP;
+
 with application; use application; 
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Containers.Vectors;
 with Ada.Text_IO; use Ada.Text_IO;
+with IPC_Manager.IPCP;
+with IPCP_Types;
 
 
 package DIF_Manager.Dif is
-   type DIF is tagged;
+   type DIF_T is tagged;
 
-   type DIF_Access is access all DIF;
-   type IPCP_Access is access all IPCP.IPCP_T;
+   type DIF_Access is access all DIF_T;
+   type IPCP_Access is access all IPCP_Types.IPCP_T;
 
    package Application_Vectors is new Ada.Containers.Vectors
      (Index_Type => Natural, Element_Type => application.application);
+
    package DIF_Vectors is new Ada.Containers.Vectors
      (Index_Type => Natural, Element_Type => DIF_Access);
+
    package IPCP_Vectors is new Ada.Containers.Vectors
      (Index_Type => Natural, Element_Type => IPCP_Access);
+
    package computer_connections is new Ada.Containers.Vectors
       (Index_Type => Natural, Element_Type => Unbounded_String);
 
    subtype Application_Vector is Application_Vectors.Vector;
    subtype DIF_Vector is DIF_Vectors.Vector;
+   subtype IPCP_Vector is IPCP_Vectors.Vector;
    subtype computer_connection is computer_connections.Vector;
    -- subtype IPCP_Vector is IPCP_Vectors.Vector;
 
    type DIF_T is tagged record
       DIF_ID          : Integer;
       DIF_Name        : Unbounded_String;
-      Enrolled_IPCPs  : IPCP_Vectors.Vector;        
+      Enrolled_IPCPs  : IPCP_Vector;        
       Applications    : Application_Vector; 
       AccessibleDIFs  : DIF_Vector; 
       Computers       : computer_connection;
@@ -38,7 +44,7 @@ package DIF_Manager.Dif is
    -- creates a DIF with specified ID and adds it to the vector
    function Create_DIF return DIF_Access;
    -- creates a DIF with argument for name and adds it to the vector.
-   function Create_Named_DIF(name : Unbounded_String) return DIF_Access;
+   function Create_Named_DIF(Name : Unbounded_String) return DIF_Access;
    -- returns the ID of the inputted DIF in a vector
    function Get_ID(self : DIF_Access) return Integer;
    -- returns the name of the inputted DIF

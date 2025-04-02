@@ -1,8 +1,11 @@
+with IPC_Manager.IPCP; use IPC_Manager.IPCP;
+
+
 package body DIF_Manager.Dif is
 
    -- creates a DIF with specified ID and adds it to the vector
    function Create_DIF return DIF_Access is
-      New_DIF : constant DIF_Access := new DIF;
+      New_DIF : constant DIF_Access := new DIF_T;
       begin
 
       -- TODO Add IPCP_Manager Logic Here
@@ -20,7 +23,7 @@ package body DIF_Manager.Dif is
    end Create_DIF;
 
    function Create_Named_DIF(name : Unbounded_String) return DIF_Access is
-      New_DIF : constant DIF_Access := new DIF;
+      New_DIF : constant DIF_Access := new DIF_T;
       begin
 
       -- TODO Add IPCP_Manager Logic Here
@@ -53,7 +56,7 @@ package body DIF_Manager.Dif is
    procedure Disconnect_DIF(ID : Integer; vector : in out DIF_Vector) is
       begin
          for I in vector.First_Index .. vector.Last_Index loop
-            if (getID(vector(I)) = ID) then
+            if (Get_ID(vector(I)) = ID) then
                vector.Delete(I);
                exit;
             end if;
@@ -71,8 +74,8 @@ package body DIF_Manager.Dif is
    procedure List_Accessible_DIF(self : DIF_Access) is
       begin
       for i in self.AccessibleDIFs.First_Index .. self.AccessibleDIFs.Last_Index loop
-         Put(getID(self.AccessibleDIFs(i))'Image);
-         Put_Line(" " & Unbounded_String'Image(getName(self.AccessibleDIFs(i))));
+         Put(Get_ID(self.AccessibleDIFs(i))'Image);
+         Put_Line(" " & Unbounded_String'Image(Get_Name(self.AccessibleDIFs(i))));
       end loop;
    end List_Accessible_DIF;
    

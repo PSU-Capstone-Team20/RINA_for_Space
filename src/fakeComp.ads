@@ -1,6 +1,6 @@
 with RIB_Daemon;
 with IPC_Manager;
-with dif;
+with DIF_Manager.Dif;
 with RIB;
 with ada.Strings.Unbounded; use ada.Strings.Unbounded;
 with Ada.Containers.Vectors;

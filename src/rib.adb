@@ -3,7 +3,7 @@ with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Containers.Indefinite_Hashed_Maps;
 with Ada.Strings.Hash;
-with dif;
+with DIF_Manager.Dif; use DIF_Manager.Dif;
 with GNAT.Table;
 with IPC_Manager.IPCP;
 with application;

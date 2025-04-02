@@ -4,21 +4,36 @@ with Ada.Containers.Vectors;
 with Application; use Application;
 with DIF_Manager.Dif; use DIF_Manager.Dif;
 with IPC_Manager; use IPC_Manager;
+with IPCP_Types; use IPCP_Types;
+with IPC_Manager.IPCP; use IPC_Manager.IPCP;
 
 package body DIF_Manager is
 
+   package DIF_Vectors is new Ada.Containers.Vectors
+      (Index_Type => Natural, Element_Type => DIF_Manager.Dif.DIF_Access);
+   subtype DIF_Vector is DIF_Vectors.Vector;
+
+   --  package IPCP_Vectors is new Ada.Containers.Vectors
+   --    (Index_Type => Natural, Element_Type => DIF_Manager.Dif.IPCP_Access);
+   
+   --  IPCPs : IPCP_Vector;
+
+   
+   DIFs : DIF_Vector;
+
    procedure Create_DIF(ID : Integer) is
-      New_DIF : DIF_Access := createDIF;
+      New_DIF : DIF_Access := Create_DIF;
    begin
       New_DIF.DIF_ID := ID;
       DIFs.Append(New_DIF);
    end Create_DIF;
 
-   procedure Create_Named_DIF(ID : Integer; Name : Unbounded_String) is
-      New_DIF : DIF_Access := createNamedDIF(Name);
+   function Create_Named_DIF(Name : Unbounded_String) return DIF_Access is
+      New_DIF : DIF_Manager.Dif.DIF_Access := DIF_Manager.Dif.Create_Named_DIF(Name);
    begin
-      New_DIF.DIF_ID := ID;
+      --New_DIF.DIF_ID := ID;
       DIFs.Append(New_DIF);
+      return New_DIF;
    end Create_Named_DIF;
 
    procedure Disconnect_DIF(Index : Integer) is
@@ -26,9 +41,13 @@ package body DIF_Manager is
       DIFs.Delete(Index);
    end Disconnect_DIF;
 
-   procedure Enroll_IPCP(This : in out DIF_T; IPCP : IPCP_T) is 
+   -- WIP:Create_IPCP and Make_IPCP need clarification. Access issues as it needs to 
+   -- have the manager tagged to each instance of IPCP? 
+   procedure Enroll_IPCP(Owner_DIF : in out DIF_T) is
+      New_IPCP : IPCP_T := Make_IPCP.To_Unbounded_String(Owner_DIF.DIF_Name);
    begin
-      This.IPCPs.Append(IPCP);
+      
+      Append(Owner_DIF, New_IPCP);
    end Enroll_IPCP;
 
    procedure List_DIFs is

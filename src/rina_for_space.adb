@@ -7,10 +7,11 @@ with Ada.Calendar; use Ada.Calendar;
 with Ada.Containers.Vectors;
 with IPC_Manager; use IPC_Manager;
 with DIF_Manager; use DIF_Manager;
-with DIF; use DIF;
+with IPC_Manager.IPCP; use IPC_Manager.IPCP;
+--with DIF_Manager.Dif; use DIF_Manager.Dif;
 with Rina_BP_Bundle; use Rina_BP_Bundle;
 with CDAP;
- with RIB; use RIB;
+with RIB; use RIB;
 --with fakeComp;
 
 
