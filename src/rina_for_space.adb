@@ -13,6 +13,7 @@ with Rina_BP_Bundle; use Rina_BP_Bundle;
 with IPCP_Types; use IPCP_Types;
 with CDAP;
 with RIB; use RIB;
+with Policy_Enforcement; use Policy_Enforcement;
 --with fakeComp;
 
 
@@ -87,9 +88,15 @@ procedure Rina_For_Space is
    IPCP_Instance : IPCP_Types.IPCP_T;
    IPCP_Instance1 : IPCP_Types.IPCP_T;
 
+   Policy : Policy_Enforcement.DIF_Creation_Policy;
+
+
+
 
 begin
 
+   Policy := Policy_Enforcement.Get_DIF_Creation_Policy(DIF_Instance.DIF_Name);
+   DIF_Instance.Policy := Policy;
    DIF_Instance.DIF_ID := 1;
    DIF_Instance.DIF_Name := To_Unbounded_String("DIF Test");
    IPCP_Instance.Name := To_Unbounded_String("IPCPTest");
@@ -110,6 +117,9 @@ begin
    for Index in DIF_Instance.Enrolled_IPCPs.First_Index .. DIF_Instance.Enrolled_IPCPs.Last_Index loop
       Put_Line( " - " & To_String(DIF_Instance.Enrolled_IPCPs(Index).Name));
    end loop;
+
+   Put_Line("Policy: Routing = " & To_String(Policy.Routing_Strategy));
+   Put_Line("Policy: Enrollment = " & To_String(Policy.Enrollment_Type));
 
 
    --  newfakecomp;
