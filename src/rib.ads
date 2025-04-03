@@ -23,21 +23,40 @@ package RIB is
     
     package IPCP_Vectors is new Ada.Containers.Vectors
      (Index_Type => Natural, Element_Type => IPCP_obj);
-   package computer_connection is new Ada.Containers.Vectors
-      (Index_Type => Natural, Element_Type => Unbounded_String);
-
+      
+   
+      --this is a representation of the IPCPs and APNs that would be running on a computer, should only be used by RIB_Obj
+    type RIB_Obj_Obj is record
+      Active_APNs      : Application_Vectors.Vector; -- applications running on system
+      Accessible_IPCPs : IPCP_Vectors.Vector; -- list of ipcps system has access to
+    end record;
+   
     -- represents a live computer in the system as a RIB object
     type RIB_Obj is record
      -- Hash_ID          : Ada.Containers.Hash_Type; -- hash value for each entry
-      Accessible_IPCPs : IPCP_Vectors.Vector; -- list of ipcps system has access to
+      --Accessible_IPCPs : IPCP_Vectors.Vector; -- list of ipcps system has access to
       --Connected_DIFs   : DIF_Vectors.Vector; -- list of difs system has access to
-      Active_APNs      : Application_Vectors.Vector; -- applications running on system
-      Comp_Connection  : computer_connection.Vector;
+      --Active_APNs      : Application_Vectors.Vector; -- applications running on system
+
+      --RIB_Obj is defined as a string representing the Computer and the IPCPs and APNs running on it
+      Comp_Connection  : Unbounded_String; --SHOULD BE THE SAME AS THE HASH
+      Obj_Obj_Type : RIB_Obj_Obj;
     end record;
+    
+    --map structure of the Obj_Type in RIB_Entry
+    --holds RIB_Objs, hash is an Unbounded String,
+    package Comp_Hashed_Maps is new Ada.Containers.Indefinite_Hashed_Maps
+    (
+      Key_Type => Unbounded_String,
+      Element_Type => RIB_Obj,
+      Hash => Ada.Strings.Unbounded.Hash,
+      Equivalent_Keys => "="
+    );
 
     type RIB_Entry is record
-      Name       : Unbounded_String;
-      Obj_Type   : RIB_Obj;
+      Name       : Unbounded_String; --SHOULD BE THE SAME AS THE HASH
+      --we shoved a map of the computer representations inside the RIB map
+      Obj_Type   : Comp_Hashed_Maps.map;
     end record;
 
     -- function Hash (Key : Unbounded_String) return Ada.Containers.Hash_Type;
@@ -50,6 +69,8 @@ package RIB is
       Equivalent_Keys => "="
     );
     use RIB_Hashed_Maps;
+
+    
 
 
    --test procedure: example for how to add and access 
@@ -65,16 +86,16 @@ package RIB is
     --add procedures for RIB_Entry/DIF/IPCP/APN
     procedure Add_Entry(Name : Unbounded_String);
    --   procedure Add_DIF(Name : Unbounded_String; dif : in out Unbounded_String);
-    procedure Add_IPCP(Name : Unbounded_String; ipcp : in out IPCP_obj);
-    procedure Add_APN(Name : Unbounded_String; APN : in out Unbounded_String);
+    procedure Add_IPCP(Name : Unbounded_String; CompName : Unbounded_String; ipcp :  in out IPCP_obj);
+    procedure Add_APN(Name : Unbounded_String; CompName : Unbounded_String; APN : in out Unbounded_String);
     procedure Add_Comp(Name : Unbounded_String; Comp : in out Unbounded_String);
 
 
     --get functions for RIB_Entry/DIF/IPCP/APN
     function Get_Entry(Name : Unbounded_String) return RIB_Entry;
    --   function Get_DIF(index : Integer; item : RIB_Entry) return Unbounded_String;
-    function Get_IPCP(index : Integer; item : RIB_Entry) return IPCP_obj;
-    function Get_APN(index : Integer; item : RIB_Entry) return Unbounded_String;
+    function Get_IPCP(index : Integer; CompName : Unbounded_String; item : RIB_Entry) return IPCP_obj;
+    function Get_APN(index : Integer; CompName : Unbounded_String; item : RIB_Entry) return Unbounded_String;
    --   function Get_Comp(index : Integer; item : RIB_Entry) return Unbounded_String;
 
    --finds if an entry exists
@@ -83,8 +104,8 @@ package RIB is
     --delete procedures for RIB_Entry/DIF/IPCP/APN
     procedure Delete_Entry(Name : Unbounded_String);
    --   procedure Delete_DIF(index : Integer; item : in out RIB_Entry);
-    procedure Delete_IPCP(index : Integer; item : in out RIB_Entry);
-    procedure Delete_APN(index : Integer; item : in out RIB_Entry);
+    procedure Delete_IPCP(index : Integer; CompName : Unbounded_String; item : in out RIB_Entry);
+    procedure Delete_APN(index : Integer; CompName : Unbounded_String; item : in out RIB_Entry);
    --   procedure Delete_Comp(index : Integer; item : in out RIB_Entry);
 
 
@@ -95,8 +116,8 @@ package RIB is
     --update procedures for RIB_Entry/DIF/IPCP/APN
     procedure Update_Entry(Name : Unbounded_String; item : RIB_Entry);
    --   procedure Update_DIF(index : Integer; item : in out RIB_Entry; dif : Unbounded_String);
-    procedure Update_IPCP(index : Integer; item : in out RIB_Entry; ipcp : IPCP_obj);
-    procedure Update_APN(index : Integer; item : in out RIB_Entry; APN : Unbounded_String);
+    procedure Update_IPCP(index : Integer; CompName : Unbounded_String; item : in out RIB_Entry; ipcp : IPCP_obj);
+    procedure Update_APN(index : Integer; CompName : Unbounded_String; item : in out RIB_Entry; APN : Unbounded_String);
    --   procedure Update_Comp(index : Integer; item : in out RIB_Entry; Comp : Unbounded_String);
 
 
@@ -109,5 +130,6 @@ package RIB is
 
     private
       map : RIB_Hashed_Maps.Map;
+      
  
 end RIB;

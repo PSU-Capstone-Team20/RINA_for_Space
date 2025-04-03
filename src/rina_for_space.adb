@@ -14,6 +14,7 @@ with IPCP_Types; use IPCP_Types;
 with CDAP;
 with RIB; use RIB;
 with Policy_Enforcement; use Policy_Enforcement;
+with RINA;
 --with fakeComp;
 
 
@@ -84,42 +85,46 @@ procedure Rina_For_Space is
    B : Bundle;
 
    --DIF and IPCP instance test 
-   DIF_Instance : DIF_Manager.Dif.DIF_T;
-   IPCP_Instance : IPCP_Types.IPCP_T;
-   IPCP_Instance1 : IPCP_Types.IPCP_T;
+   --  DIF_Instance : DIF_Manager.Dif.DIF_T;
+   --  IPCP_Instance : IPCP_Types.IPCP_T;
+   --  IPCP_Instance1 : IPCP_Types.IPCP_T;
 
-   Policy : Policy_Enforcement.DIF_Creation_Policy;
+   --  Policy : Policy_Enforcement.DIF_Creation_Policy;
 
 
-
+   dummy1 : RINA.Address_Vectors.Vector;
+   dummy2 : RINA.Address_Vectors.Vector;
+   dummy3 : RINA.Path_Vectors.Vector;
 
 begin
+   
+   dummy3 := RINA.D_Star_Lite (dummy1, dummy2);
 
-   Policy := Policy_Enforcement.Get_DIF_Creation_Policy(DIF_Instance.DIF_Name);
-   DIF_Instance.Policy := Policy;
-   DIF_Instance.DIF_ID := 1;
-   DIF_Instance.DIF_Name := To_Unbounded_String("DIF Test");
-   IPCP_Instance.Name := To_Unbounded_String("IPCPTest");
-   IPCP_Instance1.Name := To_Unbounded_String("IPCPTest1");
+   --  Policy := Policy_Enforcement.Get_DIF_Creation_Policy(DIF_Instance.DIF_Name);
+   --  DIF_Instance.Policy := Policy;
+   --  DIF_Instance.DIF_ID := 1;
+   --  DIF_Instance.DIF_Name := To_Unbounded_String("DIF Test");
+   --  IPCP_Instance.Name := To_Unbounded_String("IPCPTest");
+   --  IPCP_Instance1.Name := To_Unbounded_String("IPCPTest1");
 
-   DIF_Manager.Enroll_IPCP(DIF_Instance, IPCP_Instance);
-   DIF_Manager.Enroll_IPCP(DIF_Instance, IPCP_Instance1);
+   --  DIF_Manager.Enroll_IPCP(DIF_Instance, IPCP_Instance);
+   --  DIF_Manager.Enroll_IPCP(DIF_Instance, IPCP_Instance1);
 
-   Put_Line("DIF Name : " & To_String(DIF_Instance.DIF_Name));
+   --  Put_Line("DIF Name : " & To_String(DIF_Instance.DIF_Name));
 
-   Put_Line("IPCP Name: " & To_String(IPCP_Instance.Name));
-   Put_Line("Second IPCP Name: " & To_String(IPCP_Instance1.Name));
+   --  Put_Line("IPCP Name: " & To_String(IPCP_Instance.Name));
+   --  Put_Line("Second IPCP Name: " & To_String(IPCP_Instance1.Name));
    
 
 
-   Put_Line("Number of Enrolled IPCPs: " & Ada.Containers.Count_Type'Image(DIF_Instance.Enrolled_IPCPs.Length));
+   --  Put_Line("Number of Enrolled IPCPs: " & Ada.Containers.Count_Type'Image(DIF_Instance.Enrolled_IPCPs.Length));
    
-   for Index in DIF_Instance.Enrolled_IPCPs.First_Index .. DIF_Instance.Enrolled_IPCPs.Last_Index loop
-      Put_Line( " - " & To_String(DIF_Instance.Enrolled_IPCPs(Index).Name));
-   end loop;
+   --  for Index in DIF_Instance.Enrolled_IPCPs.First_Index .. DIF_Instance.Enrolled_IPCPs.Last_Index loop
+   --     Put_Line( " - " & To_String(DIF_Instance.Enrolled_IPCPs(Index).Name));
+   --  end loop;
 
-   Put_Line("Policy: Routing = " & To_String(Policy.Routing_Strategy));
-   Put_Line("Policy: Enrollment = " & To_String(Policy.Enrollment_Type));
+   --  Put_Line("Policy: Routing = " & To_String(Policy.Routing_Strategy));
+   --  Put_Line("Policy: Enrollment = " & To_String(Policy.Enrollment_Type));
 
 
    --  newfakecomp;
