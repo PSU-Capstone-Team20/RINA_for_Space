@@ -14,7 +14,7 @@ with IPCP_Types; use IPCP_Types;
 with CDAP;
 with RIB; use RIB;
 with Policy_Enforcement; use Policy_Enforcement;
-with RINA;
+with RINA; use RINA;
 --with fakeComp;
 
 
@@ -92,13 +92,82 @@ procedure Rina_For_Space is
    --  Policy : Policy_Enforcement.DIF_Creation_Policy;
 
 
-   dummy1 : RINA.Address_Vectors.Vector;
-   dummy2 : RINA.Address_Vectors.Vector;
-   dummy3 : RINA.Path_Vectors.Vector;
+   
+   test_Path_Output : RINA.Path_Vectors.Vector;
+   temp : Unbounded_String;
+   test_Start_Address : RINA.Address_Vectors.Vector;
+   test_Target_Address : RINA.Address_Vectors.Vector;
+   test_Blank_Element : RINA.Address_Element;
 
 begin
    
-   dummy3 := RINA.D_Star_Lite (dummy1, dummy2);
+   Add_Entry (To_Unbounded_String("John DIF"));
+   temp := To_Unbounded_String("Doe Comp");
+   Add_Comp (To_Unbounded_String("John DIF"), temp);
+   temp := To_Unbounded_String("Mini Fridge IPCP");
+   Add_IPCP (To_Unbounded_String("John DIF"), To_Unbounded_String("Doe Comp"), temp);
+   temp := To_Unbounded_String("Mini Fridge APN");
+   Add_APN (To_Unbounded_String("John DIF"), To_Unbounded_String("Doe Comp"), temp);
+
+   Add_Entry (To_Unbounded_String("Jane DIF"));
+   temp := To_Unbounded_String("Doe Comp");
+   Add_Comp (To_Unbounded_String("Jane DIF"), temp);
+   temp := To_Unbounded_String("Laptop IPCP");
+   Add_IPCP (To_Unbounded_String("Jane DIF"), To_Unbounded_String("Doe Comp"), temp);
+   temp := To_Unbounded_String("Laptop APN");
+   Add_APN (To_Unbounded_String("Jane DIF"), To_Unbounded_String("Doe Comp"), temp);
+
+   Display_Map;
+
+   Put_Line("Attempting to Path from first entry to second Entry");
+
+   test_Blank_Element.Name := To_Unbounded_String("John DIF");
+   test_Blank_Element.Address_Type := To_Unbounded_String("DIF");
+   test_Start_Address.Append(test_Blank_Element);
+   test_Blank_Element.name := To_Unbounded_String("Doe Comp");
+   test_Blank_Element.Address_Type := To_Unbounded_String("Computer");
+   test_Start_Address.Append(test_Blank_Element);
+   test_Blank_Element.name := To_Unbounded_String("Mini Fridge IPCP");
+   test_Blank_Element.Address_Type := To_Unbounded_String("IPCP");
+   test_Start_Address.Append(test_Blank_Element);
+   
+   test_Blank_Element.Name := To_Unbounded_String("Jane DIF");
+   test_Blank_Element.Address_Type := To_Unbounded_String("DIF");
+   test_Target_Address.Append(test_Blank_Element);
+   test_Blank_Element.name := To_Unbounded_String("Doe Comp");
+   test_Blank_Element.Address_Type := To_Unbounded_String("Computer");
+   test_Target_Address.Append(test_Blank_Element);
+   test_Blank_Element.name := To_Unbounded_String("Mini Fridge IPCP");
+   test_Blank_Element.Address_Type := To_Unbounded_String("IPCP");
+   test_Target_Address.Append(test_Blank_Element);
+
+   test_Path_Output := D_Star_Lite(test_Start_Address, test_Target_Address);
+
+   --TODO: FIGURE OUT HOW TO ACCESS 2D VECTOR
+   --  for C in test_Path_Output loop
+   --     for X in test_Path_Output.Reference (C) loop
+   --        temp := temp & test_Path_Output.Reference.Reference(C)(X);
+         
+   --     end loop;
+   --     Put_Line (temp);
+   --     temp := To_Unbounded_String("");
+   --  end loop;
+
+   for C in test_Path_Output.First_Index .. test_Path_Output.Last_Index loop
+      declare
+         Pathway : Unbounded_String := To_Unbounded_String(" ");
+         Inner_Vector: constant RINA.Address_Vectors.Vector := test_Path_Output.Element(C);
+      begin
+         for X in Inner_Vector.First_Index .. Inner_Vector.Last_Index loop
+            Pathway := Pathway & Inner_Vector.Element(X).Name;
+            if X < Inner_Vector.Last_Index then
+               Pathway := Pathway & To_Unbounded_String(" -- ");
+            end if;
+         end loop;
+         Put_Line(To_String(Pathway));
+      end;
+   end loop;
+
 
    --  Policy := Policy_Enforcement.Get_DIF_Creation_Policy(DIF_Instance.DIF_Name);
    --  DIF_Instance.Policy := Policy;

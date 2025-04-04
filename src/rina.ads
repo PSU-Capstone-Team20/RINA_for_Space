@@ -29,7 +29,7 @@ package RINA is
       Index_Type => Natural, Element_Type => A_Star_Node
    );
 
-   function Reconstruct_Path return Path_Vectors.Vector;
+   function Reconstruct_Path(ClosedList : Node_Vectors.Vector; current : out A_Star_Node) return Path_Vectors.Vector;
    function D_Star_Lite (start : Address_Vectors.Vector; goal : Address_Vectors.Vector) return Path_Vectors.Vector;
 
 end RINA;
