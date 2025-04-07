@@ -117,6 +117,38 @@ begin
    temp := To_Unbounded_String("Laptop APN");
    Add_APN (To_Unbounded_String("Jane DIF"), To_Unbounded_String("Doe Comp"), temp);
 
+   Add_Entry (To_Unbounded_String("John DIF"));
+   temp := To_Unbounded_String("Smith Comp");
+   Add_Comp (To_Unbounded_String("John DIF"), temp);
+   temp := To_Unbounded_String("Laptop IPCP");
+   Add_IPCP (To_Unbounded_String("John DIF"), To_Unbounded_String("Smith Comp"), temp);
+   temp := To_Unbounded_String("Laptop APN");
+   Add_APN (To_Unbounded_String("John DIF"), To_Unbounded_String("Smith Comp"), temp);
+   
+   Add_Entry (To_Unbounded_String("Jane DIF"));
+   temp := To_Unbounded_String("Lee Comp");
+   Add_Comp (To_Unbounded_String("Jane DIF"), temp);
+   temp := To_Unbounded_String("Laptop IPCP");
+   Add_IPCP (To_Unbounded_String("Jane DIF"), To_Unbounded_String("Lee Comp"), temp);
+   temp := To_Unbounded_String("Laptop APN");
+   Add_APN (To_Unbounded_String("Jane DIF"), To_Unbounded_String("Lee Comp"), temp);
+
+   --  Add_Entry (To_Unbounded_String("Jill DIF"));
+   --  temp := To_Unbounded_String("Lee Comp");
+   --  Add_Comp (To_Unbounded_String("Jill DIF"), temp);
+   --  temp := To_Unbounded_String("Laptop IPCP");
+   --  Add_IPCP (To_Unbounded_String("Jill DIF"), To_Unbounded_String("Lee Comp"), temp);
+   --  temp := To_Unbounded_String("Laptop APN");
+   --  Add_APN (To_Unbounded_String("Jill DIF"), To_Unbounded_String("Lee Comp"), temp);
+
+   --  Add_Entry (To_Unbounded_String("Jill DIF"));
+   --  temp := To_Unbounded_String("Smith Comp");
+   --  Add_Comp (To_Unbounded_String("Jill DIF"), temp);
+   --  temp := To_Unbounded_String("Laptop IPCP");
+   --  Add_IPCP (To_Unbounded_String("Jill DIF"), To_Unbounded_String("Smith Comp"), temp);
+   --  temp := To_Unbounded_String("Laptop APN");
+   --  Add_APN (To_Unbounded_String("Jill DIF"), To_Unbounded_String("Smith Comp"), temp);
+
    Display_Map;
 
    Put_Line("Attempting to Path from first entry to second Entry");
@@ -124,21 +156,21 @@ begin
    test_Blank_Element.Name := To_Unbounded_String("John DIF");
    test_Blank_Element.Address_Type := To_Unbounded_String("DIF");
    test_Start_Address.Append(test_Blank_Element);
-   test_Blank_Element.name := To_Unbounded_String("Doe Comp");
+   test_Blank_Element.name := To_Unbounded_String("Smith Comp");
    test_Blank_Element.Address_Type := To_Unbounded_String("Computer");
    test_Start_Address.Append(test_Blank_Element);
-   test_Blank_Element.name := To_Unbounded_String("Mini Fridge IPCP");
-   test_Blank_Element.Address_Type := To_Unbounded_String("IPCP");
+   test_Blank_Element.name := To_Unbounded_String("Laptop APN");
+   test_Blank_Element.Address_Type := To_Unbounded_String("APN");
    test_Start_Address.Append(test_Blank_Element);
    
-   test_Blank_Element.Name := To_Unbounded_String("Jane DIF");
+   test_Blank_Element.Name := To_Unbounded_String("John DIF");
    test_Blank_Element.Address_Type := To_Unbounded_String("DIF");
    test_Target_Address.Append(test_Blank_Element);
-   test_Blank_Element.name := To_Unbounded_String("Doe Comp");
+   test_Blank_Element.name := To_Unbounded_String("Lee Comp");
    test_Blank_Element.Address_Type := To_Unbounded_String("Computer");
    test_Target_Address.Append(test_Blank_Element);
-   test_Blank_Element.name := To_Unbounded_String("Mini Fridge IPCP");
-   test_Blank_Element.Address_Type := To_Unbounded_String("IPCP");
+   test_Blank_Element.name := To_Unbounded_String("Laptop APN");
+   test_Blank_Element.Address_Type := To_Unbounded_String("APN");
    test_Target_Address.Append(test_Blank_Element);
 
    test_Path_Output := D_Star_Lite(test_Start_Address, test_Target_Address);
