@@ -1,5 +1,5 @@
 with IPC_Manager.IPCP; use IPC_Manager.IPCP;
-
+with Policy_Enforcement; use Policy_Enforcement;
 
 package body DIF_Manager.Dif is
 
@@ -24,9 +24,20 @@ package body DIF_Manager.Dif is
 
    function Create_Named_DIF(name : Unbounded_String) return DIF_Access is
       New_DIF : constant DIF_Access := new DIF_T;
-      begin
+      Policy  : DIF_Creation_Policy := Get_DIF_Creation_Policy(name);
+   begin
 
-      -- TODO Add IPCP_Manager Logic Here
+      if not Policy.Allow_Creation then
+         Put_Line("Policy not allowing for creation of DIF: " & To_String(name));
+         return null;
+      end if;
+
+      Put_Line("Creating DIF: " & To_String(name));
+      Put_Line("Routing is: " & To_String(Policy.Routing_Strategy));
+      Put_Line("Enrollment: " & To_String(Policy.Enrollment_Type));
+
+
+      
 
       New_DIF.DIF_ID := 0;
       New_DIF.DIF_Name := name;

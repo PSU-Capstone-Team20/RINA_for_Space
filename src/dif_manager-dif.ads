@@ -5,7 +5,7 @@ with Ada.Containers.Vectors;
 with Ada.Text_IO; use Ada.Text_IO;
 with IPC_Manager.IPCP;
 with IPCP_Types;
-
+with Policy_Enforcement; use Policy_Enforcement;
 
 package DIF_Manager.Dif is
    type DIF_T is tagged;
@@ -38,7 +38,7 @@ package DIF_Manager.Dif is
       Applications    : Application_Vector; 
       AccessibleDIFs  : DIF_Vector; 
       Computers       : computer_connection;
-      -- TODO: Will need to add policies here when branches are merged        
+      Policy          : DIF_Creation_Policy;      
    end record;
 
    -- creates a DIF with specified ID and adds it to the vector
