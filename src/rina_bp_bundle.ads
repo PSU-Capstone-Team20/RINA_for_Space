@@ -5,6 +5,9 @@ with Ada.Calendar; use Ada.Calendar;
 with Ada.Streams; use Ada.Streams;
 with Ada.Streams.Stream_IO; use Ada.Streams.Stream_IO;
 --with Ada.Stream_IO; use Ada.Stream_IO;
+with RINA; use RINA;
+with RIB;
+with IPC_Data_Transfer; use IPC_Data_Transfer;
 
 package Rina_BP_Bundle is
 
@@ -22,17 +25,18 @@ package Rina_BP_Bundle is
       Header       : Bundle_Header;
       Src_EID      : String(1 .. 1024); -- source endpoing ID 
       Dst_EID      : String(1 .. 1024); -- destination endpoint ID
-      Payload      : String(1 .. 4096); -- payload
+      Payload      : Byte_Array(1 .. 4096); -- payload
+      Path         : Path_Vectors.Vector;
    end record;
 
    --create bundle function 
-   function Create_Bundle(Version : Natural; Processing_Flag : Integer; Block_Length : Integer; Src_EID : String; Dst_EID : String; Payload : String) return Bundle;
+   function Create_Bundle(Version : Natural; Processing_Flag : Integer; Block_Length : Integer; Src_EID : String; Dst_EID : String; Payload : String; Path : Path_Vectors.Vector) return Bundle;
 
    --sending bundle procedure 
    procedure Send_Bundle(B : in Bundle);
 
    --function for receiving bundle 
-   function Receive_Bundle return Bundle; 
+   procedure Receive_Bundle (PDUs : in out PDU_List; Reassemble : out Byte_Array); 
    
    --  --serializing : encode bundle into a stream
    --  procedure Serial_Bundle(Stream : in out Ada.Streams.Stream_IO.Stream_Access; B : in Bundle); 

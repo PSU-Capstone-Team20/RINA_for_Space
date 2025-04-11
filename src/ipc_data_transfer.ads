@@ -1,35 +1,36 @@
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Containers.Vectors;
-with Transport_Types; use Transport_Types;
-with IPCP_Types; use IPCP_Types;
-with Rina_BP_Bundle; use Rina_BP_Bundle;
+with EFCP;
+with Transport_Types;
+with IPCP_Types;
+--with Rina_BP_Bundle;
+with Interfaces; use Interfaces;
 
 package IPC_Data_Transfer is 
 
-   --function for SDU delimiting 
-   function Delimit_SDU(Data : Unbounded_String) return SDU_T;
+type Byte is mod 2**8;
+type Byte_Array is array (Positive range <>) of Byte;
 
-   --EFCP DTP functions
-   function DTP_Fragment(SDU : SDU_T; Fragment_Size : Positive) return PDU_Buffer;
-   function DTP_Reassemble(PDUs : PDU_Buffer) return SDU_T;
 
-   --EFCP DTCP procedure
-   procedure DTCP_Control(PDUs : in out PDU_Buffer);
+type PDU_List is array (Positive range  <>) of EFCP.PDU_S_T;
+Max_PDU_Size : constant := 128;
+type Flow_ID is new Natural;
 
-   --relaying task 
-   procedure Relay_PDU(PDU : PDU_T; Dest : Unbounded_String);
 
-   --multiplexing
-   procedure Multiplex_Flows(Flows : in Flow_List; PDUs : in out PDU_Buffer);
+--SDU delmiting
+procedure Delimit_SDU(Raw_Data : in Byte_Array; SDU : out Byte_Array); 
 
-   --SDU prtect
-   procedure Protect_SDU(SDU : in out SDU_T);
+--EFCP both DTP and DTCP 
+procedure DTP(SDU : in Byte_Array; Fragment_PDU : out PDU_List);
+procedure DTCP(PDU : in out EFCP.PDU_S_T);
 
-   --adding bundle protocol
-   function Bundle_To_SDU(B: Bundle) return SDU_T;
+--relaying pdu
+procedure Relay_PDU(PDU : in out EFCP.PDU_S_T);
 
-   --getting sdu from bundle 
-   function SDU_To_Bundle(S : SDU_T) return Bundle;
+--multiplexing 
+procedure Multiplex_PDU(PDU : in EFCP.PDU_S_T; Lower_Flow_ID : out Flow_ID);
+
+--TODO: maybe, SDU protection
 
 
 

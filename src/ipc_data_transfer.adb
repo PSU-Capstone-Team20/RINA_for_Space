@@ -1,126 +1,92 @@
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Containers.Vectors;
+with System.Mmap;
 with Transport_Types; use Transport_Types;
 with IPCP_Types; use IPCP_Types;
-with Rina_BP_Bundle; use Rina_BP_Bundle;
+--with Rina_BP_Bundle; use Rina_BP_Bundle;
 
 package body IPC_Data_Transfer is
 
+--SDU delmiting
+procedure Delimit_SDU(Raw_Data : in Byte_Array; SDU : out Byte_Array) is
+   SDU_Length : Natural := Natural (Raw_Data (1));
+begin
+   SDU := Raw_Data(2 .. SDU_Length + 1);
+end Delimit_SDU;
 
-
-   --function for SDU delimiting 
-   function Delimit_SDU(Data : Unbounded_String) return SDU_T is 
-      PCI : PCI_T := (Src_CEP_ID => To_Unbounded_String ("Source"),
-                      Dst_CEP_ID => To_Unbounded_String("Destination"),
-                      Seq_Num    => 0,
-                      DRF_Flag   => True,
-                      ECN_Flag   => False,
-                      QoS_ID     => 1,
-                      TTL        => 10);
-      begin 
-         return (PCI => PCI, Data => Data);
-   end Delimit_SDU;
-
-   --EFCP DTP functions
-   function DTP_Fragment(SDU : SDU_T; Fragment_Size : Positive) return PDU_Buffer is
-      PDUs        : PDU_Buffer;
-      Data_String : String := To_String(SDU.Data);
-      Total       : Natural := Data_String'Length;
-      Index       : Natural := 1;
-      Counter     : Natural := 0;
+--EFCP both DTP and DTCP 
+procedure DTP(SDU : in Byte_Array; Fragment_PDU : out PDU_List) is
+   Frag_Num : Natural := (SDU'Length + Max_PDU_Size -1) / Max_PDU_Size;
+   Frag_Index : Natural := 1;
+   First_Byte : Positive := SDU'First;
+   Last_Byte : Positive;
+   
+begin
+   Fragment_PDU := (1 .. Frag_Num => (others => <>));
+   for I in 1 .. Frag_Num loop
+      Last_Byte := First_Byte + Max_PDU_Size -1;
+      if Last_Byte > SDU'Last then 
+         Last_Byte := SDU'Last;
+      end if;
+      declare
+         Frag_Data : Byte_Array (1 .. Last_Byte - First_Byte + 1);
+         Convert_Data : String(1 .. Last_Byte - First_Byte + 1);          
+         Default_PCI : Transport_Types.PCI_T := (Src_CEP_ID => To_Unbounded_String(""), 
+                                                    Dst_CEP_ID => To_Unbounded_String(""), 
+                                                    Seq_Num => 0, 
+                                                    DRF_Flag => False, 
+                                                    ECN_Flag => False, 
+                                                    QoS_ID => 0, 
+                                                    TTL => 64, 
+                                                    Ack_Req => False, 
+                                                    Retransmit => False, 
+                                                    Timestamp => 0);
+         Fragment_ID : String(1 ..7);
+         Temp_ID : constant String := Integer'Image(I);
       begin
-         while Index <= Total loop  
-            declare 
-               Chunk : String := Data_String(Index .. Integer'Min(Index+Fragment_Size -1, Total));
-               PDU   : PDU_T := (ID   => (other => '0'),
-                                 PCI  => SDU.PCI,
-                                 Data => (others => ' '));
-            begin 
-               Counter := Counter +1;
-               PDU.ID(1 ..6) := Integer'Image(Counter)(2..7);
-               PDU.PCI.Seq_Num := Counter;
-               PDU.Data(1 .. Chunk'Length) := Chunk;
-               PDUs.Append(PDU);
-            end;
-            Index := Index + Fragment_Size;
+         Frag_Data := SDU (First_Byte .. Last_Byte);
+         for J in Convert_Data'Range loop
+            Convert_Data(J) := Character'Val(Frag_Data(J));
          end loop;
-         return PDUs;
-   end DTP_Fragment;
+         Fragment_ID := "Fragment" & Temp_ID(Temp_ID'First + 1 .. Temp_ID'Last);  
+         Fragment_PDU(I) := (ID => Fragment_ID,
+                             PCI => Default_PCI,
+                             Data => Convert_Data);
+         
+         First_Byte := Last_Byte + 1;
+      end;
+   end loop;
+end DTP;
 
-   function DTP_Reassemble(PDUs : PDU_Buffer) return SDU_T is
-      Full_Data : Unbounded_String := To_Unbounded_String("");
-   begin
-      for P of PDUs loop
-         declare
-            Fragment : String := P.Data;
-         begin
-            Full_Data := Full_Data & To_Unbounded_String(Fragment);
-         end;
-      end loop;
-      return (PCI => PDUs(0).PCI, Data => Full_Data);
-   end DTP_Reassemble;
+procedure DTCP(PDU : in out EFCP.PDU_S_T) is
+   Real_Time : Natural := 0;
+   Last_Active_Time : Natural := PDU.PCI.Timestamp;
+   Max_Time : constant Natural := 1000; -- timeout threshold
 
-   --EFCP DTCP procedure
-   procedure DTCP_Control(PDUs : in out PDU_Buffer) is
-   begin 
-      for P of PDUs loop
-         if P.PCI.TTL = 0 then
-            Put_Line("TTL expiration, PDU dropped: " & P.ID);
-         else 
-            P.PCI.TTL := P.PCI.TTL -1;
-         end if;
-      end loop;
-   end DTCP_Control;
+begin
+   if Real_Time - Last_Active_Time > Max_Time then
+      PDU.PCI.Ack_Req := True;
+      PDU.PCI.Retransmit := True;
+   else
+      PDU.PCI.Ack_Req := True;
+   end if;
+   
+end DTCP;
 
-   --relaying task 
-   procedure Relay_PDU(PDU : PDU_T; Dest : Unbounded_String) is
-   begin
-      Put_Line("Relay PDU " & PDU.ID & " to" & To_String(Dest));
-   end Relay_PDU;
+--relay pdu
+procedure Relay_PDU(PDU : in out EFCP.PDU_S_T) is 
+begin
+   Put_Line(To_String("[Relay_PDU] : Relay PDU to  " & PDU.PCI.Dst_CEP_ID));
+end Relay_PDU;
 
-   --multiplexing
-   procedure Multiplex_Flows(Flows : in Flow_List; PDUs : in out PDU_Buffer) is
-   begin
-      for I in PDUs.First_Index .. PDUs.Last_Index loop
-         PDUs(I).PCI.QoS_ID := Flows(I mod Flows.Length).QoS_ID;
-         Put_Line("Multiplexd PDU" & PDUs(I).ID & "to Flow QoS" & Integer'Image(PDUs(I).PCI.QoS_ID));
-      end loop;
-   end Multiplex_Flow;
+--multiplexing 
+procedure Multiplex_PDU(PDU : in EFCP.PDU_S_T; Lower_Flow_ID : out Flow_ID) is
 
-   --SDU prtect
-   procedure Protect_SDU(SDU : in out SDU_T) is
-      Hash : Natural := 0;
-      Str  : String := To_String(SDU.Data);
-   begin
-      for C of Str loop 
-         Hash := (Hash + Character'Pos(C)) mod 256;
-      end loop;
-      SDU.Data := SDU.Data & To_Unbounded_String("|CHK: " & Integer'Image(Hash));
-   end Protect_SDU;
+begin
+   Lower_Flow_ID := Flow_ID(Integer'Value(To_String(PDU.PCI.Src_CEP_ID)) mod 10);
+end Multiplex_PDU;
 
-   --adding bundle protocol
-   function Bundle_To_SDU(B: Bundle) return SDU_T is
-      Combined : Unbounded_String := 
-                                    To_Unbounded_String(B.Src_EID) & "|" &
-                                    To_Unbounded_string(B.Dst_EID) & "|" & 
-                                    To_Unbounded_String(B.Payload);
-   begin
-      return Delimit_SDU(Combined);
-   end Bundle_To_SDU;
 
-   --getting sdu from bundle 
-   function SDU_To_Bundle(S : SDU_T) return Bundle is
-      Data_Str : String := To_String(S.Data);
-      Sep1, Sep2 : Natural;
-      B : Bundle;
-   begin
-      Sep1 := Index(Data_Str, "|");
-      Sep2 := Index(Data_Str, "|", From => Sep1 +1);
-      B.Src_EID(1..Sep1 -1) := Data_Str(1 .. Sep1-1);
-      B.Dst_EID(1 ..Sep2 - Sep1-1) := Data_Str(Sep1 + 1 .. Sep2 -1);
-      B.Payload(1 ..Data_Str'Length -Sep2) := Data_Str(Sep2+1 .. Data_Str'Length);
-      return B;
-   end SDU_To_Bundle;
 
 end IPC_Data_Transfer;
