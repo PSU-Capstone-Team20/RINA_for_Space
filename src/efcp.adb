@@ -2,6 +2,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Transport_Types; use Transport_Types;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
+
 --
 --package for Error and Flow Control Protocol(EFCP) split into two protocol machines DTP and DTCP
 --DTP : Data Transfer Protocol - fragmentation, reassembly, sequencing, concatenation, and separation
@@ -9,27 +10,39 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 --DTCP cont. - transmission control, retransmission control, and flow control
 --
 package body EFCP is
+   package Int_IO is new Ada.Text_IO.Integer_IO(Integer);
 
    --splitting SDUs into smaller PDUs given fragment size 
    --creates PDU fragment, PCI updated with fragment size, data copied into fragment up
    --to fragment size
-   procedure Fragment(S : in out SDU_S_T; Fragment_Size : Natural; Fragments : out PDU_S_T) is
-      Remains_Length : constant Natural := S.Data'Length;
+   procedure Fragment(S : in out SDU_S_T; Fragment_Size : String; Fragments : out PDU_S_T) is
+      Origin_Data : constant String := To_String(S.Data);
+      Remains_Length : constant Natural := Origin_Data'Length;
+      Size : Natural;
    begin
+      declare 
+         Parsed_Int : Integer;
+         Last : Integer;
+      begin
+         Int_IO.Get(Fragment_Size, Parsed_Int, Last);
+         if Parsed_int < 0 then
+            raise Constraint_Error with "Fragment size cannot be negative";
+         end if;
+         Size := Natural'Min(Natural(Parsed_Int), Remains_Length);
+      end;         
       Fragments.PCI := S.PCI;
       Fragments.PCI.Seq_Num := S.PCI.Seq_Num;
-      if Fragment_Size < Remains_Length then
-            Fragments.PCI.DRF_Flag := True;
-         else
-            Fragments.PCI.DRF_Flag := False;
-         end if;
-      
-      Fragments.Data := S.Data(1 .. Fragment_Size);
+      Fragments.PCI.DRF_Flag := Size < Remains_Length;
 
-      if Fragment_Size < Remains_Length then
-         S.Data := S.Data(Fragment_Size + 1 .. Remains_Length);
-      else  
-         S.Data := (1 .. 0 => 0); 
+      Fragments.Data := To_Unbounded_String(Origin_Data(1 .. Size));
+      
+
+      if Size + 1  <= Remains_Length then
+        
+         S.Data := To_Unbounded_String(Origin_Data(Size + 1 .. Remains_Length));
+      else 
+         
+         S.Data := To_Unbounded_String(" "); 
       end if;
    
 

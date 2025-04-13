@@ -15,6 +15,8 @@ with CDAP;
 with RIB; use RIB;
 with Policy_Enforcement; use Policy_Enforcement;
 with RINA; use RINA;
+with EFCP; use EFCP;
+with IPC_Data_Transfer; use IPC_Data_Transfer;
 --with fakeComp;
 
 
@@ -82,7 +84,7 @@ procedure Rina_For_Space is
    -- ****NEW****
 
    --testing for bundle 
-   B : Bundle;
+  
 
    --DIF and IPCP instance test 
    --  DIF_Instance : DIF_Manager.Dif.DIF_T;
@@ -91,7 +93,10 @@ procedure Rina_For_Space is
 
    --  Policy : Policy_Enforcement.DIF_Creation_Policy;
 
+   
 
+   --  Payload : constant String := "Hello from Mars";
+   --  B: Bundle;
    
    test_Path_Output : RINA.Path_Vectors.Vector;
    temp : Unbounded_String;
@@ -200,7 +205,17 @@ begin
       end;
    end loop;
 
-
+   
+   --  B := Create_Bundle(
+   --     Version         => 6,
+   --     Processing_Flag => 1,
+   --     Block_Length    => Payload'Length,
+   --     Src_EID         => "Satellite-A",
+   --     Dst_EID         => "Ground-Station-1",
+   --     Payload         => Payload,
+   --     Path            => test_Path_Output
+   --  );
+   --  Send_Bundle(B);
    --  Policy := Policy_Enforcement.Get_DIF_Creation_Policy(DIF_Instance.DIF_Name);
    --  DIF_Instance.Policy := Policy;
    --  DIF_Instance.DIF_ID := 1;

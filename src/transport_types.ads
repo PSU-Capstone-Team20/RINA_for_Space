@@ -36,7 +36,7 @@ package Transport_Types is
    type PDU_T is tagged record
       ID        : String(1 .. 7);          -- Unique identifier for the PDU
       PCI       : PCI_T;                   -- Protocol Control Information
-      Data      : String(1 .. 1024);       -- The actual payload
+      Data      : Unbounded_String;       -- The actual payload
       --P_Type    : PDU_Type;              -- Type of PDU
       --Omit DIF only for the PDU address to allow a PDU to take any DIF to its destination regardless of what DIFs are active
    end record;

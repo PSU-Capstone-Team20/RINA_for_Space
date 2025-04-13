@@ -52,7 +52,7 @@ begin
          Fragment_ID := "Fragment" & Temp_ID(Temp_ID'First + 1 .. Temp_ID'Last);  
          Fragment_PDU(I) := (ID => Fragment_ID,
                              PCI => Default_PCI,
-                             Data => Convert_Data);
+                             Data => To_Unbounded_String(Convert_Data));
          
          First_Byte := Last_Byte + 1;
       end;

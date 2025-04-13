@@ -57,22 +57,32 @@ package body Rina_BP_Bundle is
    --function for receiving bundle 
    procedure Receive_Bundle(PDUs : in out PDU_List; Reassemble : out Byte_Array) is
       Total_Length : Natural := 0;
+      
    begin
-
       for I in PDUs'Range loop
          DTCP(PDUs(I));
-         Total_Length := Total_Length + PDUs(I).Data'Length;
+         declare
+            Temp_String : constant String := To_String(PDUs(I).Data);
+         begin
+            Total_Length := Total_Length + Temp_String'Length;
+         end;
       end loop;
-
       Reassemble := (1 .. Total_Length => 0);
+
       declare
-         Offset : Natural := 1;
-      begin 
+         Offset : Positive := 1;
+         
+      begin
+          
          for I in PDUs'Range loop
-            for J in PDUs(I).Data'Range loop
-               Reassemble(Offset) := Character'Pos(PDUs(I).Data(J));
-               Offset := Offset + 1;
-            end loop;
+            declare
+               Temp_String : constant String := To_String(PDUS(I).Data);
+            begin
+               for J in Temp_String'Range loop
+                  Reassemble(Offset) := Character'Pos(Temp_String(J));
+                  Offset := Offset + 1;
+               end loop;
+            end;
          end loop;
       end;
 
