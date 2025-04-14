@@ -15,6 +15,7 @@ with CDAP;
 with RIB; use RIB;
 with Policy_Enforcement; use Policy_Enforcement;
 with RINA; use RINA;
+with simulation; use simulation;
 --with fakeComp;
 
 
@@ -281,6 +282,9 @@ begin
    --  killflag := 1;
    --  running.start;
    --  delay 1.0;
+   
+   simulation.Start_Simulation;
+
    NULL;
 end Rina_For_Space;
 
