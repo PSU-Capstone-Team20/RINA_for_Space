@@ -14,6 +14,7 @@ with IPCP_Types; use IPCP_Types;
 with CDAP;
 with RIB; use RIB;
 with Policy_Enforcement; use Policy_Enforcement;
+with mockcomp;
 with RINA; use RINA;
 with EFCP; use EFCP;
 with IPC_Data_Transfer; use IPC_Data_Transfer;
@@ -103,6 +104,7 @@ procedure Rina_For_Space is
    test_Start_Address : RINA.Address_Vectors.Vector;
    test_Target_Address : RINA.Address_Vectors.Vector;
    test_Blank_Element : RINA.Address_Element;
+   test_task : mockcomp.mock_comp;
 
 begin
    

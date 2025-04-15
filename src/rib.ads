@@ -96,6 +96,7 @@ package RIB is
 
    --finds if an entry exists
     function Find_Entry(Name :Unbounded_String) return Boolean;
+    function Find_Comp(DIF : Unbounded_String; Comp : Unbounded_String) return Boolean;
 
     --delete procedures for RIB_Entry/DIF/IPCP/APN
     procedure Delete_Entry(Name : Unbounded_String);
@@ -104,6 +105,7 @@ package RIB is
     procedure Delete_APN(index : Integer; CompName : Unbounded_String; item : in out RIB_Entry);
    --   procedure Delete_Comp(index : Integer; item : in out RIB_Entry);
 
+    procedure Delete_Comp(DIF : Unbounded_String; Comp : Unbounded_String);
 
     -- note for discussion: for all the different Gets, Deletes, and Updates, 
     -- maybe needs to utilize entry index to find the specific item based on name assigned
@@ -116,6 +118,7 @@ package RIB is
     procedure Update_APN(index : Integer; CompName : Unbounded_String; item : in out RIB_Entry; APN : Unbounded_String);
    --   procedure Update_Comp(index : Integer; item : in out RIB_Entry; Comp : Unbounded_String);
 
+    procedure Update_Comp(DIF : Unbounded_String; Comp : Unbounded_String; RIB_O : RIB_Obj);
 
     --prints the entire hashed map
     procedure Display_Map;

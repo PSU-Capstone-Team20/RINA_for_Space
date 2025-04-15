@@ -117,6 +117,12 @@ package body RIB is
       return false;
    end Find_Entry;
 
+   -- attempts to find the respective Comp
+   function Find_Comp(DIF : Unbounded_String; Comp : Unbounded_String) return Boolean is
+   begin
+      return map(DIF).Obj_Type.Contains(Comp);
+   end Find_Comp;
+
    --   function Get_DIF(index : Integer; item : RIB_Entry) return Unbounded_String is
    --   begin
    --     return item.Obj_Type.Connected_DIFs(index);
@@ -158,6 +164,14 @@ package body RIB is
       item.Obj_Type(CompName).Obj_Obj_Type.Active_APNs.Delete(index);
     end Delete_APN;
 
+   -- delete the respective comp from the RIB if it exists
+    procedure Delete_Comp(DIF : Unbounded_String; Comp : Unbounded_String) is
+    begin
+      if (map(DIF).Obj_Type.Contains (Comp)) then
+         map(DIF).Obj_Type.Delete (Comp);
+      end if;
+    end Delete_Comp;
+
     --update procedures for RIB_Entry/DIF/IPCP/APN
     procedure Update_Entry(Name: Unbounded_String; item : RIB_Entry) is
     begin
@@ -183,6 +197,11 @@ package body RIB is
     begin
       item.Obj_Type(CompName).Obj_Obj_Type.Active_APNs(index) := APN;
     end Update_APN;
+
+    procedure Update_Comp(DIF : Unbounded_String; Comp : Unbounded_String; RIB_O : RIB_Obj) is
+    begin
+      map(DIF).Obj_Type(Comp) := RIB_O;
+    end Update_Comp;
     
     --prints the entire RIB hashed map 
     --iterates through RIB hashed map
