@@ -3,24 +3,9 @@ with Ada.Real_Time;         use Ada.Real_Time;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with application;
 with Render_Buffer;         use Render_Buffer;
+with RIB;
 
 package body simulation is
-
-    procedure Test_Render_Buffer is
-        RB : Render_Buffer.Render_Buffer;
-    begin
-        Clear_Buffer (RB);
-        Put_Line (Clear_Screen);
-
-        Draw_Border (RB, '|', '=', 1, 1, 200, 30);
-        Draw_RinaForSpace (RB, 62, 4);
-
-        Render_Buffer_To_Screen (RB);
-
-        Draw_Border (RB, '*', '*', 25, 25, 30, 29);
-
-        Render_Buffer_To_Screen (RB);
-    end Test_Render_Buffer;
 
     procedure Start_Simulation is
 
@@ -29,84 +14,16 @@ package body simulation is
         Last  : Natural;
         Data  : Unbounded_String;
         RB    : Render_Buffer.Render_Buffer;
+        temp : Unbounded_String;
 
     begin
         Clear_Buffer (RB);
-
-        -- GIVE OPTIONS
-        -- NASA DSN
+        Put(Clear_Screen);
+        Put(Hide_Cursor);
 
         loop
-            Draw_Border (RB, '|', '=', 1, 1, 100, 60);
-            Draw_RinaForSpace (RB, 5, 2); -- 65 is more or less centered
-
-            -- Network Management
-            -- The system must be able to create a Resource Information Base (RIB)
-            -- The system must be able to discover new DIFs
-            -- The system must be able to discover new IPCPs
-            -- The system must be able to connect to new IPCPs
-            -- The system will allow a user to create an application to connect to the network.
-            -- The system shall enable a newly created application to connect to the network.
-            -- The system shall be adaptable to future hardware.
-            Draw_String (RB, "Network Management", 5, 8);
-            Draw_Line (RB, '=', 5, 9, 40, 9);
-
-            -- The system must be able to create DIFs
-            -- The system must be able to modify DIFs
-            -- The system must be able to delete DIFs
-            -- The system must be able to disconnect from DIFs
-            -- The system must be able to connect to new DIFs
-            Draw_String (RB, "DIF Management", 5, 10);
-            Draw_String (RB, "1. Create DIF", 5, 11);
-            Draw_String (RB, "2. Modify DIF", 5, 12);
-            Draw_String (RB, "3. Delete DIF", 5, 13);
-            Draw_String (RB, "4. Disconnect DIF", 5, 14);
-
-            -- The system must be able to create IPCPs
-            -- The system must be able to delete IPCPs
-            Draw_String (RB, "IPCP Management", 26, 10);
-            Draw_String (RB, "5. Create IPCP", 26, 11);
-            Draw_String (RB, "6. Delete IPCP", 26, 12);
-
-
-
-
-
-
-
-            -- DATA MANAGEMENT
-            -- The system must have acknowledgements.
-            -- The system must be able to buffer multiple pending acknowledgements within a DIF.
-            -- The system must transmit data between DIFs from origin to destination.
-            -- The system should be able to transmit data repeatedly
-            -- The system should be able to transmit data bidirectionally
-            -- The system must be able to temporarily store data in a DIF
-            -- The system must be able to transmit stored data
-            Draw_String (RB, "Data Management", 44,8);
-            Draw_Line (RB, '=', 44, 9, 59, 9);
-
-            Draw_String (RB, "7. Transmit Data", 44, 10);
-
-
-
-            
-
-
-
-            -- ANOMALY HANDLING
-            -- The system must retry failed communications.
-            -- The system must time out failed communications after 10 retries.
-            -- The system must be able to use provided data to communicate past obstacles.
-            Draw_String (RB, "Anomaly Handling", 63, 8);
-            Draw_Line (RB, '=', 63, 9, 78, 9);
-
-
-
-
-
-
-
-            Render_Buffer_To_Screen (RB);
+            Put(Clear_Screen);
+            Load_Main_Display (RB);
 
             Get_Line(Input, Last);
             case Input (1) is
@@ -118,6 +35,71 @@ package body simulation is
                     null;
                 when '4' =>
                     null;
+                when '9' => -- NASA DSN DEMO
+                    -- DIFs
+                    RIB.Add_Entry(To_Unbounded_String("ISP DIF"));
+                    RIB.Add_Entry(To_Unbounded_String("Earth Network DIF"));
+                    RIB.Add_Entry(To_Unbounded_String("Deep Space Relay DIF"));
+                    RIB.Add_Entry(To_Unbounded_String("Deep Space Probe DIF"));     
+                    
+                    -- TODO: REBASE AND CHANGE TO GLENN's Ccomputer model
+                    -- Computers
+                    temp := To_Unbounded_String("ISP Server");
+                    RIB.Add_Comp(To_Unbounded_String("ISP DIF"), temp);
+                    temp := To_Unbounded_String("NASA Server");
+                    RIB.Add_Comp(To_Unbounded_String("ISP DIF"), temp);
+                    temp := To_Unbounded_String("Local Desktop");
+                    RIB.Add_Comp(To_Unbounded_String("ISP DIF"), temp);
+
+                    temp := To_Unbounded_String("Madrid Ground Station");
+                    RIB.Add_Comp(To_Unbounded_String("Earth Network DIF"), temp);
+                    temp := To_Unbounded_String("Canberra Ground Station");
+                    RIB.Add_Comp(To_Unbounded_String("Earth Network DIF"), temp);
+                    temp := To_Unbounded_String("Goldstone Ground Station");
+                    RIB.Add_Comp(To_Unbounded_String("Earth Network DIF"), temp);
+
+                    temp := To_Unbounded_String("Mars Odyssey");
+                    RIB.Add_Comp(To_Unbounded_String("Deep Space Relay DIF"), temp);
+                    temp := To_Unbounded_String("Mars Reconnaissance Orbiter");
+                    RIB.Add_Comp(To_Unbounded_String("Deep Space Relay DIF"), temp);
+                    temp := To_Unbounded_String("Maven Orbiter");
+                    RIB.Add_Comp(To_Unbounded_String("Deep Space Relay DIF"), temp);
+                    
+                    temp := To_Unbounded_String("Voyager 1");
+                    RIB.Add_Comp(To_Unbounded_String("Deep Space Probe DIF"), temp);
+                    temp := To_Unbounded_String("Voyager 2");
+                    RIB.Add_Comp(To_Unbounded_String("Deep Space Probe DIF"), temp);
+                    
+                    -- IPCPs
+                    temp := To_Unbounded_String("ISP IPCP");
+                    RIB.Add_IPCP (To_Unbounded_String("ISP DIF"), To_Unbounded_String("ISP Server"), temp);
+                    temp := To_Unbounded_String("NASA IPCP");
+                    RIB.Add_IPCP (To_Unbounded_String("ISP DIF"), To_Unbounded_String("NASA Server"), temp);
+                    temp := To_Unbounded_String("Local IPCP");
+                    RIB.Add_IPCP (To_Unbounded_String("ISP DIF"), To_Unbounded_String("Local Desktop"), temp);
+
+                    temp := To_Unbounded_String("Madrid IPCP");
+                    RIB.Add_IPCP (To_Unbounded_String("Earth Network DIF"), To_Unbounded_String("Madrid Ground Station"), temp);
+                    temp := To_Unbounded_String("Canberra IPCP");
+                    RIB.Add_IPCP (To_Unbounded_String("Earth Network DIF"), To_Unbounded_String("Canberra Ground Station"), temp);
+                    temp := To_Unbounded_String("Goldstone IPCP");
+                    RIB.Add_IPCP (To_Unbounded_String("Earth Network DIF"), To_Unbounded_String("Goldstone Ground Station"), temp);
+
+                    temp := To_Unbounded_String("Mars Odyssey IPCP");
+                    RIB.Add_IPCP (To_Unbounded_String("Deep Space Relay DIF"), To_Unbounded_String("Mars Odyssey"), temp);
+                    temp := To_Unbounded_String("Mars Reconnaissance IPCP");
+                    RIB.Add_IPCP (To_Unbounded_String("Deep Space Relay DIF"), To_Unbounded_String("Mars Reconnaissance Orbiter"), temp);
+                    temp := To_Unbounded_String("Maven IPCP");
+                    RIB.Add_IPCP (To_Unbounded_String("Deep Space Relay DIF"), To_Unbounded_String("Maven Orbiter"), temp);
+
+                    -- Create APNs
+                    
+
+                    -- DEBUG MAP DISPLAY:
+                    RIB.Display_Map;
+
+                    -- TODO: Change print lines to use Render_Buffer
+
                 when others =>
                     Put_Line ("Invalid option. Please try again.");
             end case;
