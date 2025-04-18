@@ -43,25 +43,13 @@ package body simulation is
                 when '1' =>
                     declare
                         Input_Line : String(1..100);
-                        Len2       : Natural;
+                        Last       : Natural;
                         Filter_Str : Unbounded_String;
                         All_DIFS   : RIB.DIF_Vectors.Vector := RIB.Get_All_DIFs;
                     begin
-                        Put("Enter filter string: ");
-                        Get_Line(Input_Line, Len2);
-                        Filter_Str := To_Unbounded_String(Input_Line(1..Len2));
-                        Put_Line("Computers under matching DIFs:");
-                        for I in All_DIFS.First_Index .. All_DIFS.Last_Index loop
-                            if Index(To_String(All_DIFS(I)), To_String(Filter_Str)) > 0 then
-                                declare
-                                   REntry : RIB.RIB_Entry := RIB.Get_Entry(All_DIFS(I));
-                                begin
-                                   for CompC in REntry.Obj_Type.Iterate loop
-                                      Put_Line(" - " & To_String(REntry.Obj_Type(CompC).Comp_Connection));
-                                   end loop;
-                                end;
-                            end if;
-                        end loop;
+                        Put("Enter DIF Name: ");
+                        Get_Line(Input_Line, Last);
+                        RIB.Add_Entry(To_Unbounded_String(Input_Line(1..Last)));
                     end;
                 when '2' =>
                     null;
