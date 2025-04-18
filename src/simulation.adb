@@ -1,6 +1,7 @@
 with Ada.Text_IO;           use Ada.Text_IO;
 with Ada.Real_Time;         use Ada.Real_Time;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Ada.Strings.Fixed;     use Ada.Strings.Fixed;
 with application;
 with Render_Buffer;         use Render_Buffer;
 with RIB;
@@ -23,18 +24,54 @@ package body simulation is
 
         loop
             Put(Clear_Screen);
+
+            -- Get list of all current DIFs
+
+
+
+
             Load_Main_Display (RB);
 
             Get_Line(Input, Last);
+
             case Input (1) is
                 when '1' =>
                     null;
                 when '2' =>
                     null;
                 when '3' =>
-                    null;
+                    -- Print all DIFs in the RIB
+                    declare
+                        All_Difs : RIB.DIF_Vectors.Vector := RIB.Get_All_DIFs;
+                    begin
+                        Put_Line("DIFs in RIB:");
+                        for I in All_Difs.First_Index .. All_Difs.Last_Index loop
+                            Put_Line(" - " & To_String(All_Difs(I)));
+                        end loop;
+                    end;
                 when '4' =>
-                    null;
+                    declare
+                        Input_Line : String(1..100);
+                        Len2       : Natural;
+                        Filter_Str : Unbounded_String;
+                        All_DIFS   : RIB.DIF_Vectors.Vector := RIB.Get_All_DIFs;
+                    begin
+                        Put("Enter filter string: ");
+                        Get_Line(Input_Line, Len2);
+                        Filter_Str := To_Unbounded_String(Input_Line(1..Len2));
+                        Put_Line("Computers under matching DIFs:");
+                        for I in All_DIFS.First_Index .. All_DIFS.Last_Index loop
+                            if Index(To_String(All_DIFS(I)), To_String(Filter_Str)) > 0 then
+                                declare
+                                   REntry : RIB.RIB_Entry := RIB.Get_Entry(All_DIFS(I));
+                                begin
+                                   for CompC in REntry.Obj_Type.Iterate loop
+                                      Put_Line(" - " & To_String(REntry.Obj_Type(CompC).Comp_Connection));
+                                   end loop;
+                                end;
+                            end if;
+                        end loop;
+                    end;
                 when '9' => -- NASA DSN DEMO
                     -- DIFs
                     RIB.Add_Entry(To_Unbounded_String("ISP DIF"));

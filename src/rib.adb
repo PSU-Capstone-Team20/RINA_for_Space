@@ -269,7 +269,14 @@ package body RIB is
       return map;
     end Get_map;
  
-
-
+    -- gets all DIFs in the RIB
+    function Get_All_DIFs return DIF_Vectors.Vector is
+       Result : DIF_Vectors.Vector := DIF_Vectors.Empty_Vector;
+    begin
+       for C in map.Iterate loop
+          Result.Append(map(C).Name);
+       end loop;
+       return Result;
+    end Get_All_DIFs;
 
 end RIB;

@@ -124,6 +124,9 @@ package RIB is
     --gets the entire map
     function Get_map return RIB_Hashed_Maps.Map;
 
+    -- gets all DIFs in the RIB
+    function Get_All_DIFs return DIF_Vectors.Vector;
+
     private
       map : RIB_Hashed_Maps.Map;
       
