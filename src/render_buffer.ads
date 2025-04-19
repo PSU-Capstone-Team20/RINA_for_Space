@@ -32,6 +32,6 @@ package Render_Buffer is
     procedure Clear_Cursor_From_Buffer (RB : in out Render_Buffer; C : in out Cursor);
     procedure Set_Initial_Cursor_Position (RB : in out Render_Buffer; C : in out Cursor; X, Y : Integer; Cursor_Char : Character);
 
-    procedure Load_Main_Display (RB : in out Render_Buffer);
+    procedure Load_Main_Display (RB : in out Render_Buffer; Current_Menu : String);
 
 end Render_Buffer;
