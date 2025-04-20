@@ -187,21 +187,24 @@ package body Render_Buffer is
                Draw_String (RB, "Network Management", 5, 8);
                Draw_Line (RB, '=', 5, 9, 40, 9);
 
-               -- IPCP Management Menu
-               Draw_String (RB, "IPCP Management", 5, 10);
-               -- The system must be able to connect to new IPCPs
-               Draw_String (RB, "1. Create IPCP", 5, 11);
 
-               Draw_String (RB, "2. Delete IPCP", 5, 12);
-               Draw_String (RB, "3. Modify IPCP", 5, 14);
-               Draw_String (RB, "4. Select IPCP", 5, 13);
+               Draw_String (RB, "Computer Management", 5, 10);
+               Draw_String (RB, "1. Create Computer", 5, 11);
+               Draw_String (RB, "2. Delete Computer", 5, 12);
+               Draw_String (RB, "3. Modify Computer", 5, 14);
+               Draw_String (RB, "4. Select Computer", 5, 13);
 
-               Draw_String (RB, "5. Computer Menu", 26, 10);
+               Draw_String (RB, "IPCP Management", 26, 10);
+               Draw_String (RB, "5. Create IPCP", 26, 11);
+               Draw_String (RB, "6. Delete IPCP", 26, 12);
+               Draw_String (RB, "7. Modify IPCP", 26, 14);
+               Draw_String (RB, "8. Select IPCP", 26, 13);
 
-               -- DEMO
                Draw_String(RB, "Demo", 63, 8);
                Draw_Line (RB, '=', 63, 9, 74, 9);
                Draw_String (RB, "9. NASA DSN", 63, 10);
+
+               Draw_String(RB, "0. Back", 63, 13);
 
             elsif Current_Menu(1..3) = "CPU" then
                Draw_String (RB, "Network Management", 5, 8);
@@ -214,12 +217,12 @@ package body Render_Buffer is
                Draw_String (RB, "3. Modify Computer", 5, 14);
                Draw_String (RB, "4. Select Computer", 5, 13);
 
-               Draw_String (RB, "5. DIF Menu", 26, 10);
-
                -- DEMO
                Draw_String(RB, "Demo", 63, 8);
                Draw_Line (RB, '=', 63, 9, 74, 9);
                Draw_String (RB, "9. NASA DSN", 63, 10);
+
+               Draw_String(RB, "0. Back", 63, 13);
             elsif Current_Menu(1..3) = "APN" then
                
                -- APN Management Menu
