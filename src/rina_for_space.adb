@@ -30,8 +30,6 @@ procedure Rina_For_Space is
    --     null;
    --  end Joe_Comp;
 
-
-
    IPC_M_Steve : IPCP_Manager_T;
    --  task Steve_Comp;
    --  task body Steve_Comp is

@@ -279,4 +279,16 @@ package body RIB is
        return Result;
     end Get_All_DIFs;
 
+   -- gets all Comps in the RIB
+   function Get_All_Comps return Comp_Vectors.Vector is
+      Result : Comp_Vectors.Vector := Comp_Vectors.Empty_Vector;
+   begin
+      for C in map.Iterate loop 
+         for X in map(C).Obj_Type.Iterate loop 
+            Result.Append(map(C).Obj_Type(X).Comp_Connection); 
+         end loop;
+      end loop;
+      return Result;
+   end Get_All_Comps;
+   
 end RIB;

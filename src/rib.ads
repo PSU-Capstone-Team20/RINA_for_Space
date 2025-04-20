@@ -13,7 +13,8 @@ package RIB is
      (Index_Type => Natural, Element_Type => Ada.Strings.Unbounded.Unbounded_String);
     package DIF_Vectors is new Ada.Containers.Vectors
      (Index_Type => Natural, Element_Type => Ada.Strings.Unbounded.Unbounded_String);
-    
+    package Comp_Vectors is new Ada.Containers.Vectors
+     (Index_Type => Natural, Element_Type => Ada.Strings.Unbounded.Unbounded_String);
     package IPCP_Vectors is new Ada.Containers.Vectors
      (Index_Type => Natural, Element_Type => Ada.Strings.Unbounded.Unbounded_String);
       
@@ -124,11 +125,12 @@ package RIB is
     --gets the entire map
     function Get_map return RIB_Hashed_Maps.Map;
 
-    -- gets all DIFs in the RIB
-    function Get_All_DIFs return DIF_Vectors.Vector;
 
+    -- Helper functions for simulation to use
+    function Get_All_DIFs return DIF_Vectors.Vector;
+    function Get_All_Comps return Comp_Vectors.Vector;
+    
     private
       map : RIB_Hashed_Maps.Map;
-      
- 
+
 end RIB;

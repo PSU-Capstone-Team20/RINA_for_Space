@@ -163,7 +163,6 @@ package body Render_Buffer is
             -- The system must be able to discover new DIFs
             -- The system must be able to discover new IPCPs
 
-
             if Current_Menu(1..3) = "DIF" then 
                
                Draw_String (RB, "Network Management", 5, 8);
@@ -197,7 +196,7 @@ package body Render_Buffer is
                Draw_String (RB, "3. Modify IPCP", 5, 14);
                Draw_String (RB, "4. Select IPCP", 5, 13);
 
-               Draw_String (RB, "5. DIF Menu", 26, 10);
+               Draw_String (RB, "5. Computer Menu", 26, 10);
 
                -- DEMO
                Draw_String(RB, "Demo", 63, 8);
@@ -215,7 +214,7 @@ package body Render_Buffer is
                Draw_String (RB, "3. Modify Computer", 5, 14);
                Draw_String (RB, "4. Select Computer", 5, 13);
 
-               Draw_String (RB, "5. IPCP Menu", 26, 10);
+               Draw_String (RB, "5. DIF Menu", 26, 10);
 
                -- DEMO
                Draw_String(RB, "Demo", 63, 8);
@@ -230,7 +229,7 @@ package body Render_Buffer is
                Draw_String (RB, "3. Modify APN", 5, 14);
                Draw_String (RB, "4. Select APN", 5, 13);
 
-               Draw_String (RB, "5. Computer Menu", 26, 10);
+               Draw_String (RB, "5. IPCP Menu", 26, 10);
 
                Draw_String (RB, "Data Management", 44,8);
                Draw_Line (RB, '=', 44, 9, 59, 9);
@@ -247,19 +246,13 @@ package body Render_Buffer is
             end if;
 
             -- Network Management
-
-
             -- The system will allow a user to create an application to connect to the network.
             -- The system shall enable a newly created application to connect to the network.
             -- The system shall be adaptable to future hardware.
-
-
-  
             -- The system must be able to disconnect from DIFs
             -- The system must be able to connect to new DIFs
             -- The system must be able to create IPCPs
             -- The system must be able to delete IPCPs
-
 
             -- DATA MANAGEMENT
             -- The system must have acknowledgements.
@@ -270,14 +263,10 @@ package body Render_Buffer is
             -- The system must be able to temporarily store data in a DIF
             -- The system must be able to transmit stored data
 
-
-
             -- ANOMALY HANDLING
             -- The system must retry failed communications.
             -- The system must time out failed communications after 10 retries.
             -- The system must be able to use provided data to communicate past obstacles.
-
-
 
             -- PAGE PANEL
             Draw_Line (RB,'-', 3, 16, 81, 16);
@@ -288,12 +277,12 @@ package body Render_Buffer is
             Draw_Line (RB, '=', 5, 21, 39, 21);
 
             -- IPCPs
-            Draw_String (RB, "IPCPs", 44, 20);
+            Draw_String (RB, "Computers", 44, 20);
             Draw_Line (RB, '=', 44, 21, 80, 21);
 
             -- APNs
-            Draw_String (RB, "APNs", 44, 38);
-            Draw_Line (RB, '=', 44, 39, 80, 39);
+            -- Draw_String (RB, "APNs", 44, 38);
+            -- Draw_Line (RB, '=', 44, 39, 80, 39);
 
             Render_Buffer_To_Screen (RB);
     end Load_Main_Display;
