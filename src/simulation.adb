@@ -99,8 +99,9 @@ package body simulation is
         All_Difs     : RIB.DIF_Vectors.Vector;
         All_Comps    : RIB.Comp_Vectors.Vector; 
         Current_Menu : String (1 .. 4) := "DIF ";
-        Current_DIF  : Unbounded_String;
-        Current_Comp : Unbounded_String := To_Unbounded_String(""); -- Initialize Current_Comp
+        Current_DIF  : Unbounded_String := To_Unbounded_String("");
+        Current_Comp : Unbounded_String := To_Unbounded_String(""); 
+        Current_IPCP : Unbounded_String := To_Unbounded_String("");
         Exit_Simulation : Boolean := False; 
     begin
         Clear_Buffer (RB);
@@ -324,29 +325,83 @@ package body simulation is
             elsif Current_Menu = "IPCP" then
                 case Input (1) is
                     when '1' =>
-                        null; -- Create IPCP
+                        -- Create IPCP
+                        declare
+                            Input_Line : String (1 .. 100);
+                            Len        : Natural;
+                        begin
+                            Put ("Enter IPCP Name: ");
+                            Get_Line (Input_Line, Len);
+                            RIB.Add_IPCP
+                               (Current_DIF,
+                                Current_Comp,
+                                To_Unbounded_String (Input_Line (1 .. Len)));
+                        end;
                     when '2' =>
-                        null; -- Delete IPCP
+                        -- Delete IPCP
+                        declare
+                            Input_Line : String (1 .. 100);
+                            Len        : Natural;
+                        begin
+                            Put ("Enter IPCP Name: ");
+                            Get_Line (Input_Line, Len);
+                            RIB.Delete_IPCP
+                               (Current_DIF,
+                                Current_Comp,
+                                To_Unbounded_String (Input_Line (1 .. Len)));
+                        end;
                     when '3' =>
                         null; -- Modify IPCP
                     when '4' =>
-                        null; -- Select IPCP
+                        -- Select IPCP
+                        declare
+                            Input_Line : String (1 .. 100);
+                            Len        : Natural;
+                        begin
+                            Put ("Enter IPCP Name: ");
+                            Get_Line (Input_Line, Len);
+                            Current_IPCP  :=
+                               To_Unbounded_String (Input_Line (1 .. Len));
+                            Current_Menu := "APN "; 
+                        end;
                     when '5' =>
                         null; -- DIF Menu
                     when '9' =>
                         Run_NASA_DSN_Demo;
                     when '0' => -- Go back to CPU menu
                         Current_Menu := "CPU ";
-                        Current_Comp := To_Unbounded_String (""); -- Clear selected computer
+                        Current_Comp := To_Unbounded_String ("");
+                        Current_IPCP := To_Unbounded_String ("");
                     when others =>
                         Put_Line ("Invalid IPCP option. Please try again.");
                 end case;
             elsif Current_Menu (1 .. 3) = "CPU" then
                 case Input (1) is
                     when '1' =>
-                        null; -- Create Computer
+                        declare
+                            Input_Line : String (1 .. 100);
+                            Len        : Natural;
+                        begin
+                            Put ("Enter Computer Name: ");
+                            Get_Line (Input_Line, Len);
+                            Current_Comp  :=
+                               To_Unbounded_String (Input_Line (1 .. Len));
+                            RIB.Add_Comp (Current_DIF, Current_Comp);
+                            Current_Menu := "IPCP"; 
+                        end;
                     when '2' =>
-                        null; -- Delete Computer
+                        -- Delete Computer
+                        declare
+                            Input_Line : String (1 .. 100);
+                            Len        : Natural;
+                        begin
+                              Put ("Enter Computer Name: ");
+                              Get_Line (Input_Line, Len);
+                              Current_Comp  :=
+                                 To_Unbounded_String (Input_Line (1 .. Len));
+                              RIB.Delete_Comp (Current_DIF, Current_Comp);
+                              Current_Menu := "CPU ";
+                           end;
                     when '3' =>
                         null; -- Modify Computer
                     when '4' => -- Select Computer
@@ -358,12 +413,14 @@ package body simulation is
                             Get_Line (Input_Line, Len);
                             Current_Comp  :=
                                To_Unbounded_String (Input_Line (1 .. Len));
-                            Current_Menu := "IPCP";
+                            Current_Menu := "IPCP"; -- Go to IPCP menu after selecting Computer
                         end;
-                    when '5' =>
-                        null; -- IPCP Menu
                     when '9' =>
                         Run_NASA_DSN_Demo;
+                    when '0' => -- Go back to DIF menu
+                        Current_Menu := "DIF ";
+                        Current_DIF := To_Unbounded_String(""); -- Clear selected DIF
+                        Current_Comp := To_Unbounded_String(""); -- Clear selected Comp
                     when others =>
                         Put_Line
                            ("Invalid Computer option. Please try again.");

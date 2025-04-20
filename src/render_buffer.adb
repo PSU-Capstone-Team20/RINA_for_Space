@@ -187,18 +187,17 @@ package body Render_Buffer is
                Draw_String (RB, "Network Management", 5, 8);
                Draw_Line (RB, '=', 5, 9, 40, 9);
 
+               Draw_String (RB, "IPCP Management", 5, 10);
+               Draw_String (RB, "5. Create IPCP", 5, 11);
+               Draw_String (RB, "6. Delete IPCP", 5, 12);
+               Draw_String (RB, "7. Modify IPCP", 5, 14);
+               Draw_String (RB, "8. Select IPCP", 5, 13);
 
-               Draw_String (RB, "Computer Management", 5, 10);
-               Draw_String (RB, "1. Create Computer", 5, 11);
-               Draw_String (RB, "2. Delete Computer", 5, 12);
-               Draw_String (RB, "3. Modify Computer", 5, 14);
-               Draw_String (RB, "4. Select Computer", 5, 13);
-
-               Draw_String (RB, "IPCP Management", 26, 10);
-               Draw_String (RB, "5. Create IPCP", 26, 11);
-               Draw_String (RB, "6. Delete IPCP", 26, 12);
-               Draw_String (RB, "7. Modify IPCP", 26, 14);
-               Draw_String (RB, "8. Select IPCP", 26, 13);
+               Draw_String (RB, "Application Management", 26, 10);
+               Draw_String (RB, "1. Create Application", 26, 11);
+               Draw_String (RB, "2. Delete Application", 26, 12);
+               Draw_String (RB, "3. Modify Application", 26, 14);
+               Draw_String (RB, "4. Select Application", 26, 13);
 
                Draw_String(RB, "Demo", 63, 8);
                Draw_Line (RB, '=', 63, 9, 74, 9);
