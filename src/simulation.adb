@@ -102,6 +102,7 @@ package body simulation is
         Current_DIF  : Unbounded_String := To_Unbounded_String("");
         Current_Comp : Unbounded_String := To_Unbounded_String(""); 
         Current_IPCP : Unbounded_String := To_Unbounded_String(""); 
+        Current_APN  : Unbounded_String := To_Unbounded_String("");
         Exit_Simulation : Boolean := False; 
     begin
         Clear_Buffer (RB);
@@ -201,8 +202,16 @@ package body simulation is
                                     Draw_String(RB, "  Applications:", 44 + Comp_Prefix'Length, CPURow);
                                     CPURow := CPURow + 1;
                                     for I in APNs.First_Index .. APNs.Last_Index loop
-                                        Draw_String(RB, "  - " & To_String(APNs(I)), 44 + Comp_Prefix'Length, CPURow);
-                                        CPURow := CPURow + 1;
+                                        declare
+                                            APN_Str : Unbounded_String := APNs(I);
+                                            APN_Prefix : String := "  - ";
+                                        begin
+                                            if Comp_Obj.Comp_Connection = Current_Comp and then APN_Str = Current_APN then
+                                                APN_Prefix := "  > ";
+                                            end if;
+                                            Draw_String(RB, APN_Prefix & To_String(APN_Str), 44 + Comp_Prefix'Length, CPURow);
+                                            CPURow := CPURow + 1;
+                                        end;
                                     end loop;
                                 end if;
 
@@ -281,8 +290,6 @@ package body simulation is
                     end if;
 
                 end;
-            elsif Current_Menu (1 .. 3) = "APN" then
-                Draw_String (RB, "APN Menu", 5, 2);
             end if;
 
             Load_Main_Display (RB, Current_Menu);
@@ -353,10 +360,11 @@ package body simulation is
                             Put ("Enter IPCP Name: ");
                             Get_Line (Input_Line, Len);
                             IPCP_Name := To_Unbounded_String (Input_Line (1 .. Len)); 
+                            Current_IPCP := IPCP_Name;
                             RIB.Add_IPCP
                                (Current_DIF,
                                 Current_Comp,
-                                IPCP_Name); 
+                                Current_IPCP); 
                         end;
                     when '2' =>
                         -- Delete IPCP
@@ -385,16 +393,83 @@ package body simulation is
                             Get_Line (Input_Line, Len);
                             Current_IPCP  :=
                                To_Unbounded_String (Input_Line (1 .. Len));
-                            Current_Menu := "APN "; 
+                            Current_Menu := "IPCP"; 
                         end;
                     when '5' =>
-                        null; -- DIF Menu
+                        -- Create APN
+                        declare
+                            Input_Line : String (1 .. 100);
+                            Len        : Natural;
+                            APN_Name   : Unbounded_String;
+                        begin
+                            Put ("Enter APN Name: ");
+                            Get_Line (Input_Line, Len);
+                            APN_Name := To_Unbounded_String (Input_Line (1 .. Len)); 
+                            Current_APN := APN_Name;
+                            RIB.Add_APN
+                               (Current_DIF,
+                                Current_Comp,
+                                Current_APN);
+                        end;
+                     when '6' =>
+                        -- Delete APN
+                        declare
+                            Input_Line : String (1 .. 100);
+                            Len        : Natural;
+                            APN_To_Delete : Unbounded_String;
+                        begin
+                            Put ("Enter APN Name to delete: ");
+                            Get_Line (Input_Line, Len);
+                            APN_To_Delete := To_Unbounded_String (Input_Line (1 .. Len));
+                            RIB.Delete_APN_By_Name
+                               (Current_DIF,
+                                Current_Comp,
+                                APN_To_Delete);
+                        end;
+                        when '8' =>
+                        -- Select APN
+                        declare
+                            Input_Line : String (1 .. 100);
+                            Len        : Natural;
+                            APN_To_Select : Unbounded_String;
+                            DIF_Entry_Record : RIB.RIB_Entry;
+                            Comp_Obj : RIB.RIB_Obj;
+                            APNs : RIB.Application_Vectors.Vector;
+                            Found : Boolean := False;
+                        begin
+                            Put ("Enter APN Name to select: ");
+                            Get_Line (Input_Line, Len);
+                            APN_To_Select := To_Unbounded_String (Input_Line (1 .. Len));
+
+                            if RIB.Find_Entry(Current_DIF) then
+                                DIF_Entry_Record := RIB.Get_Entry(Current_DIF);
+                                if DIF_Entry_Record.Obj_Type.Contains(Current_Comp) then
+                                    Comp_Obj := DIF_Entry_Record.Obj_Type(Current_Comp);
+                                    APNs := Comp_Obj.Obj_Obj_Type.Active_APNs;
+                                    for I in APNs.First_Index .. APNs.Last_Index loop
+                                        if APNs(I) = APN_To_Select then
+                                            Found := True;
+                                            exit;
+                                        end if;
+                                    end loop;
+                                end if;
+                            end if;
+
+                            if Found then
+                                Current_APN := APN_To_Select;
+                                Put_Line("Selected APN: " & To_String(Current_APN));
+                            else
+                                Put_Line("Error: APN '" & To_String(APN_To_Select) & "' not found on computer '" & To_String(Current_Comp) & "'.");
+                                Current_APN := To_Unbounded_String(""); 
+                            end if;
+                        end;
                     when '9' =>
                         Run_NASA_DSN_Demo;
-                    when '0' => -- Go back to CPU menu
+                    when '0' =>
                         Current_Menu := "CPU ";
                         Current_Comp := To_Unbounded_String ("");
                         Current_IPCP := To_Unbounded_String ("");
+                        Current_APN  := To_Unbounded_String ("");
                     when others =>
                         Put_Line ("Invalid IPCP option. Please try again.");
                 end case;
@@ -451,27 +526,6 @@ package body simulation is
                     when others =>
                         Put_Line
                            ("Invalid Computer option. Please try again.");
-                end case;
-            elsif Current_Menu (1 .. 3) = "APN" then
-                case Input (1) is
-                    when '1' =>
-                        null; -- Create APN
-                    when '2' =>
-                        null; -- Delete APN
-                    when '3' =>
-                        null; -- Modify APN
-                    when '4' =>
-                        null; -- Select APN
-                    when '5' =>
-                        null; -- Computer Menu
-                    when '7' =>
-                        null; -- Transmit Data
-                    when '8' =>
-                        null; -- Service Outage
-                    when '9' =>
-                        Run_NASA_DSN_Demo;
-                    when others =>
-                        Put_Line ("Invalid APN option. Please try again.");
                 end case;
             else
                 case Input (1) is

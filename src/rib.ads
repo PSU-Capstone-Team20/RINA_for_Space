@@ -102,8 +102,9 @@ package RIB is
     procedure Delete_Entry(Name : Unbounded_String);
    --   procedure Delete_DIF(index : Integer; item : in out RIB_Entry);
     procedure Delete_IPCP(index : Integer; CompName : Unbounded_String; item : in out RIB_Entry); 
-    procedure Delete_IPCP_By_Name(DIF_Name : Unbounded_String; Comp_Name : Unbounded_String; IPCP_Name : Unbounded_String); 
+    procedure Delete_IPCP_By_Name(DIF_Name : Unbounded_String; Comp_Name : Unbounded_String; IPCP_Name : Unbounded_String);
     procedure Delete_APN(index : Integer; CompName : Unbounded_String; item : in out RIB_Entry);
+    procedure Delete_APN_By_Name(DIF_Name : Unbounded_String; Comp_Name : Unbounded_String; APN_Name : Unbounded_String);
    --   procedure Delete_Comp(index : Integer; item : in out RIB_Entry);
     procedure Delete_Comp(DIF_Name : Unbounded_String; Comp_Name : Unbounded_String);
 

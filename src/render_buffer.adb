@@ -176,7 +176,7 @@ package body Render_Buffer is
                -- Draw_String (RB, "2. Modify DIF", 5, 12);
                -- The system must be able to delete DIFs
                Draw_String (RB, "3. Delete DIF", 5, 13);
-               Draw_String (RB, "4. Select DIF", 5, 13);
+               Draw_String (RB, "4. Select DIF", 5, 14);
 
                -- DEMO
                Draw_String(RB, "Demo", 63, 8);
@@ -190,14 +190,14 @@ package body Render_Buffer is
                Draw_String (RB, "IPCP Management", 5, 10);
                Draw_String (RB, "1. Create IPCP", 5, 11);
                Draw_String (RB, "2. Delete IPCP", 5, 12);
-               -- Draw_String (RB, "3. Modify IPCP", 5, 14);
-               Draw_String (RB, "4. Select IPCP", 5, 13);
+               -- Draw_String (RB, "3. Modify IPCP", 5, 13);
+               Draw_String (RB, "4. Select IPCP", 5, 14);
 
                Draw_String (RB, "Application Management", 26, 10);
                Draw_String (RB, "5. Create Application", 26, 11);
                Draw_String (RB, "6. Delete Application", 26, 12);
-               -- Draw_String (RB, "7. Modify Application", 26, 14);
-               Draw_String (RB, "8. Select Application", 26, 13);
+               -- Draw_String (RB, "7. Modify Application", 26, 13);
+               Draw_String (RB, "8. Select Application", 26, 14);
 
                Draw_String(RB, "Demo", 63, 8);
                Draw_Line (RB, '=', 63, 9, 74, 9);
@@ -213,8 +213,8 @@ package body Render_Buffer is
                Draw_String (RB, "Computer Management", 5, 10);
                Draw_String (RB, "1. Create Computer", 5, 11);
                Draw_String (RB, "2. Delete Computer", 5, 12);
-               -- Draw_String (RB, "3. Modify Computer", 5, 14);
-               Draw_String (RB, "4. Select Computer", 5, 13);
+               -- Draw_String (RB, "3. Modify Computer", 5, 13);
+               Draw_String (RB, "4. Select Computer", 5, 14);
 
                -- DEMO
                Draw_String(RB, "Demo", 63, 8);
@@ -222,29 +222,6 @@ package body Render_Buffer is
                Draw_String (RB, "9. NASA DSN", 63, 10);
 
                Draw_String(RB, "0. Back", 63, 13);
-            elsif Current_Menu(1..3) = "APN" then
-               
-               -- APN Management Menu
-               Draw_String (RB, "APN Management", 5, 10);
-               Draw_String (RB, "1. Create APN", 5, 11);
-               Draw_String (RB, "2. Delete APN", 5, 12);
-               -- Draw_String (RB, "3. Modify APN", 5, 14);
-               Draw_String (RB, "4. Select APN", 5, 13);
-
-               Draw_String (RB, "5. IPCP Menu", 26, 10);
-
-               Draw_String (RB, "Data Management", 44,8);
-               Draw_Line (RB, '=', 44, 9, 59, 9);
-               Draw_String (RB, "7. Transmit Data", 44, 10);
-
-               Draw_String (RB, "Anomaly Handling", 44, 12);
-               Draw_Line (RB, '=', 44, 13, 59, 13);
-               Draw_String (RB, "8. Service Outage", 44, 14);
-
-               -- DEMO
-               Draw_String(RB, "Demo", 63, 8);
-               Draw_Line (RB, '=', 63, 9, 74, 9);
-               Draw_String (RB, "9. NASA DSN", 63, 10);
             end if;
 
             -- Network Management

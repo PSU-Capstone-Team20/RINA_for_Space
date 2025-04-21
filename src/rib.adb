@@ -217,6 +217,45 @@ package body RIB is
             Put_Line("Error deleting IPCP: " & To_String(IPCP_Name));
     end Delete_IPCP_By_Name;
 
+    procedure Delete_APN_By_Name(DIF_Name : Unbounded_String; Comp_Name : Unbounded_String; APN_Name : Unbounded_String) is
+        DIF_Entry_Record : RIB_Entry;
+        Comp_Obj : RIB_Obj;
+        APNs : Application_Vectors.Vector;
+        Found : Boolean := False;
+        Index_To_Delete : Natural;
+    begin
+        if map.Contains(DIF_Name) then
+            DIF_Entry_Record := map(DIF_Name);
+            if DIF_Entry_Record.Obj_Type.Contains(Comp_Name) then
+                Comp_Obj := DIF_Entry_Record.Obj_Type(Comp_Name);
+                APNs := Comp_Obj.Obj_Obj_Type.Active_APNs;
+                for I in APNs.First_Index .. APNs.Last_Index loop
+                    if APNs(I) = APN_Name then
+                        Index_To_Delete := I;
+                        Found := True;
+                        exit;
+                    end if;
+                end loop;
+
+                if Found then
+                    Comp_Obj.Obj_Obj_Type.Active_APNs.Delete(Index_To_Delete);
+                    DIF_Entry_Record.Obj_Type.Replace(Comp_Name, Comp_Obj); 
+                    map.Replace(DIF_Name, DIF_Entry_Record); 
+                    Put_Line("Deleted APN: " & To_String(APN_Name) & " from Computer: " & To_String(Comp_Name));
+                else
+                    Put_Line("APN " & To_String(APN_Name) & " not found on Computer: " & To_String(Comp_Name));
+                end if;
+            else
+                Put_Line("Computer " & To_String(Comp_Name) & " not found in DIF: " & To_String(DIF_Name));
+            end if;
+        else
+            Put_Line("DIF " & To_String(DIF_Name) & " not found.");
+        end if;
+    exception
+        when others =>
+            Put_Line("Error deleting APN: " & To_String(APN_Name));
+    end Delete_APN_By_Name;
+
     --update procedures for RIB_Entry/DIF/IPCP/APN
     procedure Update_Entry(Name: Unbounded_String; item : RIB_Entry) is
     begin
