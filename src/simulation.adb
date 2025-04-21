@@ -258,10 +258,6 @@ package body simulation is
                 begin
                     Draw_String(RB, "Calculated Path:", 5, PathRow);
                     PathRow := PathRow + 1;
-                    -- Assuming Displayed_Path_String contains newline characters for formatting
-                    -- If not, we might need to split the string and draw line by line
-                    -- For simplicity, let's assume it's pre-formatted or short enough for one line for now.
-                    -- A more robust solution would parse the string by newlines.
                     Draw_String(RB, To_String(Displayed_Path_String), 5, PathRow); 
                 end;
             elsif Current_Menu (1 .. 3) = "CPU" then
@@ -496,11 +492,9 @@ package body simulation is
                             Temp_Element.Address_Type := To_Unbounded_String("APN");
                             Recv_Addr.Append(Temp_Element);
 
-                            -- Calculate the path using D* Lite
                             Calculated_Path := D_Star_Lite(Send_Addr, Recv_Addr);
 
-                            -- Format the calculated path for display
-                            Displayed_Path_String := To_Unbounded_String(""); -- Clear previous path
+                            Displayed_Path_String := To_Unbounded_String(""); 
                             for I in Calculated_Path.First_Index .. Calculated_Path.Last_Index loop
                                 declare
                                     Current_Address : RINA.Address_Vectors.Vector := Calculated_Path(I);
@@ -513,13 +507,13 @@ package body simulation is
                                         Append(Address_String, Current_Address(J).Name);
                                     end loop;
                                     if I > Calculated_Path.First_Index then
-                                         Append(Displayed_Path_String, ASCII.LF); -- Use newline for multi-line display
+                                         Append(Displayed_Path_String, ASCII.LF); 
                                     end if;
                                     Append(Displayed_Path_String, "  - " & Address_String);
                                 end;
                             end loop;
 
-                            Current_Menu := "PATH"; -- Change to PATH menu
+                            Current_Menu := "PATH";
                             Current_DIF := To_Unbounded_String("");
                             Current_Comp := To_Unbounded_String ("");
                         end if;
@@ -624,14 +618,13 @@ package body simulation is
                         Put_Line
                            ("Invalid Computer option. Please try again.");
                 end case;
-            elsif Current_Menu = "PATH" then -- Add this block
+            elsif Current_Menu = "PATH" then
                 case Input (1) is
                     when '0' => -- Go back to DIF menu
                         Current_Menu := "DIF ";
-                        Displayed_Path_String := To_Unbounded_String(""); -- Clear the path display
-                        Send_Addr.Clear; -- Optionally clear addresses if going back means starting over
+                        Displayed_Path_String := To_Unbounded_String(""); 
+                        Send_Addr.Clear; 
                         Recv_Addr.Clear;
-                    -- Add other options for the PATH menu here later (e.g., send data)
                     when others =>
                         Put_Line ("Invalid Path option. Please try again.");
                 end case;
