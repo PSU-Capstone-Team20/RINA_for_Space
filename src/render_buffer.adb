@@ -156,7 +156,7 @@ package body Render_Buffer is
 
     procedure Load_Main_Display (RB : in out Render_Buffer; Current_Menu : String) is
     begin
-            Draw_Border (RB, '|', '=', 1, 1, 83, 60);
+            Draw_Border (RB, '|', '=', 1, 1, 83, 50);
             Draw_RinaForSpace (RB, 5, 2); 
 
             -- The system must be able to create a Resource Information Base (RIB)
@@ -205,6 +205,12 @@ package body Render_Buffer is
 
                Draw_String(RB, "0. Back", 63, 13);
 
+            elsif Current_Menu = "PATH" then
+               Draw_String(RB, "Path Display", 5, 8);
+               Draw_Line (RB, '=', 5, 9, 40, 9);
+               Draw_String(RB, "0. Back to DIF Menu", 5, 10);
+               -- Add other path-related options here later (e.g., Send Data)
+
             elsif Current_Menu(1..3) = "CPU" then
                Draw_String (RB, "Network Management", 5, 8);
                Draw_Line (RB, '=', 5, 9, 40, 9);
@@ -249,6 +255,7 @@ package body Render_Buffer is
 
             -- PAGE PANEL
             Draw_Line (RB,'-', 3, 16, 81, 16);
+
             Draw_Line (RB,'-', 3, 18, 81, 18);
 
             -- DIFS

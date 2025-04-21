@@ -1,6 +1,6 @@
 package Render_Buffer is
 
-    type Render_Buffer is array (1 .. 60, 1 .. 100) of Character;
+    type Render_Buffer is array (1 .. 50, 1 .. 100) of Character;
 
     procedure Clear_Buffer (RB : in out Render_Buffer);
     procedure Render_Buffer_To_Screen (RB : Render_Buffer);

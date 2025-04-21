@@ -6,6 +6,7 @@ with Ada.Containers;        use Ada.Containers;
 with application;
 with Render_Buffer;         use Render_Buffer;
 with RIB;
+with RINA; use RINA;
 
 package body simulation is
 
@@ -103,6 +104,11 @@ package body simulation is
         Current_Comp : Unbounded_String := To_Unbounded_String(""); 
         Current_IPCP : Unbounded_String := To_Unbounded_String(""); 
         Current_APN  : Unbounded_String := To_Unbounded_String("");
+        Displayed_Path_String : Unbounded_String := To_Unbounded_String(""); -- Add this line
+        Send_Addr   : RINA.Address_Vectors.Vector;
+        Recv_Addr   : RINA.Address_Vectors.Vector; 
+        Temp_Element : RINA.Address_Element;
+        Calculated_Path : RINA.Path_Vectors.Vector;
         Exit_Simulation : Boolean := False; 
     begin
         Clear_Buffer (RB);
@@ -117,6 +123,21 @@ package body simulation is
 
             All_Difs := RIB.Get_All_DIFs;
             All_Comps := RIB.Get_All_Comps;
+
+            if Send_Addr.Length > 0 then
+                declare
+                    Formatted_Send_Addr : Unbounded_String;
+                begin
+                    Formatted_Send_Addr := To_Unbounded_String(
+                        To_String(Send_Addr(Send_Addr.First_Index).Name) & " / " & 
+                        To_String(Send_Addr(Send_Addr.First_Index + 1).Name) & " / " & 
+                        To_String(Send_Addr(Send_Addr.Last_Index).Name)
+                    );
+                    Draw_String (RB, "SELECT DESTINATION PATH", 28, 17);
+                    Draw_String (RB, "SEND ADDRESS:", 3, 48);
+                    Draw_String (RB, To_String(Formatted_Send_Addr), 3, 49);
+                end;
+            end if;
 
             if Current_Menu = "DIF " then
                 declare
@@ -222,6 +243,26 @@ package body simulation is
                         Draw_String(RB, "Selected DIF not found.", 44, CPURow);
                     end if;
 
+                    if To_String(Current_DIF) /= "" and then To_String(Current_Comp) /= "" and then To_String(Current_APN) /= "" then
+                        if Send_Addr.Length > 0 then
+                            Draw_String (RB, "PRESS SEVEN TO SAVE AS DESTINATION", 23, 17);
+                        else
+                            Draw_String (RB, "PRESS SEVEN TO SAVE AS SEND ADDRESS", 23, 17);
+                        end if;
+                    end if;
+
+                end;
+            elsif Current_Menu = "PATH" then -- Add this block
+                declare
+                    PathRow : Integer := 22;
+                begin
+                    Draw_String(RB, "Calculated Path:", 5, PathRow);
+                    PathRow := PathRow + 1;
+                    -- Assuming Displayed_Path_String contains newline characters for formatting
+                    -- If not, we might need to split the string and draw line by line
+                    -- For simplicity, let's assume it's pre-formatted or short enough for one line for now.
+                    -- A more robust solution would parse the string by newlines.
+                    Draw_String(RB, To_String(Displayed_Path_String), 5, PathRow); 
                 end;
             elsif Current_Menu (1 .. 3) = "CPU" then
                                declare
@@ -376,7 +417,7 @@ package body simulation is
                             Put ("Enter IPCP Name to delete: ");
                             Get_Line (Input_Line, Len);
                             IPCP_To_Delete := To_Unbounded_String (Input_Line (1 .. Len));
-                            RIB.Delete_IPCP_By_Name -- Use the new procedure
+                            RIB.Delete_IPCP_By_Name 
                                (Current_DIF,
                                 Current_Comp,
                                 IPCP_To_Delete);
@@ -427,6 +468,61 @@ package body simulation is
                                 Current_Comp,
                                 APN_To_Delete);
                         end;
+                        when '7' =>
+                        if Send_Addr.Length = 0 then
+                            Temp_Element.Name := Current_DIF;
+                            Temp_Element.Address_Type := To_Unbounded_String("DIF");
+                            Send_Addr.Append(Temp_Element);
+                            Temp_Element.Name := Current_Comp;
+                            Temp_Element.Address_Type := To_Unbounded_String("Computer");
+                            Send_Addr.Append(Temp_Element);
+                            Temp_Element.Name := Current_APN;
+                            Temp_Element.Address_Type := To_Unbounded_String("APN");
+                            Send_Addr.Append(Temp_Element);
+
+                            Current_Menu := "DIF ";
+                            Current_DIF := To_Unbounded_String("");
+                            Current_Comp := To_Unbounded_String ("");
+                            Current_IPCP := To_Unbounded_String ("");
+                            Current_APN  := To_Unbounded_String ("");
+                        elsif Send_Addr.Length > 0 then
+                            Temp_Element.Name := Current_DIF;
+                            Temp_Element.Address_Type := To_Unbounded_String("DIF");
+                            Recv_Addr.Append(Temp_Element);
+                            Temp_Element.Name := Current_Comp;
+                            Temp_Element.Address_Type := To_Unbounded_String("Computer");
+                            Recv_Addr.Append(Temp_Element);
+                            Temp_Element.Name := Current_APN;
+                            Temp_Element.Address_Type := To_Unbounded_String("APN");
+                            Recv_Addr.Append(Temp_Element);
+
+                            -- Calculate the path using D* Lite
+                            Calculated_Path := D_Star_Lite(Send_Addr, Recv_Addr);
+
+                            -- Format the calculated path for display
+                            Displayed_Path_String := To_Unbounded_String(""); -- Clear previous path
+                            for I in Calculated_Path.First_Index .. Calculated_Path.Last_Index loop
+                                declare
+                                    Current_Address : RINA.Address_Vectors.Vector := Calculated_Path(I);
+                                    Address_String : Unbounded_String := To_Unbounded_String("");
+                                begin
+                                    for J in Current_Address.First_Index .. Current_Address.Last_Index loop
+                                        if J > Current_Address.First_Index then
+                                            Append(Address_String, " / ");
+                                        end if;
+                                        Append(Address_String, Current_Address(J).Name);
+                                    end loop;
+                                    if I > Calculated_Path.First_Index then
+                                         Append(Displayed_Path_String, ASCII.LF); -- Use newline for multi-line display
+                                    end if;
+                                    Append(Displayed_Path_String, "  - " & Address_String);
+                                end;
+                            end loop;
+
+                            Current_Menu := "PATH"; -- Change to PATH menu
+                            Current_DIF := To_Unbounded_String("");
+                            Current_Comp := To_Unbounded_String ("");
+                        end if;
                         when '8' =>
                         -- Select APN
                         declare
@@ -503,7 +599,7 @@ package body simulation is
                               if Current_Comp = Comp_To_Delete then
                                  Current_Comp := To_Unbounded_String("");
                               end if;
-                              Current_Menu := "CPU "; -- Stay in CPU menu
+                              Current_Menu := "CPU "; 
                            end;
                     when '3' =>
                         null; -- Modify Computer
@@ -527,6 +623,17 @@ package body simulation is
                     when others =>
                         Put_Line
                            ("Invalid Computer option. Please try again.");
+                end case;
+            elsif Current_Menu = "PATH" then -- Add this block
+                case Input (1) is
+                    when '0' => -- Go back to DIF menu
+                        Current_Menu := "DIF ";
+                        Displayed_Path_String := To_Unbounded_String(""); -- Clear the path display
+                        Send_Addr.Clear; -- Optionally clear addresses if going back means starting over
+                        Recv_Addr.Clear;
+                    -- Add other options for the PATH menu here later (e.g., send data)
+                    when others =>
+                        Put_Line ("Invalid Path option. Please try again.");
                 end case;
             else
                 case Input (1) is
