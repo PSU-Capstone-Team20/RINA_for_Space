@@ -101,7 +101,7 @@ package body simulation is
         Current_Menu : String (1 .. 4) := "DIF ";
         Current_DIF  : Unbounded_String := To_Unbounded_String("");
         Current_Comp : Unbounded_String := To_Unbounded_String(""); 
-        Current_IPCP : Unbounded_String := To_Unbounded_String("");
+        Current_IPCP : Unbounded_String := To_Unbounded_String(""); 
         Exit_Simulation : Boolean := False; 
     begin
         Clear_Buffer (RB);
@@ -128,11 +128,11 @@ package body simulation is
                         DIFRow := DIFRow + 1;
                     end loop;
 
-                     for I in All_Comps.First_Index .. All_Comps.Last_Index loop
-                        Draw_String
-                           (RB, To_String (All_Comps (I)), 44, CPURow);
-                        CPURow := CPURow + 1;
-                    end loop;
+                  --     for I in All_Comps.First_Index .. All_Comps.Last_Index loop
+                  --        Draw_String
+                  --           (RB, To_String (All_Comps (I)), 44, CPURow);
+                  --        CPURow := CPURow + 1;
+                  --    end loop;
                 end;
             elsif Current_Menu = "IPCP" then
                 declare
@@ -143,7 +143,6 @@ package body simulation is
                     IPCPs      : RIB.IPCP_Vectors.Vector;
                     APNs       : RIB.Application_Vectors.Vector; 
                 begin
-                    -- Draw DIFs on the left
                     for I in All_Difs.First_Index .. All_Difs.Last_Index loop
                         if All_Difs (I) = Current_DIF then
                             Draw_String
@@ -155,7 +154,6 @@ package body simulation is
                         DIFRow := DIFRow + 1;
                     end loop;
 
-                    -- Draw Computers and their IPCPs/APNs for the Current_DIF on the right
                     if RIB.Find_Entry(Current_DIF) then
                         DIF_Entry := RIB.Get_Entry(Current_DIF);
                         Comp_Map := DIF_Entry.Obj_Type;
@@ -165,38 +163,45 @@ package body simulation is
                                 Comp_Obj : RIB.RIB_Obj := Comp_Map(C);
                                 Comp_Name_Str : String := To_String(Comp_Obj.Comp_Connection);
                                 Divider : String(1 .. Comp_Name_Str'Length) := (others => '-');
-                                Prefix : String := "  "; -- Default prefix for alignment
+                                Comp_Prefix : String := "  "; 
                             begin
-                                -- Check if this is the Current_Comp and set prefix
                                 if Comp_Obj.Comp_Connection = Current_Comp then
-                                    Prefix := "> ";
+                                    Comp_Prefix := "> ";
                                 end if;
 
                                 -- Draw Computer Name with prefix
-                                Draw_String(RB, Prefix & Comp_Name_Str, 44, CPURow);
+                                Draw_String(RB, Comp_Prefix & Comp_Name_Str, 44, CPURow);
                                 CPURow := CPURow + 1;
-                                -- Draw Divider (adjust position based on prefix)
-                                Draw_String(RB, Divider, 44 + Prefix'Length, CPURow);
+                                -- Draw Divider
+                                Draw_String(RB, Divider, 44 + Comp_Prefix'Length, CPURow);
                                 CPURow := CPURow + 1;
 
                                 -- Draw associated IPCPs
                                 IPCPs := Comp_Obj.Obj_Obj_Type.Accessible_IPCPs;
                                 if IPCPs.Length > 0 then
-                                    Draw_String(RB, "  IPCPs:", 44 + Prefix'Length, CPURow); -- Indent header slightly
+                                    Draw_String(RB, "  IPCPs:", 44 + Comp_Prefix'Length, CPURow);
                                     CPURow := CPURow + 1;
                                     for I in IPCPs.First_Index .. IPCPs.Last_Index loop
-                                        Draw_String(RB, "  - " & To_String(IPCPs(I)), 44 + Prefix'Length, CPURow); -- Indent IPCPs
-                                        CPURow := CPURow + 1;
+                                        declare
+                                            IPCP_Str : Unbounded_String := IPCPs(I);
+                                            IPCP_Prefix : String := "  - "; 
+                                        begin
+                                            if Comp_Obj.Comp_Connection = Current_Comp and then IPCP_Str = Current_IPCP then
+                                                IPCP_Prefix := "  > ";
+                                            end if;
+                                            Draw_String(RB, IPCP_Prefix & To_String(IPCP_Str), 44 + Comp_Prefix'Length, CPURow);
+                                            CPURow := CPURow + 1;
+                                        end;
                                     end loop;
                                 end if;
 
-                                -- Draw associated APNs
+                                -- Draw associated APNs 
                                 APNs := Comp_Obj.Obj_Obj_Type.Active_APNs;
                                 if APNs.Length > 0 then
-                                    Draw_String(RB, "  Applications:", 44 + Prefix'Length, CPURow); -- Indent header slightly
+                                    Draw_String(RB, "  Applications:", 44 + Comp_Prefix'Length, CPURow);
                                     CPURow := CPURow + 1;
                                     for I in APNs.First_Index .. APNs.Last_Index loop
-                                        Draw_String(RB, "  - " & To_String(APNs(I)), 44 + Prefix'Length, CPURow); -- Indent APNs
+                                        Draw_String(RB, "  - " & To_String(APNs(I)), 44 + Comp_Prefix'Length, CPURow);
                                         CPURow := CPURow + 1;
                                     end loop;
                                 end if;
@@ -218,7 +223,6 @@ package body simulation is
                     IPCPs      : RIB.IPCP_Vectors.Vector;
                     APNs       : RIB.Application_Vectors.Vector; 
                 begin
-                    -- Draw DIFs on the left
                     for I in All_Difs.First_Index .. All_Difs.Last_Index loop
                         if All_Difs (I) = Current_DIF then
                             Draw_String
@@ -230,7 +234,6 @@ package body simulation is
                         DIFRow := DIFRow + 1;
                     end loop;
 
-                    -- Draw Computers and their IPCPs/APNs for the Current_DIF on the right
                     if RIB.Find_Entry(Current_DIF) then
                         DIF_Entry := RIB.Get_Entry(Current_DIF);
                         Comp_Map := DIF_Entry.Obj_Type;
@@ -296,8 +299,10 @@ package body simulation is
                         begin
                             Put ("Enter DIF Name: ");
                             Get_Line (Input_Line, Len);
+                              Current_DIF  :=
+                                 To_Unbounded_String (Input_Line (1 .. Len));
                             RIB.Add_Entry
-                               (To_Unbounded_String (Input_Line (1 .. Len)));
+                               (Current_DIF);
                         end;
                     when '2' =>
                         null; -- Modify DIF
@@ -313,11 +318,11 @@ package body simulation is
                             Get_Line (Input_Line, Len);
                             Current_DIF  :=
                                To_Unbounded_String (Input_Line (1 .. Len));
-                            Current_Menu := "CPU "; -- Go to CPU menu after selecting DIF
+                            Current_Menu := "CPU "; 
                         end;
                     when '9' =>
                         Run_NASA_DSN_Demo;
-                    when '0' => -- Added exit option
+                    when '0' => 
                         Exit_Simulation := True;
                     when others =>
                         Put_Line ("Invalid DIF option. Please try again.");
@@ -329,26 +334,30 @@ package body simulation is
                         declare
                             Input_Line : String (1 .. 100);
                             Len        : Natural;
+                            IPCP_Name  : Unbounded_String; 
                         begin
                             Put ("Enter IPCP Name: ");
                             Get_Line (Input_Line, Len);
+                            IPCP_Name := To_Unbounded_String (Input_Line (1 .. Len)); 
                             RIB.Add_IPCP
                                (Current_DIF,
                                 Current_Comp,
-                                To_Unbounded_String (Input_Line (1 .. Len)));
+                                IPCP_Name); 
                         end;
                     when '2' =>
                         -- Delete IPCP
                         declare
                             Input_Line : String (1 .. 100);
                             Len        : Natural;
+                            IPCP_To_Delete : Unbounded_String;
                         begin
-                            Put ("Enter IPCP Name: ");
+                            Put ("Enter IPCP Name to delete: ");
                             Get_Line (Input_Line, Len);
-                            RIB.Delete_IPCP
+                            IPCP_To_Delete := To_Unbounded_String (Input_Line (1 .. Len));
+                            RIB.Delete_IPCP_By_Name -- Use the new procedure
                                (Current_DIF,
                                 Current_Comp,
-                                To_Unbounded_String (Input_Line (1 .. Len)));
+                                IPCP_To_Delete);
                         end;
                     when '3' =>
                         null; -- Modify IPCP
@@ -394,13 +403,17 @@ package body simulation is
                         declare
                             Input_Line : String (1 .. 100);
                             Len        : Natural;
+                            Comp_To_Delete : Unbounded_String;
                         begin
-                              Put ("Enter Computer Name: ");
+                              Put ("Enter Computer Name to delete: ");
                               Get_Line (Input_Line, Len);
-                              Current_Comp  :=
+                              Comp_To_Delete  :=
                                  To_Unbounded_String (Input_Line (1 .. Len));
-                              RIB.Delete_Comp (Current_DIF, Current_Comp);
-                              Current_Menu := "CPU ";
+                              RIB.Delete_Comp (Current_DIF, Comp_To_Delete);
+                              if Current_Comp = Comp_To_Delete then
+                                 Current_Comp := To_Unbounded_String("");
+                              end if;
+                              Current_Menu := "CPU "; -- Stay in CPU menu
                            end;
                     when '3' =>
                         null; -- Modify Computer
@@ -413,14 +426,14 @@ package body simulation is
                             Get_Line (Input_Line, Len);
                             Current_Comp  :=
                                To_Unbounded_String (Input_Line (1 .. Len));
-                            Current_Menu := "IPCP"; -- Go to IPCP menu after selecting Computer
+                            Current_Menu := "IPCP"; 
                         end;
                     when '9' =>
                         Run_NASA_DSN_Demo;
                     when '0' => -- Go back to DIF menu
                         Current_Menu := "DIF ";
-                        Current_DIF := To_Unbounded_String(""); -- Clear selected DIF
-                        Current_Comp := To_Unbounded_String(""); -- Clear selected Comp
+                        Current_DIF := To_Unbounded_String("");
+                        Current_Comp := To_Unbounded_String("");
                     when others =>
                         Put_Line
                            ("Invalid Computer option. Please try again.");
@@ -447,11 +460,10 @@ package body simulation is
                         Put_Line ("Invalid APN option. Please try again.");
                 end case;
             else
-                -- Main menu or other pages
                 case Input (1) is
                     when '9' =>
                         Run_NASA_DSN_Demo;
-                    when '0' => -- Added exit option here too for consistency
+                    when '0' => 
                         Exit_Simulation := True;
                     when others =>
                         Put_Line ("Invalid option. Please try again.");
@@ -459,7 +471,6 @@ package body simulation is
             end if;
         end loop;
 
-        -- Wait for user input before exiting (Now reachable)
         Put_Line ("Press Enter to exit...");
         Get_Line (Input, Last);
 

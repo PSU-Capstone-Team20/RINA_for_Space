@@ -101,14 +101,11 @@ package RIB is
     --delete procedures for RIB_Entry/DIF/IPCP/APN
     procedure Delete_Entry(Name : Unbounded_String);
    --   procedure Delete_DIF(index : Integer; item : in out RIB_Entry);
-    procedure Delete_IPCP(index : Integer; CompName : Unbounded_String; item : in out RIB_Entry);
+    procedure Delete_IPCP(index : Integer; CompName : Unbounded_String; item : in out RIB_Entry); 
+    procedure Delete_IPCP_By_Name(DIF_Name : Unbounded_String; Comp_Name : Unbounded_String; IPCP_Name : Unbounded_String); 
     procedure Delete_APN(index : Integer; CompName : Unbounded_String; item : in out RIB_Entry);
    --   procedure Delete_Comp(index : Integer; item : in out RIB_Entry);
-
-
-    -- note for discussion: for all the different Gets, Deletes, and Updates, 
-    -- maybe needs to utilize entry index to find the specific item based on name assigned
-    -- rather than a function or procedure for each DIF, IPCP, and APN 
+    procedure Delete_Comp(DIF_Name : Unbounded_String; Comp_Name : Unbounded_String);
 
     --update procedures for RIB_Entry/DIF/IPCP/APN
     procedure Update_Entry(Name : Unbounded_String; item : RIB_Entry);
