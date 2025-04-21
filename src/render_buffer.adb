@@ -191,7 +191,7 @@ package body Render_Buffer is
                Draw_String (RB, "1. Create IPCP", 5, 11);
                Draw_String (RB, "2. Delete IPCP", 5, 12);
                -- Draw_String (RB, "3. Modify IPCP", 5, 13);
-               Draw_String (RB, "4. Select IPCP", 5, 14);
+               -- Draw_String (RB, "4. Select IPCP", 5, 14);
 
                Draw_String (RB, "Application Management", 26, 10);
                Draw_String (RB, "5. Create Application", 26, 11);

@@ -360,11 +360,11 @@ package body simulation is
                             Put ("Enter IPCP Name: ");
                             Get_Line (Input_Line, Len);
                             IPCP_Name := To_Unbounded_String (Input_Line (1 .. Len)); 
-                            Current_IPCP := IPCP_Name;
+                            -- Current_IPCP := IPCP_Name;
                             RIB.Add_IPCP
                                (Current_DIF,
                                 Current_Comp,
-                                Current_IPCP); 
+                                IPCP_Name); 
                         end;
                     when '2' =>
                         -- Delete IPCP
@@ -385,16 +385,17 @@ package body simulation is
                         null; -- Modify IPCP
                     when '4' =>
                         -- Select IPCP
-                        declare
-                            Input_Line : String (1 .. 100);
-                            Len        : Natural;
-                        begin
-                            Put ("Enter IPCP Name: ");
-                            Get_Line (Input_Line, Len);
-                            Current_IPCP  :=
-                               To_Unbounded_String (Input_Line (1 .. Len));
-                            Current_Menu := "IPCP"; 
-                        end;
+                        --  declare
+                        --      Input_Line : String (1 .. 100);
+                        --      Len        : Natural;
+                        --  begin
+                        --      Put ("Enter IPCP Name: ");
+                        --      Get_Line (Input_Line, Len);
+                        --      -- Current_IPCP  :=
+                        --         To_Unbounded_String (Input_Line (1 .. Len));
+                        --      Current_Menu := "IPCP"; 
+                        --  end;
+                        null;
                     when '5' =>
                         -- Create APN
                         declare
