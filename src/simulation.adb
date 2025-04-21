@@ -303,11 +303,25 @@ package body simulation is
                                  To_Unbounded_String (Input_Line (1 .. Len));
                             RIB.Add_Entry
                                (Current_DIF);
+                            Current_Menu := "CPU ";
                         end;
                     when '2' =>
                         null; -- Modify DIF
                     when '3' =>
-                        null; -- Delete DIF
+                        -- Delete DIF
+                        declare
+                            Input_Line : String (1 .. 100);
+                            Len        : Natural;
+                            DIF_To_Delete : Unbounded_String;
+                        begin
+                            Put ("Enter DIF Name to delete: ");
+                            Get_Line (Input_Line, Len);
+                            DIF_To_Delete := To_Unbounded_String (Input_Line (1 .. Len));
+                            RIB.Delete_Entry (DIF_To_Delete); 
+                            Current_Menu := "CPU "; 
+                        end;
+                    when '5' =>
+                        null; -- Computer Menu
                     -- Select DIF
                     when '4' =>
                         declare
