@@ -124,7 +124,7 @@ package body simulation is
             All_Difs := RIB.Get_All_DIFs;
             All_Comps := RIB.Get_All_Comps;
 
-            if Send_Addr.Length > 0 then
+            if Send_Addr.Length > 0 AND Current_Menu /= "PATH" then
                 declare
                     Formatted_Send_Addr : Unbounded_String;
                 begin
@@ -252,13 +252,27 @@ package body simulation is
                     end if;
 
                 end;
-            elsif Current_Menu = "PATH" then -- Add this block
+            elsif Current_Menu = "PATH" then
                 declare
-                    PathRow : Integer := 22;
+                    PathRow : Integer := 20;
                 begin
                     Draw_String(RB, "Calculated Path:", 5, PathRow);
                     PathRow := PathRow + 1;
-                    Draw_String(RB, To_String(Displayed_Path_String), 5, PathRow); 
+                    for I in Calculated_Path.First_Index .. Calculated_Path.Last_Index loop
+                        declare
+                            Current_Address : RINA.Address_Vectors.Vector := Calculated_Path(I);
+                            Address_String : Unbounded_String := To_Unbounded_String("");
+                        begin
+                            for J in Current_Address.First_Index .. Current_Address.Last_Index loop
+                                if J > Current_Address.First_Index then
+                                    Append(Address_String, " / ");
+                                end if;
+                                Append(Address_String, Current_Address(J).Name);
+                            end loop;
+                            Draw_String(RB, "  - " & To_String(Address_String), 5, PathRow);
+                            PathRow := PathRow + 1;
+                        end;
+                    end loop;
                 end;
             elsif Current_Menu (1 .. 3) = "CPU" then
                                declare
@@ -323,7 +337,7 @@ package body simulation is
                             end;
                         end loop;
                     else
-                        Draw_String(RB, "Selected DIF not found.", 44, CPURow);
+                        Draw_String(RB, "DIF not found.", 44, CPURow);
                     end if;
 
                 end;

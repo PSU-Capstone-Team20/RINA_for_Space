@@ -258,13 +258,16 @@ package body Render_Buffer is
 
             Draw_Line (RB,'-', 3, 18, 81, 18);
 
-            -- DIFS
-            Draw_String (RB, "DIFs", 5, 20);
-            Draw_Line (RB, '=', 5, 21, 39, 21);
+            -- If current menu is not Path show DIFs and IPCPs
+            if Current_Menu /= "PATH" then
+               -- DIFS
+               Draw_String (RB, "DIFs", 5, 20);
+               Draw_Line (RB, '=', 5, 21, 39, 21);
 
-            -- IPCPs
-            Draw_String (RB, "Computers", 44, 20);
-            Draw_Line (RB, '=', 44, 21, 80, 21);
+               -- Computers
+               Draw_String (RB, "Computers", 44, 20);
+               Draw_Line (RB, '=', 44, 21, 80, 21);
+            end if;
 
             -- APNs
             -- Draw_String (RB, "APNs", 44, 38);
