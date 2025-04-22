@@ -276,12 +276,131 @@ package body RIB is
     begin
       item.Obj_Type(CompName).Obj_Obj_Type.Accessible_IPCPs(index) := ipcp;
     end Update_IPCP;
-    
+
+    procedure Update_IPCP_By_Name(DIF_Name : Unbounded_String; Comp_Name : Unbounded_String; Old_IPCP_Name : Unbounded_String; New_IPCP_Name : Unbounded_String) is
+        DIF_Entry_Record : RIB_Entry;
+        Comp_Obj : RIB_Obj;
+        IPCPs : IPCP_Vectors.Vector;
+        Found : Boolean := False;
+        Index_To_Update : Natural;
+    begin
+        if map.Contains(DIF_Name) then
+            DIF_Entry_Record := map(DIF_Name);
+            if DIF_Entry_Record.Obj_Type.Contains(Comp_Name) then
+                Comp_Obj := DIF_Entry_Record.Obj_Type(Comp_Name);
+                IPCPs := Comp_Obj.Obj_Obj_Type.Accessible_IPCPs;
+                for I in IPCPs.First_Index .. IPCPs.Last_Index loop
+                    if IPCPs(I) = Old_IPCP_Name then
+                        Index_To_Update := I;
+                        Found := True;
+                        exit;
+                    end if;
+                end loop;
+
+                if Found then
+                    Comp_Obj.Obj_Obj_Type.Accessible_IPCPs.Replace_Element(Index_To_Update, New_IPCP_Name);
+                    DIF_Entry_Record.Obj_Type.Replace(Comp_Name, Comp_Obj);
+                    map.Replace(DIF_Name, DIF_Entry_Record);
+                    Put_Line("Updated IPCP: " & To_String(Old_IPCP_Name) & " to " & To_String(New_IPCP_Name) & " on Computer: " & To_String(Comp_Name));
+                else
+                    Put_Line("IPCP " & To_String(Old_IPCP_Name) & " not found on Computer: " & To_String(Comp_Name));
+                end if;
+            else
+                Put_Line("Computer " & To_String(Comp_Name) & " not found in DIF: " & To_String(DIF_Name));
+            end if;
+        else
+            Put_Line("DIF " & To_String(DIF_Name) & " not found.");
+        end if;
+    exception
+        when others =>
+            Put_Line("Error updating IPCP: " & To_String(Old_IPCP_Name));
+    end Update_IPCP_By_Name;
+
     procedure Update_APN(index : Integer; CompName : Unbounded_String; item : in out RIB_Entry; APN : Unbounded_String) is
     begin
       item.Obj_Type(CompName).Obj_Obj_Type.Active_APNs(index) := APN;
     end Update_APN;
-    
+
+    procedure Update_APN_By_Name(DIF_Name : Unbounded_String; Comp_Name : Unbounded_String; Old_APN_Name : Unbounded_String; New_APN_Name : Unbounded_String) is
+        DIF_Entry_Record : RIB_Entry;
+        Comp_Obj : RIB_Obj;
+        APNs : Application_Vectors.Vector;
+        Found : Boolean := False;
+        Index_To_Update : Natural;
+    begin
+        if map.Contains(DIF_Name) then
+            DIF_Entry_Record := map(DIF_Name);
+            if DIF_Entry_Record.Obj_Type.Contains(Comp_Name) then
+                Comp_Obj := DIF_Entry_Record.Obj_Type(Comp_Name);
+                APNs := Comp_Obj.Obj_Obj_Type.Active_APNs;
+                for I in APNs.First_Index .. APNs.Last_Index loop
+                    if APNs(I) = Old_APN_Name then
+                        Index_To_Update := I;
+                        Found := True;
+                        exit;
+                    end if;
+                end loop;
+
+                if Found then
+                    Comp_Obj.Obj_Obj_Type.Active_APNs.Replace_Element(Index_To_Update, New_APN_Name);
+                    DIF_Entry_Record.Obj_Type.Replace(Comp_Name, Comp_Obj);
+                    map.Replace(DIF_Name, DIF_Entry_Record);
+                    Put_Line("Updated APN: " & To_String(Old_APN_Name) & " to " & To_String(New_APN_Name) & " on Computer: " & To_String(Comp_Name));
+                else
+                    Put_Line("APN " & To_String(Old_APN_Name) & " not found on Computer: " & To_String(Comp_Name));
+                end if;
+            else
+                Put_Line("Computer " & To_String(Comp_Name) & " not found in DIF: " & To_String(DIF_Name));
+            end if;
+        else
+            Put_Line("DIF " & To_String(DIF_Name) & " not found.");
+        end if;
+    exception
+        when others =>
+            Put_Line("Error updating APN: " & To_String(Old_APN_Name));
+    end Update_APN_By_Name;
+
+    procedure Update_Comp_By_Name(DIF_Name : Unbounded_String; Old_Comp_Name : Unbounded_String; New_Comp_Name : Unbounded_String) is
+        DIF_Entry_Record : RIB_Entry;
+        Comp_Obj_To_Update : RIB_Obj;
+    begin
+        if map.Contains(DIF_Name) then
+            DIF_Entry_Record := map(DIF_Name);
+            if DIF_Entry_Record.Obj_Type.Contains(Old_Comp_Name) then
+                Comp_Obj_To_Update := DIF_Entry_Record.Obj_Type(Old_Comp_Name);
+                Comp_Obj_To_Update.Comp_Connection := New_Comp_Name;
+                DIF_Entry_Record.Obj_Type.Delete(Old_Comp_Name);
+                DIF_Entry_Record.Obj_Type.Insert(New_Comp_Name, Comp_Obj_To_Update);
+                map.Replace(DIF_Name, DIF_Entry_Record);
+                Put_Line("Updated Computer name from: " & To_String(Old_Comp_Name) & " to: " & To_String(New_Comp_Name) & " in DIF: " & To_String(DIF_Name));
+            else
+                Put_Line("Computer " & To_String(Old_Comp_Name) & " not found in DIF: " & To_String(DIF_Name));
+            end if;
+        else
+            Put_Line("DIF " & To_String(DIF_Name) & " not found.");
+        end if;
+    exception
+        when others =>
+            Put_Line("Error updating Computer name: " & To_String(Old_Comp_Name));
+    end Update_Comp_By_Name;
+
+    procedure Update_DIF_By_Name (Old_Name : Unbounded_String; New_Name : Unbounded_String) is
+        Entry_To_Update : RIB_Entry;
+    begin
+        if map.Contains(Old_Name) then
+            Entry_To_Update := map(Old_Name);
+            Entry_To_Update.Name := New_Name;
+            map.Delete(Old_Name);
+            map.Insert(New_Name, Entry_To_Update);
+            Put_Line("Updated DIF name from: " & To_String(Old_Name) & " to: " & To_String(New_Name));
+        else
+            Put_Line("DIF with name: " & To_String(Old_Name) & " not found.");
+        end if;
+    exception
+        when others =>
+            Put_Line("Error updating DIF name: " & To_String(Old_Name));
+    end Update_DIF_By_Name;
+
     --prints the entire RIB hashed map 
     --iterates through RIB hashed map
     --iterates through Comp hashed map 

@@ -112,8 +112,12 @@ package RIB is
     procedure Update_Entry(Name : Unbounded_String; item : RIB_Entry);
    --   procedure Update_DIF(index : Integer; item : in out RIB_Entry; dif : Unbounded_String);
     procedure Update_IPCP(index : Integer; CompName : Unbounded_String; item : in out RIB_Entry; ipcp : Unbounded_String);
+    procedure Update_IPCP_By_Name(DIF_Name : Unbounded_String; Comp_Name : Unbounded_String; Old_IPCP_Name : Unbounded_String; New_IPCP_Name : Unbounded_String);
     procedure Update_APN(index : Integer; CompName : Unbounded_String; item : in out RIB_Entry; APN : Unbounded_String);
+    procedure Update_APN_By_Name(DIF_Name : Unbounded_String; Comp_Name : Unbounded_String; Old_APN_Name : Unbounded_String; New_APN_Name : Unbounded_String);
    --   procedure Update_Comp(index : Integer; item : in out RIB_Entry; Comp : Unbounded_String);
+    procedure Update_Comp_By_Name(DIF_Name : Unbounded_String; Old_Comp_Name : Unbounded_String; New_Comp_Name : Unbounded_String);
+    procedure Update_DIF_By_Name (Old_Name : Unbounded_String; New_Name : Unbounded_String);
 
 
     --prints the entire hashed map

@@ -245,9 +245,9 @@ package body simulation is
 
                     if To_String(Current_DIF) /= "" and then To_String(Current_Comp) /= "" and then To_String(Current_APN) /= "" then
                         if Send_Addr.Length > 0 then
-                            Draw_String (RB, "PRESS SEVEN TO SAVE AS DESTINATION", 23, 17);
+                            Draw_String (RB, "PRESS NINE TO SAVE AS DESTINATION", 23, 17);
                         else
-                            Draw_String (RB, "PRESS SEVEN TO SAVE AS SEND ADDRESS", 23, 17);
+                            Draw_String (RB, "PRESS NINE TO SAVE AS SEND ADDRESS", 23, 17);
                         end if;
                     end if;
 
@@ -350,7 +350,33 @@ package body simulation is
                             Current_Menu := "CPU ";
                         end;
                     when '2' =>
-                        null; -- Modify DIF
+                        -- Modify DIF
+                        declare
+                            Input_Line : String (1 .. 100);
+                            Len        : Natural;
+                            Old_DIF    : Unbounded_String;
+                            New_DIF    : Unbounded_String;
+                        begin
+                            if To_String(Current_DIF) = "" then
+                                Put ("Enter DIF Name to modify: ");
+                                Get_Line (Input_Line, Len);
+                                Old_DIF := To_Unbounded_String (Input_Line (1 .. Len));
+                            else
+                                Old_DIF := Current_DIF;
+                            end if;
+
+                            Put ("Enter new DIF Name: ");
+                            Get_Line (Input_Line, Len);
+                            New_DIF := To_Unbounded_String (Input_Line (1 .. Len));
+
+                            RIB.Update_DIF_By_Name(Old_DIF, New_DIF);
+
+                            if Old_DIF = Current_DIF then
+                                Current_DIF := New_DIF;
+                            end if;
+
+                            Current_Menu := "DIF "; 
+                        end;
                     when '3' =>
                         -- Delete DIF
                         declare
@@ -419,7 +445,31 @@ package body simulation is
                                 IPCP_To_Delete);
                         end;
                     when '3' =>
-                        null; -- Modify IPCP
+                        -- Modify IPCP
+                        declare
+                            Input_Line : String (1 .. 100);
+                            Len        : Natural;
+                            Old_IPCP   : Unbounded_String;
+                            New_IPCP   : Unbounded_String;
+                        begin
+                            if To_String(Current_IPCP) = "" then
+                                Put ("Enter IPCP Name to modify: ");
+                                Get_Line (Input_Line, Len);
+                                Old_IPCP := To_Unbounded_String (Input_Line (1 .. Len));
+                            else
+                                Old_IPCP := Current_IPCP;
+                            end if;
+
+                            Put ("Enter new IPCP Name: ");
+                            Get_Line (Input_Line, Len);
+                            New_IPCP := To_Unbounded_String (Input_Line (1 .. Len));
+
+                            RIB.Update_IPCP_By_Name(Current_DIF, Current_Comp, Old_IPCP, New_IPCP);
+
+                            if Old_IPCP = Current_IPCP then
+                                Current_IPCP := New_IPCP;
+                            end if;
+                        end;
                     when '4' =>
                         -- Select IPCP
                         --  declare
@@ -465,6 +515,32 @@ package body simulation is
                                 APN_To_Delete);
                         end;
                         when '7' =>
+                        -- Modify APN
+                        declare
+                            Input_Line : String (1 .. 100);
+                            Len        : Natural;
+                            Old_APN    : Unbounded_String;
+                            New_APN    : Unbounded_String;
+                        begin
+                            if To_String(Current_APN) = "" then
+                                Put ("Enter APN Name to modify: ");
+                                Get_Line (Input_Line, Len);
+                                Old_APN := To_Unbounded_String (Input_Line (1 .. Len));
+                            else
+                                Old_APN := Current_APN;
+                            end if;
+
+                            Put ("Enter new APN Name: ");
+                            Get_Line (Input_Line, Len);
+                            New_APN := To_Unbounded_String (Input_Line (1 .. Len));
+
+                            RIB.Update_APN_By_Name(Current_DIF, Current_Comp, Old_APN, New_APN); 
+                            
+                            if Old_APN = Current_APN then
+                                Current_APN := New_APN; 
+                            end if;
+                        end;
+                        when '9' =>
                         if Send_Addr.Length = 0 then
                             Temp_Element.Name := Current_DIF;
                             Temp_Element.Address_Type := To_Unbounded_String("DIF");
@@ -554,8 +630,6 @@ package body simulation is
                                 Current_APN := To_Unbounded_String(""); 
                             end if;
                         end;
-                    when '9' =>
-                        Run_NASA_DSN_Demo;
                     when '0' =>
                         Current_Menu := "CPU ";
                         Current_Comp := To_Unbounded_String ("");
@@ -596,7 +670,31 @@ package body simulation is
                               Current_Menu := "CPU "; 
                            end;
                     when '3' =>
-                        null; -- Modify Computer
+                        -- Modify Computer
+                        declare
+                            Input_Line : String (1 .. 100);
+                            Len        : Natural;
+                            Old_Comp   : Unbounded_String;
+                            New_Comp   : Unbounded_String;
+                        begin
+                            if To_String(Current_Comp) = "" then
+                                Put ("Enter Computer Name to modify: ");
+                                Get_Line (Input_Line, Len);
+                                Old_Comp := To_Unbounded_String (Input_Line (1 .. Len));
+                            else
+                                Old_Comp := Current_Comp;
+                            end if;
+
+                            Put ("Enter new Computer Name: ");
+                            Get_Line (Input_Line, Len);
+                            New_Comp := To_Unbounded_String (Input_Line (1 .. Len));
+
+                            RIB.Update_Comp_By_Name(Current_DIF, Old_Comp, New_Comp);
+                            
+                            if Old_Comp = Current_Comp then
+                                Current_Comp := New_Comp;
+                            end if;
+                        end;
                     when '4' => -- Select Computer
                         declare
                             Input_Line : String (1 .. 100);
