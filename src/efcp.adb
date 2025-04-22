@@ -59,7 +59,12 @@ package body EFCP is
    --management of the rate PDUs are sent
    --input PDU received
    --currently: only printing that flow control has been applied to the given PDU
+<<<<<<< Updated upstream
    procedure Flow_Control(P : in PDU_T) is
+=======
+   procedure Flow_Control(P : in PDU_S_T) is
+      
+>>>>>>> Stashed changes
    begin
       Put_Line("Flow control has been applied to PDU " & P.PCI.Seq_Num'Image);
    end Flow_Control;
