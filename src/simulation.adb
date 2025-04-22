@@ -737,6 +737,40 @@ package body simulation is
                         Displayed_Path_String := To_Unbounded_String(""); 
                         Send_Addr.Clear; 
                         Recv_Addr.Clear;
+                    when '1' =>
+                        -- Simulate Path Outage
+                        declare
+                            Input_Line : String (1 .. 100);
+                            Len        : Natural;
+                        begin
+                            Put ("Enter (D)IF or (C)omputer to simulate path outage: ");
+                            Get_Line (Input_Line, Len);
+                            if Input_Line(1) = 'D' or Input_Line(1) = 'd' then
+                                Put ("Enter DIF Name: ");
+                                Get_Line (Input_Line, Len);
+                                Current_DIF  :=
+                                   To_Unbounded_String (Input_Line (1 .. Len));
+
+
+                                    -- TODO: Simulate path outage for the specified DIF
+                                    -- TODO: Print the path below the original path
+                                    -- TODO: Restore network to previous state
+
+                            elsif Input_Line(1) = 'C' or Input_Line(1) = 'c' then
+                                Put ("Enter Computer Name: ");
+                                Get_Line (Input_Line, Len);
+                                Current_Comp  :=
+                                   To_Unbounded_String (Input_Line (1 .. Len));
+
+
+                                    -- TODO: Simulate path outage for the specified computer
+                                    -- TODO: Print the path below the original path
+                                    -- TODO: Restore network to previous state
+                                    
+                            else
+                                Put_Line ("Invalid option. Please try again.");
+                            end if;
+                        end;
                     when others =>
                         Put_Line ("Invalid Path option. Please try again.");
                 end case;
