@@ -7,9 +7,8 @@ package application is
        appID   : Integer;
     end record;
 
-   -- TODO Function to initialize application
-   -- TODO Function to get ApplicationName
-   -- TODO Function to get ApplicationID  
-   -- TODO Get "Running on a task"
+    
+
+
       
 end application;

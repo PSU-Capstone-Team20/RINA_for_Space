@@ -117,6 +117,12 @@ package body RIB is
       return false;
    end Find_Entry;
 
+   -- attempts to find the respective Comp
+   function Find_Comp(DIF : Unbounded_String; Comp : Unbounded_String) return Boolean is
+   begin
+      return map(DIF).Obj_Type.Contains(Comp);
+   end Find_Comp;
+
    --   function Get_DIF(index : Integer; item : RIB_Entry) return Unbounded_String is
    --   begin
    --     return item.Obj_Type.Connected_DIFs(index);
@@ -157,6 +163,7 @@ package body RIB is
     begin
       item.Obj_Type(CompName).Obj_Obj_Type.Active_APNs.Delete(index);
     end Delete_APN;
+
 
     procedure Delete_Comp(DIF_Name : Unbounded_String; Comp_Name : Unbounded_String) is
         DIF_Entry_Record : RIB_Entry; -- Renamed variable
@@ -321,6 +328,7 @@ package body RIB is
       item.Obj_Type(CompName).Obj_Obj_Type.Active_APNs(index) := APN;
     end Update_APN;
 
+
     procedure Update_APN_By_Name(DIF_Name : Unbounded_String; Comp_Name : Unbounded_String; Old_APN_Name : Unbounded_String; New_APN_Name : Unbounded_String) is
         DIF_Entry_Record : RIB_Entry;
         Comp_Obj : RIB_Obj;
@@ -400,6 +408,12 @@ package body RIB is
         when others =>
             Put_Line("Error updating DIF name: " & To_String(Old_Name));
     end Update_DIF_By_Name;
+
+    procedure Update_Comp(DIF : Unbounded_String; Comp : Unbounded_String; RIB_O : RIB_Obj) is
+    begin
+      map(DIF).Obj_Type(Comp) := RIB_O;
+    end Update_Comp;
+    
 
     --prints the entire RIB hashed map 
     --iterates through RIB hashed map

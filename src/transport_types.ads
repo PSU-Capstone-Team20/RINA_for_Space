@@ -11,14 +11,17 @@ package Transport_Types is
       High   => 2);
 
    -- Define the PCI_T type
-   type PCI_T is record
+   type PCI_T is tagged record
       Src_CEP_ID  : Unbounded_String;          -- Local EID of the sending app/IPCP, CEP = Connection End Point
       Dst_CEP_ID  : Unbounded_String;          -- Local EID of the receiving app/IPCP
       Seq_Num     : Natural;                 -- Sequence number
       DRF_Flag    : Boolean;                  -- Data Run Flag
       ECN_Flag    : Boolean;                  -- Explicit Congestion Notification(flow control)
       QoS_ID      : Natural;                  -- Quality of Service identifier
-      TTL         : Natural;                  -- Time to Live, for SDU Protection to prevent infinite loops in network
+      TTL         : Duration := 10.0;                  -- Time to Live, for SDU Protection to prevent infinite loops in network
+      Ack_Req     : Boolean := False;
+      Retransmit  : Boolean := False;
+      Timestamp   : Time := Clock;
    end record;
 
    -- Define the PDU_Type enumeration with representations
@@ -30,10 +33,10 @@ package Transport_Types is
    end record;
 
    -- Define the PDU_T type
-   type PDU_T is record
+   type PDU_T is tagged record
       ID        : String(1 .. 7);          -- Unique identifier for the PDU
       PCI       : PCI_T;                   -- Protocol Control Information
-      Data      : String(1 .. 1024);       -- The actual payload
+      Data      : Unbounded_String;       -- The actual payload
       --P_Type    : PDU_Type;              -- Type of PDU
       --Omit DIF only for the PDU address to allow a PDU to take any DIF to its destination regardless of what DIFs are active
    end record;
