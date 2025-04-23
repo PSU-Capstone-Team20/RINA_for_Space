@@ -4,7 +4,8 @@ with EFCP;
 with Transport_Types;
 with IPCP_Types;
 --with Rina_BP_Bundle;
-with Interfaces; use Interfaces;
+with Interfaces; use Interfaces;with EFCP; use EFCP;
+
 
 package IPC_Data_Transfer is 
 
@@ -18,7 +19,7 @@ type Flow_ID is new Natural;
 
 
 --SDU delmiting
-procedure Delimit_SDU(Raw_Data : in Byte_Array; SDU : out Byte_Array); 
+--procedure Delimit_SDU(Raw_Data : in Byte_Array; SDU : out Byte_Array); 
 
 --EFCP both DTP and DTCP 
 procedure DTP(SDU : in Byte_Array; Fragment_PDU : out PDU_List);

@@ -19,6 +19,7 @@ with RINA; use RINA;
 with EFCP; use EFCP;
 with IPC_Data_Transfer; use IPC_Data_Transfer;
 --with fakeComp;
+with EFCP; use EFCP;
 
 
 procedure Rina_For_Space is
@@ -94,10 +95,8 @@ procedure Rina_For_Space is
 
    --  Policy : Policy_Enforcement.DIF_Creation_Policy;
 
-   
 
-   --  Payload : constant String := "Hello from Mars";
-   --  B: Bundle;
+   
    
    test_Path_Output : RINA.Path_Vectors.Vector;
    temp : Unbounded_String;
@@ -207,17 +206,27 @@ begin
       end;
    end loop;
 
+   --Test bundle send 
+   declare
+      Src_EID : EFCP.PDU_S_T;
+      Dst_EID : EFCP.PDU_S_T;
+      Payload :  String   := "Message: It's cold here, Temp: 30 Degrees, Longitude, Latitude: 77.246074, -18.47081709";
+      B       : Bundle;
+   begin
+      Src_EID.PCI.Src_CEP_ID := To_Unbounded_String("Laptop APN");
+      Dst_EID.PCI.Dst_CEP_ID := To_Unbounded_String("Mini Fridge APN");
+
+      B := Create_Bundle(Version => 7, Processing_Flag => 0, 
+                         Block_Length => Payload'Length, 
+                         Src_EID => Src_EID, 
+                         Dst_EID => Dst_EID, 
+                         Payload => Payload(1 .. Payload'Length), 
+                         Path => test_Path_Output);
+      Put_Line("Bundle creation initiated....created....Send");
+      Send_Bundle(B);
+      
+   end;
    
-   --  B := Create_Bundle(
-   --     Version         => 6,
-   --     Processing_Flag => 1,
-   --     Block_Length    => Payload'Length,
-   --     Src_EID         => "Satellite-A",
-   --     Dst_EID         => "Ground-Station-1",
-   --     Payload         => Payload,
-   --     Path            => test_Path_Output
-   --  );
-   --  Send_Bundle(B);
    --  Policy := Policy_Enforcement.Get_DIF_Creation_Policy(DIF_Instance.DIF_Name);
    --  DIF_Instance.Policy := Policy;
    --  DIF_Instance.DIF_ID := 1;

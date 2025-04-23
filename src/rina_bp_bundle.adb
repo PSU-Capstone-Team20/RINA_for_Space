@@ -6,6 +6,9 @@ with Transport_Types; use Transport_Types;
 with IPCP_Types; use IPCP_Types;
 with RINA; use RINA;
 with RIB; 
+with Ada.Calendar; use Ada.Calendar;
+with EFCP; use EFCP;
+with Ada.Calendar.Formatting;
 
 package body Rina_BP_Bundle is
 
@@ -13,8 +16,8 @@ package body Rina_BP_Bundle is
    function Create_Bundle(Version : Natural; 
                           Processing_Flag : Integer; 
                           Block_Length : Integer; 
-                          Src_EID : String; 
-                          Dst_EID : String; 
+                          Src_EID : PDU_S_T; 
+                          Dst_EID : PDU_S_T; 
                           Payload : String;
                           Path    : Path_Vectors.Vector) return Bundle is
       --variable B of type Bundle to construct and return values
@@ -23,8 +26,8 @@ package body Rina_BP_Bundle is
       B.Header.Version := Version;
       B.Header.Processing_Flag := Processing_Flag;
       B.Header.Block_Length := Block_Length;
-      B.Src_EID(1 .. Src_EID'Length) := Src_EID;
-      B.Dst_EID(1 .. Dst_EID'Length) := Dst_EID;
+      B.Src_EID := Src_EID;
+      B.Dst_EID := Dst_EID;
       --converts each character in payload string to ASCII value and stores into payload array
       for I in Payload'Range loop
          B.Payload(I) := Character'Pos(Payload(I));
@@ -34,36 +37,34 @@ package body Rina_BP_Bundle is
    end Create_Bundle;
 
    --procedure for sending bundle without the streams util
-   procedure Send_Bundle(B : in Bundle) is
-      --byte array of bundle payload
-      SDU : Byte_Array(B.Payload'Range);
-      --array of 10 PDUs for holding fragmented data 
-      PDUs : PDU_List(1 .. 10);
-      --holding assigned flow id from multiplexing function
-      Flow : Flow_ID;
+    procedure Send_Bundle(B : in Bundle) is
+      Now : Time := Clock;
+      P : PDU_S_T;
+      Payload_To_String : String(1 .. B.Header.Block_Length);
+      
    begin
-      --converting payload into SDU 
-      Delimit_SDU(B.Payload, SDU);
-      --using data transfer protocol DTP to fragment SDU into list of PDUs
-      DTP(SDU => SDU, Fragment_PDU => PDUs);
-
-      --for loop that iterates through each PDU to apply the transmission control, multiplex, and relay 
-      for I in PDUs'Range loop
-         -- assigns first hop's name from path as destination 
-         if B.Path.Length > 0 then 
-            PDUs(I).PCI.Dst_CEP_ID := B.Path.Element(0).Element(0).Name;
-         end if;
-         --retransmissions and ack policy applied
-         DTCP(PDUs(I));
-         --mapping PDU to specific flow id depending on its source id 
-         Multiplex_PDU(PDUs(I), Flow);
-         --forwarding PDU to next node 
-         Relay_PDU(PDUs(I));
+      --due to payload being in byte array form need to adjust by index 
+      for I in 1 .. B.Header.Block_Length loop
+         Payload_To_String(I) := Character'Val(B.Payload(I));
       end loop;
+
+      Put_Line("---- Sending Bundle ----");
+      Put_Line("Source: " & To_String(B.Src_EID.PCI.Src_CEP_ID));
+      Put_Line("Destination: " & To_String(B.Dst_EID.PCI.Dst_CEP_ID));
+      Put_Line("Payload: " & Payload_To_String);
+      Put_Line("Timestamp: " & Ada.Calendar.Formatting.Image(Now));
+      
+
+      P.Data := To_Unbounded_String(Payload_To_String);
+
+      --Control_Transmit(P);
+      --Relay_PDU(P);
+      
+      
       
 
 
-      Put_Line("[Send_Bundle] Bundle sent successfully");
+      Put_Line("Bundle sent successfully");
    end Send_Bundle;
 
    --function for receiving bundle: receiving array of PDUs and reassemble into single byte array 

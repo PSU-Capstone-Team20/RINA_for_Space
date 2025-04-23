@@ -18,10 +18,10 @@ package Transport_Types is
       DRF_Flag    : Boolean;                  -- Data Run Flag
       ECN_Flag    : Boolean;                  -- Explicit Congestion Notification(flow control)
       QoS_ID      : Natural;                  -- Quality of Service identifier
-      TTL         : Natural;                  -- Time to Live, for SDU Protection to prevent infinite loops in network
+      TTL         : Duration := 10.0;                  -- Time to Live, for SDU Protection to prevent infinite loops in network
       Ack_Req     : Boolean := False;
       Retransmit  : Boolean := False;
-      Timestamp   : Natural := 0;
+      Timestamp   : Time := Clock;
    end record;
 
    -- Define the PDU_Type enumeration with representations
