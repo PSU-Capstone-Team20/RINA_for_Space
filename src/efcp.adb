@@ -10,7 +10,9 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 --DTCP cont. - transmission control, retransmission control, and flow control
 --
 package body EFCP is
-   package Int_IO is new Ada.Text_IO.Integer_IO(Integer);
+   
+
+    package Int_IO is new Ada.Text_IO.Integer_IO(Integer);
 
    --splitting SDUs into smaller PDUs given fragment size 
    --creates PDU fragment, PCI updated with fragment size, data copied into fragment up
@@ -95,6 +97,7 @@ package body EFCP is
    begin
       Put_Line("Flow control has been applied to PDU " & P.PCI.Seq_Num'Image);
    end Flow_Control;
+
 
 
 
