@@ -183,6 +183,8 @@ package body Render_Buffer is
                Draw_Line (RB, '=', 63, 9, 74, 9);
                Draw_String (RB, "9. NASA DSN", 63, 10);
 
+               Draw_String(RB, "0. Exit", 63, 13);
+
             elsif Current_Menu = "IPCP" then
                Draw_String (RB, "Network Management", 5, 8);
                Draw_Line (RB, '=', 5, 9, 40, 9);

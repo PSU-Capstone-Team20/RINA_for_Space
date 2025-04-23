@@ -18,6 +18,7 @@ package body simulation is
         RIB.Add_Entry (To_Unbounded_String ("Earth Network DIF"));
         RIB.Add_Entry (To_Unbounded_String ("Deep Space Relay DIF"));
         RIB.Add_Entry (To_Unbounded_String ("Deep Space Probe DIF"));
+        RIB.Add_Entry (To_Unbounded_String ("Mars Ground Vehicle DIF"));
 
         -- Computers
         temp := To_Unbounded_String ("ISP Server");
@@ -36,8 +37,8 @@ package body simulation is
 
         temp := To_Unbounded_String ("Mars Odyssey");
         RIB.Add_Comp (To_Unbounded_String ("Deep Space Relay DIF"), temp);
-        temp := To_Unbounded_String ("Mars Reconnaissance Orbiter");
-        RIB.Add_Comp (To_Unbounded_String ("Deep Space Relay DIF"), temp);
+        --temp := To_Unbounded_String ("Mars Reconnaissance Orbiter");
+        --RIB.Add_Comp (To_Unbounded_String ("Deep Space Relay DIF"), temp);
         temp := To_Unbounded_String ("Maven Orbiter");
         RIB.Add_Comp (To_Unbounded_String ("Deep Space Relay DIF"), temp);
 
@@ -45,6 +46,13 @@ package body simulation is
         RIB.Add_Comp (To_Unbounded_String ("Deep Space Probe DIF"), temp);
         temp := To_Unbounded_String ("Voyager 2");
         RIB.Add_Comp (To_Unbounded_String ("Deep Space Probe DIF"), temp);
+
+        temp := To_Unbounded_String ("Curiosity Rover");
+        RIB.Add_Comp (To_Unbounded_String ("Mars Ground Vehicle DIF"), temp);
+        temp := To_Unbounded_String ("Perseverance Rover");
+        RIB.Add_Comp (To_Unbounded_String ("Mars Ground Vehicle DIF"), temp);
+        temp := To_Unbounded_String ("Ingenuity Helicopter");
+        RIB.Add_Comp (To_Unbounded_String ("Mars Ground Vehicle DIF"), temp);
 
         -- IPCPs
         temp := To_Unbounded_String ("ISP IPCP");
@@ -55,6 +63,9 @@ package body simulation is
         RIB.Add_IPCP
            (To_Unbounded_String ("ISP DIF"),
             To_Unbounded_String ("NASA Server"), temp);
+         RIB.Add_IPCP
+           (To_Unbounded_String ("ISP DIF"),
+            To_Unbounded_String ("Local Desktop"), temp);
         temp := To_Unbounded_String ("Local IPCP");
         RIB.Add_IPCP
            (To_Unbounded_String ("ISP DIF"),
@@ -77,16 +88,84 @@ package body simulation is
         RIB.Add_IPCP
            (To_Unbounded_String ("Deep Space Relay DIF"),
             To_Unbounded_String ("Mars Odyssey"), temp);
-        temp := To_Unbounded_String ("Mars Reconnaissance IPCP");
-        RIB.Add_IPCP
-           (To_Unbounded_String ("Deep Space Relay DIF"),
-            To_Unbounded_String ("Mars Reconnaissance Orbiter"), temp);
+      --    temp := To_Unbounded_String ("Mars Reconnaissance IPCP");
+      --    RIB.Add_IPCP
+      --       (To_Unbounded_String ("Deep Space Relay DIF"),
+      --        To_Unbounded_String ("Mars Reconnaissance Orbiter"), temp);
         temp := To_Unbounded_String ("Maven IPCP");
         RIB.Add_IPCP
            (To_Unbounded_String ("Deep Space Relay DIF"),
             To_Unbounded_String ("Maven Orbiter"), temp);
 
+        temp := To_Unbounded_String("NASA Server");
+        RIB.Add_Comp (To_Unbounded_String ("Earth Network DIF"), temp);
+
+        temp := To_Unbounded_String ("NASA-GroundLink IPCP");
+        RIB.Add_IPCP (To_Unbounded_String ("ISP DIF"), To_Unbounded_String ("NASA Server"), temp);
+        RIB.Add_IPCP (To_Unbounded_String ("Earth Network DIF"), To_Unbounded_String ("NASA Server"), temp);
+        RIB.Add_IPCP (To_Unbounded_String ("Earth Network DIF"), To_Unbounded_String ("Madrid Ground Station"), temp);
+        RIB.Add_IPCP (To_Unbounded_String ("Earth Network DIF"), To_Unbounded_String ("Canberra Ground Station"), temp);
+        RIB.Add_IPCP (To_Unbounded_String ("Earth Network DIF"), To_Unbounded_String ("Goldstone Ground Station"), temp);
+
+        -- Only one link (can simulate handoff)
+        temp := To_Unbounded_String ("Madrid Ground Station");
+        RIB.Add_Comp (To_Unbounded_String ("Deep Space Relay DIF"), temp);
+
+        temp := To_Unbounded_String ("DSN-RelayLink IPCP");
+        RIB.Add_IPCP (To_Unbounded_String ("Earth Network DIF"), To_Unbounded_String ("Madrid Ground Station"), temp);
+        RIB.Add_IPCP (To_Unbounded_String ("Deep Space Relay DIF"), To_Unbounded_String ("Madrid Ground Station"), temp);
+        RIB.Add_IPCP (To_Unbounded_String ("Earth Network DIF"), To_Unbounded_String ("Canberra Ground Station"), temp);
+        RIB.Add_IPCP (To_Unbounded_String ("Earth Network DIF"), To_Unbounded_String ("Goldstone Ground Station"), temp);
+        RIB.Add_IPCP (To_Unbounded_String ("Deep Space Relay DIF"), To_Unbounded_String ("Mars Odyssey"), temp);
+        --RIB.Add_IPCP (To_Unbounded_String ("Deep Space Relay DIF"), To_Unbounded_String ("Mars Reconnaissance Orbiter"), temp);
+        RIB.Add_IPCP (To_Unbounded_String ("Deep Space Relay DIF"), To_Unbounded_String ("Maven Orbiter"), temp);
+
+        temp := To_Unbounded_String ("Relay-ProbeLink IPCP");
+        RIB.Add_IPCP (To_Unbounded_String ("Deep Space Relay DIF"), To_Unbounded_String ("Mars Odyssey"), temp);
+        --RIB.Add_IPCP (To_Unbounded_String ("Deep Space Relay DIF"), To_Unbounded_String ("Mars Reconnaissance Orbiter"), temp);
+        RIB.Add_IPCP (To_Unbounded_String ("Deep Space Relay DIF"), To_Unbounded_String ("Maven Orbiter"), temp);
+        RIB.Add_IPCP (To_Unbounded_String ("Deep Space Probe DIF"), To_Unbounded_String ("Voyager 1"), temp);
+        RIB.Add_IPCP (To_Unbounded_String ("Deep Space Probe DIF"), To_Unbounded_String ("Voyager 2"), temp);
+
+         temp := To_Unbounded_String ("Mars Odyssey");
+         RIB.Add_Comp (To_Unbounded_String ("Mars Ground Vehicle DIF"), temp);
+         temp := To_Unbounded_String ("Mars-GroundLink IPCP");
+         RIB.Add_IPCP (To_Unbounded_String ("Mars Ground Vehicle DIF"), To_Unbounded_String ("Curiosity Rover"), temp);
+         RIB.Add_IPCP (To_Unbounded_String ("Mars Ground Vehicle DIF"), To_Unbounded_String ("Perseverance Rover"), temp);
+         RIB.Add_IPCP (To_Unbounded_String ("Mars Ground Vehicle DIF"), To_Unbounded_String ("Ingenuity Helicopter"), temp);
+         RIB.Add_IPCP (To_Unbounded_String ("Mars Ground Vehicle DIF"), To_Unbounded_String ("Mars Odyssey"), temp);
+         RIB.Add_IPCP (To_Unbounded_String ("Deep Space Relay DIF"), To_Unbounded_String ("Mars Odyssey"), temp);
+         --RIB.Add_IPCP (To_Unbounded_String ("Deep Space Relay DIF"), To_Unbounded_String ("Mars Reconnaissance Orbiter"), temp);
+         RIB.Add_IPCP (To_Unbounded_String ("Deep Space Relay DIF"), To_Unbounded_String ("Maven Orbiter"), temp);
+
+
         -- Create APNs
+        temp := To_Unbounded_String ("Telemetry App");
+        RIB.Add_APN
+           (To_Unbounded_String ("ISP DIF"),
+            To_Unbounded_String ("ISP Server"),
+            temp);
+         RIB.Add_APN
+           (To_Unbounded_String ("ISP DIF"),
+            To_Unbounded_String ("NASA Server"),
+            temp);
+         RIB.Add_APN
+             (To_Unbounded_String ("ISP DIF"),
+               To_Unbounded_String ("Local Desktop"),
+               temp);
+         RIB.Add_APN
+             (To_Unbounded_String ("Earth Network DIF"),
+               To_Unbounded_String ("Madrid Ground Station"),
+               temp);
+         RIB.Add_APN
+             (To_Unbounded_String ("Deep Space Relay DIF"),
+               To_Unbounded_String ("Mars Odyssey"),
+               temp);
+         RIB.Add_APN
+             (To_Unbounded_String ("Mars Ground Vehicle DIF"),
+               To_Unbounded_String ("Curiosity Rover"),
+               temp);
+         
 
     end Run_NASA_DSN_Demo;
 
