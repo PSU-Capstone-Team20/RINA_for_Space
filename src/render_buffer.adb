@@ -210,8 +210,15 @@ package body Render_Buffer is
             elsif Current_Menu = "PATH" then
                Draw_String(RB, "Path Display", 5, 8);
                Draw_Line (RB, '=', 5, 9, 40, 9);
-               Draw_String(RB, "0. Back to DIF Menu", 5, 10);
+               Draw_String(RB, "1. Send Data", 5, 10);
+               Draw_String(RB, "0. Back to DIF Menu", 5, 11);
                -- Add other path-related options here later (e.g., Send Data)
+
+            elsif Current_Menu = "SEND" then
+               -- Menu for send data Hyelin
+               Draw_String(RB, "Send Data", 5, 8);
+               Draw_Line (RB, '=', 5, 9, 40, 9);
+               Draw_String(RB, "0. Back to DIF Menu", 5, 10);
 
             elsif Current_Menu(1..3) = "CPU" then
                Draw_String (RB, "Network Management", 5, 8);
@@ -261,7 +268,7 @@ package body Render_Buffer is
             Draw_Line (RB,'-', 3, 18, 81, 18);
 
             -- If current menu is not Path show DIFs and IPCPs
-            if Current_Menu /= "PATH" then
+            if Current_Menu /= "PATH" or Current_Menu /= "SEND" then
                -- DIFS
                Draw_String (RB, "DIFs", 5, 20);
                Draw_Line (RB, '=', 5, 21, 39, 21);

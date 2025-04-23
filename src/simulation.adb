@@ -420,6 +420,9 @@ package body simulation is
                     end if;
 
                 end;
+                elsif Current_Menu = "SEND" then
+                  -- PRINT CODE FOR SEND HERE HYELIN
+                  null;
             end if;
 
             Load_Main_Display (RB, Current_Menu);
@@ -808,7 +811,20 @@ package body simulation is
                     when others =>
                         Put_Line
                            ("Invalid Computer option. Please try again.");
-                end case;
+                  end case;
+            elsif Current_Menu = "SEND" then
+                case Input (1) is
+                    when '0' => -- Go back to DIF menu
+                           Current_Menu := "DIF ";
+                           Displayed_Path_String := To_Unbounded_String(""); 
+                           Send_Addr.Clear; 
+                           Recv_Addr.Clear;
+                     when '1' =>
+                           -- HERE IS THE INPUT OPTIONS (IF NEEDED) HYELIN
+                           null;
+                     when others =>
+                        Put_Line ("Invalid Path option. Please try again.");
+                  end case;
             elsif Current_Menu = "PATH" then
                 case Input (1) is
                     when '0' => -- Go back to DIF menu
@@ -816,7 +832,10 @@ package body simulation is
                         Displayed_Path_String := To_Unbounded_String(""); 
                         Send_Addr.Clear; 
                         Recv_Addr.Clear;
-                    when '1' =>
+                     when '1' =>
+                       -- SEND DATA FUNCTION CALLS HERE Hyelin
+                       Current_Menu := "SEND";
+                    when '2' =>
                         -- Simulate Path Outage
                         declare
                             Input_Line : String (1 .. 100);
