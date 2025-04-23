@@ -91,10 +91,6 @@ procedure Rina_For_Space is
    --  Policy : Policy_Enforcement.DIF_Creation_Policy;
 
 
-<<<<<<< Updated upstream
-=======
-   
->>>>>>> Stashed changes
    
    test_Path_Output : RINA.Path_Vectors.Vector;
    temp : Unbounded_String;
@@ -176,16 +172,6 @@ begin
    test_Blank_Element.Address_Type := To_Unbounded_String("APN");
    test_Target_Address.Append(test_Blank_Element);
 
-   test_Blank_Element.Name := To_Unbounded_String("Jane DIF");
-   test_Blank_Element.Address_Type := To_Unbounded_String("DIF");
-   test_Target_Address.Append(test_Blank_Element);
-   test_Blank_Element.name := To_Unbounded_String("Doe Comp");
-   test_Blank_Element.Address_Type := To_Unbounded_String("Computer");
-   test_Target_Address.Append(test_Blank_Element);
-   test_Blank_Element.name := To_Unbounded_String("Mini Fridge APN");
-   test_Blank_Element.Address_Type := To_Unbounded_String("APN");
-   test_Target_Address.Append(test_Blank_Element);
-
    test_Path_Output := D_Star_Lite(test_Start_Address, test_Target_Address);
 
    --TODO: FIGURE OUT HOW TO ACCESS 2D VECTOR
@@ -213,31 +199,7 @@ begin
       end;
    end loop;
 
-<<<<<<< Updated upstream
 
-=======
-   --Test bundle send 
-   declare
-      Src_EID : EFCP.PDU_S_T;
-      Dst_EID : EFCP.PDU_S_T;
-      Payload :  String   := "Message: It's cold here, Temp: 30 Degrees, Longitude, Latitude: 77.246074, -18.47081709";
-      B       : Bundle;
-   begin
-      Src_EID.PCI.Src_CEP_ID := To_Unbounded_String("Laptop APN");
-      Dst_EID.PCI.Dst_CEP_ID := To_Unbounded_String("Mini Fridge APN");
-
-      B := Create_Bundle(Version => 7, Processing_Flag => 0, 
-                         Block_Length => Payload'Length, 
-                         Src_EID => Src_EID, 
-                         Dst_EID => Dst_EID, 
-                         Payload => Payload(1 .. Payload'Length), 
-                         Path => test_Path_Output);
-      Put_Line("Bundle creation initiated....created....Send");
-      Send_Bundle(B);
-      
-   end;
-   
->>>>>>> Stashed changes
    --  Policy := Policy_Enforcement.Get_DIF_Creation_Policy(DIF_Instance.DIF_Name);
    --  DIF_Instance.Policy := Policy;
    --  DIF_Instance.DIF_ID := 1;
