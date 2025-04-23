@@ -13,7 +13,8 @@ package RIB is
      (Index_Type => Natural, Element_Type => Ada.Strings.Unbounded.Unbounded_String);
     package DIF_Vectors is new Ada.Containers.Vectors
      (Index_Type => Natural, Element_Type => Ada.Strings.Unbounded.Unbounded_String);
-    
+    package Comp_Vectors is new Ada.Containers.Vectors
+     (Index_Type => Natural, Element_Type => Ada.Strings.Unbounded.Unbounded_String);
     package IPCP_Vectors is new Ada.Containers.Vectors
      (Index_Type => Natural, Element_Type => Ada.Strings.Unbounded.Unbounded_String);
       
@@ -101,22 +102,25 @@ package RIB is
     --delete procedures for RIB_Entry/DIF/IPCP/APN
     procedure Delete_Entry(Name : Unbounded_String);
    --   procedure Delete_DIF(index : Integer; item : in out RIB_Entry);
-    procedure Delete_IPCP(index : Integer; CompName : Unbounded_String; item : in out RIB_Entry);
+    procedure Delete_IPCP(index : Integer; CompName : Unbounded_String; item : in out RIB_Entry); 
+    procedure Delete_IPCP_By_Name(DIF_Name : Unbounded_String; Comp_Name : Unbounded_String; IPCP_Name : Unbounded_String);
     procedure Delete_APN(index : Integer; CompName : Unbounded_String; item : in out RIB_Entry);
+    procedure Delete_APN_By_Name(DIF_Name : Unbounded_String; Comp_Name : Unbounded_String; APN_Name : Unbounded_String);
    --   procedure Delete_Comp(index : Integer; item : in out RIB_Entry);
 
-    procedure Delete_Comp(DIF : Unbounded_String; Comp : Unbounded_String);
+    procedure Delete_Comp(DIF_Name : Unbounded_String; Comp_Name : Unbounded_String);
 
-    -- note for discussion: for all the different Gets, Deletes, and Updates, 
-    -- maybe needs to utilize entry index to find the specific item based on name assigned
-    -- rather than a function or procedure for each DIF, IPCP, and APN 
 
     --update procedures for RIB_Entry/DIF/IPCP/APN
     procedure Update_Entry(Name : Unbounded_String; item : RIB_Entry);
    --   procedure Update_DIF(index : Integer; item : in out RIB_Entry; dif : Unbounded_String);
     procedure Update_IPCP(index : Integer; CompName : Unbounded_String; item : in out RIB_Entry; ipcp : Unbounded_String);
+    procedure Update_IPCP_By_Name(DIF_Name : Unbounded_String; Comp_Name : Unbounded_String; Old_IPCP_Name : Unbounded_String; New_IPCP_Name : Unbounded_String);
     procedure Update_APN(index : Integer; CompName : Unbounded_String; item : in out RIB_Entry; APN : Unbounded_String);
+    procedure Update_APN_By_Name(DIF_Name : Unbounded_String; Comp_Name : Unbounded_String; Old_APN_Name : Unbounded_String; New_APN_Name : Unbounded_String);
    --   procedure Update_Comp(index : Integer; item : in out RIB_Entry; Comp : Unbounded_String);
+    procedure Update_Comp_By_Name(DIF_Name : Unbounded_String; Old_Comp_Name : Unbounded_String; New_Comp_Name : Unbounded_String);
+    procedure Update_DIF_By_Name (Old_Name : Unbounded_String; New_Name : Unbounded_String);
 
     procedure Update_Comp(DIF : Unbounded_String; Comp : Unbounded_String; RIB_O : RIB_Obj);
 
@@ -127,8 +131,12 @@ package RIB is
     --gets the entire map
     function Get_map return RIB_Hashed_Maps.Map;
 
+
+    -- Helper functions for simulation to use
+    function Get_All_DIFs return DIF_Vectors.Vector;
+    function Get_All_Comps return Comp_Vectors.Vector;
+    
     private
       map : RIB_Hashed_Maps.Map;
-      
- 
+
 end RIB;

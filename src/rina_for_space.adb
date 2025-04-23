@@ -16,8 +16,10 @@ with RIB; use RIB;
 with Policy_Enforcement; use Policy_Enforcement;
 with mockcomp;
 with RINA; use RINA;
+with simulation; use simulation;
 with EFCP; use EFCP;
 with IPC_Data_Transfer; use IPC_Data_Transfer;
+
 --with fakeComp;
 with EFCP; use EFCP;
 
@@ -32,8 +34,6 @@ procedure Rina_For_Space is
    --     begin
    --     null;
    --  end Joe_Comp;
-
-
 
    IPC_M_Steve : IPCP_Manager_T;
    --  task Steve_Comp;
@@ -307,6 +307,9 @@ begin
    --  killflag := 1;
    --  running.start;
    --  delay 1.0;
+   
+   simulation.Start_Simulation;
+
    NULL;
 end Rina_For_Space;
 

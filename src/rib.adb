@@ -164,13 +164,104 @@ package body RIB is
       item.Obj_Type(CompName).Obj_Obj_Type.Active_APNs.Delete(index);
     end Delete_APN;
 
-   -- delete the respective comp from the RIB if it exists
-    procedure Delete_Comp(DIF : Unbounded_String; Comp : Unbounded_String) is
+
+    procedure Delete_Comp(DIF_Name : Unbounded_String; Comp_Name : Unbounded_String) is
+        DIF_Entry_Record : RIB_Entry; -- Renamed variable
     begin
-      if (map(DIF).Obj_Type.Contains (Comp)) then
-         map(DIF).Obj_Type.Delete (Comp);
-      end if;
+        if map.Contains(DIF_Name) then
+            DIF_Entry_Record := map(DIF_Name); -- Use renamed variable
+            if DIF_Entry_Record.Obj_Type.Contains(Comp_Name) then
+                DIF_Entry_Record.Obj_Type.Delete(Comp_Name);
+                map.Replace(DIF_Name, DIF_Entry_Record); -- Use renamed variable
+                Put_Line("Deleted Computer: " & To_String(Comp_Name) & " from DIF: " & To_String(DIF_Name));
+            else
+                Put_Line("Computer " & To_String(Comp_Name) & " not found in DIF: " & To_String(DIF_Name));
+            end if;
+        else
+            Put_Line("DIF " & To_String(DIF_Name) & " not found.");
+        end if;
+    exception
+        when others =>
+            Put_Line("Error deleting computer: " & To_String(Comp_Name));
     end Delete_Comp;
+
+    procedure Delete_IPCP_By_Name(DIF_Name : Unbounded_String; Comp_Name : Unbounded_String; IPCP_Name : Unbounded_String) is
+        DIF_Entry_Record : RIB_Entry;
+        Comp_Obj : RIB_Obj;
+        IPCPs : IPCP_Vectors.Vector;
+        Found : Boolean := False;
+        Index_To_Delete : Natural;
+    begin
+        if map.Contains(DIF_Name) then
+            DIF_Entry_Record := map(DIF_Name); 
+            if DIF_Entry_Record.Obj_Type.Contains(Comp_Name) then
+                Comp_Obj := DIF_Entry_Record.Obj_Type(Comp_Name);
+                IPCPs := Comp_Obj.Obj_Obj_Type.Accessible_IPCPs;
+                for I in IPCPs.First_Index .. IPCPs.Last_Index loop
+                    if IPCPs(I) = IPCP_Name then
+                        Index_To_Delete := I;
+                        Found := True;
+                        exit;
+                    end if;
+                end loop;
+
+                if Found then
+                    Comp_Obj.Obj_Obj_Type.Accessible_IPCPs.Delete(Index_To_Delete);
+                    DIF_Entry_Record.Obj_Type.Replace(Comp_Name, Comp_Obj); 
+                    map.Replace(DIF_Name, DIF_Entry_Record); 
+                    Put_Line("Deleted IPCP: " & To_String(IPCP_Name) & " from Computer: " & To_String(Comp_Name));
+                else
+                    Put_Line("IPCP " & To_String(IPCP_Name) & " not found on Computer: " & To_String(Comp_Name));
+                end if;
+            else
+                Put_Line("Computer " & To_String(Comp_Name) & " not found in DIF: " & To_String(DIF_Name));
+            end if;
+        else
+            Put_Line("DIF " & To_String(DIF_Name) & " not found.");
+        end if;
+    exception
+        when others =>
+            Put_Line("Error deleting IPCP: " & To_String(IPCP_Name));
+    end Delete_IPCP_By_Name;
+
+    procedure Delete_APN_By_Name(DIF_Name : Unbounded_String; Comp_Name : Unbounded_String; APN_Name : Unbounded_String) is
+        DIF_Entry_Record : RIB_Entry;
+        Comp_Obj : RIB_Obj;
+        APNs : Application_Vectors.Vector;
+        Found : Boolean := False;
+        Index_To_Delete : Natural;
+    begin
+        if map.Contains(DIF_Name) then
+            DIF_Entry_Record := map(DIF_Name);
+            if DIF_Entry_Record.Obj_Type.Contains(Comp_Name) then
+                Comp_Obj := DIF_Entry_Record.Obj_Type(Comp_Name);
+                APNs := Comp_Obj.Obj_Obj_Type.Active_APNs;
+                for I in APNs.First_Index .. APNs.Last_Index loop
+                    if APNs(I) = APN_Name then
+                        Index_To_Delete := I;
+                        Found := True;
+                        exit;
+                    end if;
+                end loop;
+
+                if Found then
+                    Comp_Obj.Obj_Obj_Type.Active_APNs.Delete(Index_To_Delete);
+                    DIF_Entry_Record.Obj_Type.Replace(Comp_Name, Comp_Obj); 
+                    map.Replace(DIF_Name, DIF_Entry_Record); 
+                    Put_Line("Deleted APN: " & To_String(APN_Name) & " from Computer: " & To_String(Comp_Name));
+                else
+                    Put_Line("APN " & To_String(APN_Name) & " not found on Computer: " & To_String(Comp_Name));
+                end if;
+            else
+                Put_Line("Computer " & To_String(Comp_Name) & " not found in DIF: " & To_String(DIF_Name));
+            end if;
+        else
+            Put_Line("DIF " & To_String(DIF_Name) & " not found.");
+        end if;
+    exception
+        when others =>
+            Put_Line("Error deleting APN: " & To_String(APN_Name));
+    end Delete_APN_By_Name;
 
     --update procedures for RIB_Entry/DIF/IPCP/APN
     procedure Update_Entry(Name: Unbounded_String; item : RIB_Entry) is
@@ -192,17 +283,138 @@ package body RIB is
     begin
       item.Obj_Type(CompName).Obj_Obj_Type.Accessible_IPCPs(index) := ipcp;
     end Update_IPCP;
-    
+
+    procedure Update_IPCP_By_Name(DIF_Name : Unbounded_String; Comp_Name : Unbounded_String; Old_IPCP_Name : Unbounded_String; New_IPCP_Name : Unbounded_String) is
+        DIF_Entry_Record : RIB_Entry;
+        Comp_Obj : RIB_Obj;
+        IPCPs : IPCP_Vectors.Vector;
+        Found : Boolean := False;
+        Index_To_Update : Natural;
+    begin
+        if map.Contains(DIF_Name) then
+            DIF_Entry_Record := map(DIF_Name);
+            if DIF_Entry_Record.Obj_Type.Contains(Comp_Name) then
+                Comp_Obj := DIF_Entry_Record.Obj_Type(Comp_Name);
+                IPCPs := Comp_Obj.Obj_Obj_Type.Accessible_IPCPs;
+                for I in IPCPs.First_Index .. IPCPs.Last_Index loop
+                    if IPCPs(I) = Old_IPCP_Name then
+                        Index_To_Update := I;
+                        Found := True;
+                        exit;
+                    end if;
+                end loop;
+
+                if Found then
+                    Comp_Obj.Obj_Obj_Type.Accessible_IPCPs.Replace_Element(Index_To_Update, New_IPCP_Name);
+                    DIF_Entry_Record.Obj_Type.Replace(Comp_Name, Comp_Obj);
+                    map.Replace(DIF_Name, DIF_Entry_Record);
+                    Put_Line("Updated IPCP: " & To_String(Old_IPCP_Name) & " to " & To_String(New_IPCP_Name) & " on Computer: " & To_String(Comp_Name));
+                else
+                    Put_Line("IPCP " & To_String(Old_IPCP_Name) & " not found on Computer: " & To_String(Comp_Name));
+                end if;
+            else
+                Put_Line("Computer " & To_String(Comp_Name) & " not found in DIF: " & To_String(DIF_Name));
+            end if;
+        else
+            Put_Line("DIF " & To_String(DIF_Name) & " not found.");
+        end if;
+    exception
+        when others =>
+            Put_Line("Error updating IPCP: " & To_String(Old_IPCP_Name));
+    end Update_IPCP_By_Name;
+
     procedure Update_APN(index : Integer; CompName : Unbounded_String; item : in out RIB_Entry; APN : Unbounded_String) is
     begin
       item.Obj_Type(CompName).Obj_Obj_Type.Active_APNs(index) := APN;
     end Update_APN;
+
+
+    procedure Update_APN_By_Name(DIF_Name : Unbounded_String; Comp_Name : Unbounded_String; Old_APN_Name : Unbounded_String; New_APN_Name : Unbounded_String) is
+        DIF_Entry_Record : RIB_Entry;
+        Comp_Obj : RIB_Obj;
+        APNs : Application_Vectors.Vector;
+        Found : Boolean := False;
+        Index_To_Update : Natural;
+    begin
+        if map.Contains(DIF_Name) then
+            DIF_Entry_Record := map(DIF_Name);
+            if DIF_Entry_Record.Obj_Type.Contains(Comp_Name) then
+                Comp_Obj := DIF_Entry_Record.Obj_Type(Comp_Name);
+                APNs := Comp_Obj.Obj_Obj_Type.Active_APNs;
+                for I in APNs.First_Index .. APNs.Last_Index loop
+                    if APNs(I) = Old_APN_Name then
+                        Index_To_Update := I;
+                        Found := True;
+                        exit;
+                    end if;
+                end loop;
+
+                if Found then
+                    Comp_Obj.Obj_Obj_Type.Active_APNs.Replace_Element(Index_To_Update, New_APN_Name);
+                    DIF_Entry_Record.Obj_Type.Replace(Comp_Name, Comp_Obj);
+                    map.Replace(DIF_Name, DIF_Entry_Record);
+                    Put_Line("Updated APN: " & To_String(Old_APN_Name) & " to " & To_String(New_APN_Name) & " on Computer: " & To_String(Comp_Name));
+                else
+                    Put_Line("APN " & To_String(Old_APN_Name) & " not found on Computer: " & To_String(Comp_Name));
+                end if;
+            else
+                Put_Line("Computer " & To_String(Comp_Name) & " not found in DIF: " & To_String(DIF_Name));
+            end if;
+        else
+            Put_Line("DIF " & To_String(DIF_Name) & " not found.");
+        end if;
+    exception
+        when others =>
+            Put_Line("Error updating APN: " & To_String(Old_APN_Name));
+    end Update_APN_By_Name;
+
+    procedure Update_Comp_By_Name(DIF_Name : Unbounded_String; Old_Comp_Name : Unbounded_String; New_Comp_Name : Unbounded_String) is
+        DIF_Entry_Record : RIB_Entry;
+        Comp_Obj_To_Update : RIB_Obj;
+    begin
+        if map.Contains(DIF_Name) then
+            DIF_Entry_Record := map(DIF_Name);
+            if DIF_Entry_Record.Obj_Type.Contains(Old_Comp_Name) then
+                Comp_Obj_To_Update := DIF_Entry_Record.Obj_Type(Old_Comp_Name);
+                Comp_Obj_To_Update.Comp_Connection := New_Comp_Name;
+                DIF_Entry_Record.Obj_Type.Delete(Old_Comp_Name);
+                DIF_Entry_Record.Obj_Type.Insert(New_Comp_Name, Comp_Obj_To_Update);
+                map.Replace(DIF_Name, DIF_Entry_Record);
+                Put_Line("Updated Computer name from: " & To_String(Old_Comp_Name) & " to: " & To_String(New_Comp_Name) & " in DIF: " & To_String(DIF_Name));
+            else
+                Put_Line("Computer " & To_String(Old_Comp_Name) & " not found in DIF: " & To_String(DIF_Name));
+            end if;
+        else
+            Put_Line("DIF " & To_String(DIF_Name) & " not found.");
+        end if;
+    exception
+        when others =>
+            Put_Line("Error updating Computer name: " & To_String(Old_Comp_Name));
+    end Update_Comp_By_Name;
+
+    procedure Update_DIF_By_Name (Old_Name : Unbounded_String; New_Name : Unbounded_String) is
+        Entry_To_Update : RIB_Entry;
+    begin
+        if map.Contains(Old_Name) then
+            Entry_To_Update := map(Old_Name);
+            Entry_To_Update.Name := New_Name;
+            map.Delete(Old_Name);
+            map.Insert(New_Name, Entry_To_Update);
+            Put_Line("Updated DIF name from: " & To_String(Old_Name) & " to: " & To_String(New_Name));
+        else
+            Put_Line("DIF with name: " & To_String(Old_Name) & " not found.");
+        end if;
+    exception
+        when others =>
+            Put_Line("Error updating DIF name: " & To_String(Old_Name));
+    end Update_DIF_By_Name;
 
     procedure Update_Comp(DIF : Unbounded_String; Comp : Unbounded_String; RIB_O : RIB_Obj) is
     begin
       map(DIF).Obj_Type(Comp) := RIB_O;
     end Update_Comp;
     
+
     --prints the entire RIB hashed map 
     --iterates through RIB hashed map
     --iterates through Comp hashed map 
@@ -288,7 +500,26 @@ package body RIB is
       return map;
     end Get_map;
  
+    -- gets all DIFs in the RIB
+    function Get_All_DIFs return DIF_Vectors.Vector is
+       Result : DIF_Vectors.Vector := DIF_Vectors.Empty_Vector;
+    begin
+       for C in map.Iterate loop
+          Result.Append(map(C).Name);
+       end loop;
+       return Result;
+    end Get_All_DIFs;
 
-
-
+   -- gets all Comps in the RIB
+   function Get_All_Comps return Comp_Vectors.Vector is
+      Result : Comp_Vectors.Vector := Comp_Vectors.Empty_Vector;
+   begin
+      for C in map.Iterate loop 
+         for X in map(C).Obj_Type.Iterate loop 
+            Result.Append(map(C).Obj_Type(X).Comp_Connection); 
+         end loop;
+      end loop;
+      return Result;
+   end Get_All_Comps;
+   
 end RIB;
