@@ -1,5 +1,6 @@
 with Ada.Calendar; use Ada.Calendar;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with RINA;
 
 package Transport_Types is
 
@@ -14,6 +15,8 @@ package Transport_Types is
    type PCI_T is tagged record
       Src_CEP_ID  : Unbounded_String;          -- Local EID of the sending app/IPCP, CEP = Connection End Point
       Dst_CEP_ID  : Unbounded_String;          -- Local EID of the receiving app/IPCP
+      Src_Address : RINA.Address_Vectors.Vector;
+      Dst_Address : RINA.Address_Vectors.Vector;
       Seq_Num     : Natural;                 -- Sequence number
       DRF_Flag    : Boolean;                  -- Data Run Flag
       ECN_Flag    : Boolean;                  -- Explicit Congestion Notification(flow control)

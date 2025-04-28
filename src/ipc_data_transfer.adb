@@ -1,6 +1,7 @@
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Containers.Vectors;
+with RINA;
 with Transport_Types; use Transport_Types;
 with IPCP_Types; use IPCP_Types;
 --with Rina_BP_Bundle; use Rina_BP_Bundle;
@@ -33,6 +34,8 @@ procedure DTP(SDU : in Byte_Array; Fragment_PDU : out PDU_List) is
    Default_PCI : PCI_T := (
       Src_CEP_ID => To_Unbounded_String(""),
       Dst_CEP_ID => To_Unbounded_String(""),
+      Src_Address => RINA.Address_Vectors.Empty_Vector,
+      Dst_Address => RINA.Address_Vectors.Empty_Vector,
       Seq_Num    => 0,
       DRF_Flag   => False,
       ECN_Flag   => False,

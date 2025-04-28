@@ -7,6 +7,10 @@ with application;
 with Render_Buffer;         use Render_Buffer;
 with RIB;
 with RINA; use RINA;
+with EFCP; use EFCP;
+with Rina_BP_Bundle; use Rina_BP_Bundle;
+with Transport_Types;
+with IPC_Data_Transfer; use IPC_Data_Transfer;
 
 package body simulation is
 
@@ -165,7 +169,11 @@ package body simulation is
              (To_Unbounded_String ("Mars Ground Vehicle DIF"),
                To_Unbounded_String ("Curiosity Rover"),
                temp);
-         
+         temp := To_Unbounded_String("Command App");
+         RIB.Add_APN
+           (To_Unbounded_String ("ISP DIF"),
+            To_Unbounded_String ("NASA Server"),
+            temp);
 
     end Run_NASA_DSN_Demo;
 
@@ -188,7 +196,14 @@ package body simulation is
         Recv_Addr   : RINA.Address_Vectors.Vector; 
         Temp_Element : RINA.Address_Element;
         Calculated_Path : RINA.Path_Vectors.Vector;
-        Exit_Simulation : Boolean := False; 
+        Exit_Simulation : Boolean := False;
+        Current_Payload : Unbounded_String := To_Unbounded_String("");
+        Payload : String := "Message: Reaching low temp threshold";
+        New_Payload : Unbounded_String;
+        Payload_Length : Natural;
+        Src_EID : EFCP.PDU_S_T;
+        Dst_EID : EFCP.PDU_S_T;
+        B : Bundle;
     begin
         Clear_Buffer (RB);
         Put (Clear_Screen);
@@ -217,6 +232,9 @@ package body simulation is
                     Draw_String (RB, To_String(Formatted_Send_Addr), 3, 49);
                 end;
             end if;
+
+           
+
 
             if Current_Menu = "DIF " then
                 declare
@@ -421,8 +439,9 @@ package body simulation is
 
                 end;
                 elsif Current_Menu = "SEND" then
-                  -- PRINT CODE FOR SEND HERE HYELIN
-                  null;
+                  Draw_String(RB, "Outgoing... ", 5, 46);
+                  Draw_String(RB, To_String(Current_Payload), 4, 47);
+                  
             end if;
 
             Load_Main_Display (RB, Current_Menu);
@@ -820,8 +839,9 @@ package body simulation is
                            Send_Addr.Clear; 
                            Recv_Addr.Clear;
                      when '1' =>
-                           -- HERE IS THE INPUT OPTIONS (IF NEEDED) HYELIN
+                           Current_Menu := "SEND";
                            null;
+                           
                      when others =>
                         Put_Line ("Invalid Path option. Please try again.");
                   end case;
@@ -833,8 +853,28 @@ package body simulation is
                         Send_Addr.Clear; 
                         Recv_Addr.Clear;
                      when '1' =>
-                       -- SEND DATA FUNCTION CALLS HERE Hyelin
                        Current_Menu := "SEND";
+                                                     
+                                                     
+                        
+                              New_Payload := To_Unbounded_String(To_String(Send_Addr(Send_Addr.Last_Index).Name) & " to " & To_String(Recv_Addr(Recv_Addr.Last_Index).Name));
+                              Payload_Length := Length(New_Payload);
+                              --Current_Payload := To_Unbounded_String(New_Payload);
+                              --Src_EID.PCI.Src_Address := Send_Addr;
+                              --Dst_EID.PCI.Dst_Address := Recv_Addr;
+                              B := Create_Bundle(Version => 7, 
+                                                 Processing_Flag => 0, 
+                                                 Block_Length => Payload_Length, 
+                                                 Src_EID => Src_EID, 
+                                                 Dst_EID => Dst_EID, 
+                                                 Payload => To_String(New_Payload), 
+                                                 Path => Calculated_Path);
+                              Put_Line("Bundle creation Initiated....Sending...");
+                              
+                              Send_Bundle(B);
+                           
+                        
+
                     when '2' =>
                         -- Simulate Path Outage
                         declare
