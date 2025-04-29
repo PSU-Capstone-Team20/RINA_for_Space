@@ -439,8 +439,9 @@ package body simulation is
 
                 end;
                 elsif Current_Menu = "SEND" then
-                  Draw_String(RB, "Outgoing... ", 5, 46);
-                  Draw_String(RB, To_String(Current_Payload), 4, 47);
+                  Draw_String(RB, "Outgoing... ", 5, 45);
+                  Draw_String(RB, To_String(New_Payload), 4, 46);
+                  Draw_String(RB, Payload, 4, 47);
                   
             end if;
 
@@ -860,8 +861,8 @@ package body simulation is
                               New_Payload := To_Unbounded_String(To_String(Send_Addr(Send_Addr.Last_Index).Name) & " to " & To_String(Recv_Addr(Recv_Addr.Last_Index).Name));
                               Payload_Length := Length(New_Payload);
                               --Current_Payload := To_Unbounded_String(New_Payload);
-                              --Src_EID.PCI.Src_Address := Send_Addr;
-                              --Dst_EID.PCI.Dst_Address := Recv_Addr;
+                              Src_EID.PCI.Src_Address := Send_Addr;
+                              Dst_EID.PCI.Dst_Address := Recv_Addr;
                               B := Create_Bundle(Version => 7, 
                                                  Processing_Flag => 0, 
                                                  Block_Length => Payload_Length, 
