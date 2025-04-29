@@ -197,10 +197,9 @@ package body simulation is
         Temp_Element : RINA.Address_Element;
         Calculated_Path : RINA.Path_Vectors.Vector;
         Exit_Simulation : Boolean := False;
-        Current_Payload : Unbounded_String := To_Unbounded_String("");
         Payload : String := "Message: Reaching low temp threshold";
-        New_Payload : Unbounded_String;
-        Payload_Length : Natural;
+        Route : Unbounded_String;
+        Route_Length : Natural;
         Src_EID : EFCP.PDU_S_T;
         Dst_EID : EFCP.PDU_S_T;
         B : Bundle;
@@ -440,7 +439,7 @@ package body simulation is
                 end;
                 elsif Current_Menu = "SEND" then
                   Draw_String(RB, "Outgoing... ", 5, 45);
-                  Draw_String(RB, To_String(New_Payload), 4, 46);
+                  Draw_String(RB, To_String(Route), 4, 46);
                   Draw_String(RB, Payload, 4, 47);
                   
             end if;
@@ -858,17 +857,17 @@ package body simulation is
                                                      
                                                      
                         
-                              New_Payload := To_Unbounded_String(To_String(Send_Addr(Send_Addr.Last_Index).Name) & " to " & To_String(Recv_Addr(Recv_Addr.Last_Index).Name));
-                              Payload_Length := Length(New_Payload);
-                              --Current_Payload := To_Unbounded_String(New_Payload);
+                              Route := To_Unbounded_String(To_String(Send_Addr(Send_Addr.Last_Index).Name) & " to " & To_String(Recv_Addr(Recv_Addr.Last_Index).Name));
+                              Route_Length := Length(Route);
+                              
                               Src_EID.PCI.Src_Address := Send_Addr;
                               Dst_EID.PCI.Dst_Address := Recv_Addr;
                               B := Create_Bundle(Version => 7, 
                                                  Processing_Flag => 0, 
-                                                 Block_Length => Payload_Length, 
+                                                 Block_Length => Route_Length, 
                                                  Src_EID => Src_EID, 
                                                  Dst_EID => Dst_EID, 
-                                                 Payload => To_String(New_Payload), 
+                                                 Payload => To_String(Route), 
                                                  Path => Calculated_Path);
                               Put_Line("Bundle creation Initiated....Sending...");
                               
