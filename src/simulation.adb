@@ -197,7 +197,7 @@ package body simulation is
         Temp_Element : RINA.Address_Element;
         Calculated_Path : RINA.Path_Vectors.Vector;
         Exit_Simulation : Boolean := False;
-        Payload : String := "Message: Reaching low temp threshold";
+        Payload : Unbounded_String := To_Unbounded_String ("");
         Route : Unbounded_String;
         Route_Length : Natural;
         Src_EID : EFCP.PDU_S_T;
@@ -440,7 +440,7 @@ package body simulation is
                 elsif Current_Menu = "SEND" then
                   Draw_String(RB, "Outgoing... ", 5, 45);
                   Draw_String(RB, To_String(Route), 4, 46);
-                  Draw_String(RB, Payload, 4, 47);
+                  Draw_String(RB, To_String(Payload), 4, 47);
                   
             end if;
 
@@ -908,6 +908,16 @@ package body simulation is
                             else
                                 Put_Line ("Invalid option. Please try again.");
                             end if;
+                        end;
+                    when '3' =>
+                        declare
+                            Input_Line : String(1 .. 100);
+                            Len        : Natural;
+                        begin
+                            Put("Enter message to be sent: ");
+                            Get_Line(Input_Line, Len);
+                            Payload := To_Unbounded_String(Input_Line (1 ..Len));
+                            
                         end;
                     when others =>
                         Put_Line ("Invalid Path option. Please try again.");
