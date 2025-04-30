@@ -5,8 +5,22 @@ project Rina_For_Space is
    for Object_Dir use "obj/" & Rina_For_Space_Config.Build_Profile;
    for Create_Missing_Dirs use "True";
    for Exec_Dir use "bin";
-   for Main use ("rina_for_space.adb"
-                  );
+   for Main use ("rina_for_space.adb",
+                  "test_transmission_recovery.adb",
+                  "test_data_transmission.adb", 
+                  "test_ipcp_ack_buffer.adb",
+                  "test_ipc_manager.adb",
+                  "test_dif_manager.adb",
+                  "test_ipc_data_transfer.adb",
+                  "test_mock_comp.adb",
+                  "test_rina.adb",
+                  "test_efcp.adb",
+                  "test_rina_bp_bundle.adb",
+                  "test_cdap.adb",
+                  "test_dif.adb",
+                  "test_rib.adb",
+                  "test_ipcp.adb"
+                 );
 
    package Compiler is
       for Default_Switches ("Ada") use Rina_For_Space_Config.Ada_Compiler_Switches & ("-gnat2022");
