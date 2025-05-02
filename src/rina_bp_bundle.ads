@@ -1,10 +1,7 @@
-
--- with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Calendar; use Ada.Calendar;
 with Ada.Streams; use Ada.Streams;
 with Ada.Streams.Stream_IO; use Ada.Streams.Stream_IO;
---with Ada.Stream_IO; use Ada.Stream_IO;
 with RINA; use RINA;
 with RIB;
 with IPC_Data_Transfer; use IPC_Data_Transfer;
@@ -40,10 +37,4 @@ package Rina_BP_Bundle is
    --function for receiving bundle 
    procedure Receive_Bundle (PDUs : in out PDU_List; Reassemble : out Byte_Array); 
    
-   --  --serializing : encode bundle into a stream
-   --  procedure Serial_Bundle(Stream : in out Ada.Streams.Stream_IO.Stream_Access; B : in Bundle); 
-
-   --  --de-serizliing: decode bundle from stream
-   --  function Deserial_Bundle(Stream : in out Ada.Streams.Stream_IO.Stream_Access) return Bundle;
-
 end Rina_BP_Bundle;

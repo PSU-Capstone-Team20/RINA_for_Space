@@ -1,4 +1,6 @@
 with Ada.Streams.Stream_IO;
+--created to test functionality of tasks(threads) typing within the system
+--currently not in use, but may be helpful as an example for having another process acting in or on the system
 package body mockcomp is
    task body mock_comp is
       Daemon : rib_daemon.RIB_Daemon;

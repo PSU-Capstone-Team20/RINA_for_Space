@@ -1,6 +1,8 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
+--implemented and tested with DIF for policy enforcement of IPCPs
+--currently not included in simulation package, should be improved upon to ensure correct policy usage between IPCPs during creation and enrollment
 package body Policy_Enforcement is 
 
    function Get_DIF_Creation_Policy(Name : Unbounded_String) return DIF_Creation_Policy is

@@ -31,6 +31,7 @@ package body RINA is
    
    --call this when either a new message is being sent, or if an obstacle was encounter, it will function off the current existing RIB
    --assumed to be O(nlogn)
+   --TODO: needs priority weights from DIFs to properly compute best path, currently the function is indistinguishable from Dijkstra's algorithm
    function D_Star_Lite (start : Address_Vectors.Vector; goal : Address_Vectors.Vector) return Path_Vectors.Vector is
       OpenList : Node_Vectors.Vector;
       ClosedList : Node_Vectors.Vector;
@@ -180,13 +181,8 @@ package body RINA is
             neighborNode.Address.Delete(neighborNode.Address.Last_Index);
          end loop;
       end loop;
-
-      --  path := Reconstruct_Path;
-      -- this is only reached when no path is found, path variable will be empty
+      
       return path;
    end D_Star_Lite;
-
-
-
 
 end RINA;

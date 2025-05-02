@@ -22,5 +22,4 @@ package EFCP is
    procedure Retransmit(P : PDU_S_T);
    procedure Flow_Control(P : in PDU_S_T);
 
-
 end EFCP;

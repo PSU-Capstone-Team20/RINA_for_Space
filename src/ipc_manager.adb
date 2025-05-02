@@ -10,8 +10,6 @@ package body IPC_Manager is
    -- Create_IPCP allocates a new IPCP using Make_IPCP and adds it to the manager's list
    procedure Create_IPCP(
       Name               : Unbounded_String;
-      --Address            : Unbounded_String;
-      --Connected_Computer : Unbounded_String;
       Manager            : in out IPCP_Manager_T
    ) is
    begin

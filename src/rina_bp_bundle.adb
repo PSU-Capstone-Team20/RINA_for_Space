@@ -53,16 +53,8 @@ package body Rina_BP_Bundle is
       Put_Line("Destination: " & To_String(B.Dst_EID.PCI.Dst_CEP_ID));
       Put_Line("Payload: " & Payload_To_String);
       Put_Line("Timestamp: " & Ada.Calendar.Formatting.Image(Now));
-      
-
+   
       P.Data := To_Unbounded_String(Payload_To_String);
-
-      --Control_Transmit(P);
-      --Relay_PDU(P);
-      
-      
-      
-
 
       Put_Line("Bundle sent successfully");
    end Send_Bundle;

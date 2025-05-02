@@ -8,9 +8,6 @@ limited with IPCP_Types;
 
 package DIF_Manager is
 
-
-    
-
     -- creates a DIF with specified ID and adds it to the manager
     procedure Create_DIF(ID : Integer);
 
@@ -22,7 +19,6 @@ package DIF_Manager is
 
     --enroll IPCP
     procedure Enroll_IPCP(Owner_DIF : in out DIF_Manager.Dif.DIF_T; IPCP_Inst : in IPCP_Types.IPCP_T);
-    
     
     -- Lsts all DIFS
     procedure List_DIFs;

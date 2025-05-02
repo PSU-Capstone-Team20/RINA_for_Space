@@ -32,21 +32,6 @@ package body RIB is
       end if;
       
     end Add_Entry;
-
-   --   procedure Add_DIF(Name : Unbounded_String; dif : in out Unbounded_String) is
-   --   begin
-   --     if map.Contains(Name) then
-   --        declare
-   --           Capture : RIB_Entry renames map(Name);            
-   --        begin
-   --           Capture.Obj_Type.Connected_DIFs.Append(dif);
-   --           Put_Line("Added DIF: " & To_String(dif) & " to " & To_String(Name));
-   --        end;
-   --     else
-   --        Put_Line("RIB Entry could not be found for: " & To_String(Name));
-   --     end if;
-      
-   --   end Add_DIF;
     
     procedure Add_IPCP(Name : Unbounded_String; CompName : Unbounded_String; ipcp : in out Unbounded_String) is
     begin
@@ -74,6 +59,7 @@ package body RIB is
                item.Comp_Connection := Comp;
                Capture.Obj_Type.Insert(Comp, item);
             else
+               -- the following line caused errors early in implementation, may be reintroduced for error handling purposes or discovery
                --  Put_Line("Existing RIB entry for: " & To_String(Name));
                null;
             end if;
@@ -123,10 +109,6 @@ package body RIB is
       return map(DIF).Obj_Type.Contains(Comp);
    end Find_Comp;
 
-   --   function Get_DIF(index : Integer; item : RIB_Entry) return Unbounded_String is
-   --   begin
-   --     return item.Obj_Type.Connected_DIFs(index);
-   --   end Get_DIF;
     function Get_IPCP(index : Integer; CompName : Unbounded_String; item : RIB_Entry) return Unbounded_String is
     begin
       return item.Obj_Type(CompName).Obj_Obj_Type.Accessible_IPCPs(index);
@@ -145,14 +127,7 @@ package body RIB is
       else
          Put_Line("There is no RIB Entry for: " & To_String(Name));
       end if;
-      --  RIB_Hashed_Maps.Delete(map, Name);
-      --  above line caused execution to freeze when the procedure was called successfully
     end Delete_Entry;
-
-   --   procedure Delete_DIF(index : Integer; item : in out RIB_Entry) is
-   --   begin
-   --     item.Obj_Type.Connected_DIFs.Delete(index);
-   --   end Delete_DIF;
 
     procedure Delete_IPCP(index : Integer; CompName : Unbounded_String; item : in out RIB_Entry) is
     begin
@@ -267,17 +242,8 @@ package body RIB is
     procedure Update_Entry(Name: Unbounded_String; item : RIB_Entry) is
     begin
        map.Include(Name, item);
-      --  if map.Contains(Name) then
-      --     map(Name) := item;
-      --  else
-      --     Put_Line("No RIB Entry for: " & To_String(Name));
-      --  end if;
+      
     end Update_Entry;
-
-   --   procedure Update_DIF(index : Integer; item : in out RIB_Entry; dif : Unbounded_String) is
-   --   begin
-   --     item.Obj_Type.Connected_DIFs(index) := dif;
-   --   end Update_DIF;
 
     procedure Update_IPCP(index : Integer; CompName : Unbounded_String; item : in out RIB_Entry; ipcp : Unbounded_String) is
     begin
@@ -419,7 +385,6 @@ package body RIB is
     --iterates through RIB hashed map
     --iterates through Comp hashed map 
     procedure Display_Map is
-      --  Iter : RIB_Hashed_Maps.Cursor := map.First;
       temp : Unbounded_String;
     begin
       Put_Line("Current Map is: ");
@@ -445,54 +410,6 @@ package body RIB is
       
     end Display_Map;
     --TODO: adding procedure for displaying specific map that is being searched.
-    
-    -- function to check for neighboring IPCPs and DIFs by matching names in list 
-    --essentially whatever computer A and B have connection with, checking name matches to check that it is a neighbor
-   --   function Check_Is_Neighbor(A, B : Unbounded_String; Is_Entry : RIB_Entry) return Boolean is
-
-   --   begin
-   --     --if A or B not found in map they are considered not neighbors
-   --     if not Is_Entry.Obj_Type.Contains(A) or else not Is_Entry.Obj_Type.Contains(B) then
-   --        return False;
-   --     end if;
-
-   --     declare
-   --        Obj_A : RIB_Obj_Obj  := Is_Entry.Obj_Type.Element(A).Obj_Obj_Type;
-   --        Obj_B : RIB_Obj_Obj  := Is_Entry.Obj_Type.Element(B).Obj_Obj_Type;
-   --        IPCPs_A : constant IPCP_Vectors.Vector := Obj_A.Accessible_IPCPs; -- constant for just reading
-   --        IPCPs_B : constant IPCP_Vectors.Vector := Obj_B.Accessible_IPCPs;
-   --     begin
-   --        -- looop through each IPCP in A
-   --        for I of IPCPs_A loop
-   --           --loop through each IPCP in B
-   --           for J of IPCPs_B loop
-   --              -- match strings to show they are neighbots since we are using string names
-   --              if I.IPCP = J.IPCP then
-   --                 return True;
-   --              end if;
-   --           end loop;
-   --        end loop;
-
-   --     declare 
-   --        DIFs_A : constant DIF_Vectors.Vector := Obj_A.Connected_DIFs;
-   --        DIFs_B : constant DIF_Vectors.Vector := Obj_B.Connected_DIFs;
-   --     begin
-   --        --loop through each DIF in A
-   --        for K of DIFs_A loop
-   --           -- loop through each DIF in B
-   --           for L of DIFs_B loop
-   --              --same as loop in IPCP
-   --              if K = L then
-   --                 return True;
-   --              end if;
-   --           end loop;
-   --        end loop;
-   --     end;
-   --   end;
-   --   --no common IPCP or DIF will return false and are not neighbors 
-   --   return False;
-
-   --   end Check_Is_Neighbor;
 
     --gets the entire map
     function Get_map return RIB_Hashed_Maps.Map is

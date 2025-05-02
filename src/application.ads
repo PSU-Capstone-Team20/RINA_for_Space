@@ -6,9 +6,5 @@ package application is
        appName : Unbounded_String;
        appID   : Integer;
     end record;
-
-    
-
-
       
 end application;

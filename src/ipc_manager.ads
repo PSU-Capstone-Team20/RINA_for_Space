@@ -11,7 +11,8 @@ package IPC_Manager is
    package IPCP_Vectors is new Ada.Containers.Vectors
    (Index_Type => Natural, Element_Type => IPCP_Access);
    subtype IPCP_Vector is IPCP_Vectors.Vector;
-   --not used
+   
+   --May be removed, currently used in managing IPCP lists in .adb file
    type IPCP_Manager_T is tagged record
       Name           : Unbounded_String;
       Managed_IPCPs  : IPCP_Vector;
@@ -20,8 +21,6 @@ package IPC_Manager is
    -- Creates an IPCP and adds it to the manager
     procedure Create_IPCP(
       Name               : Unbounded_String;
-      --Address            : Unbounded_String;
-      --Connected_Computer : Unbounded_String;
       Manager            : in out IPCP_Manager_T
    );
 

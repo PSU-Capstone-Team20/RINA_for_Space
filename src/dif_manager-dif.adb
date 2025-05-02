@@ -16,9 +16,6 @@ package body DIF_Manager.Dif is
       New_DIF.Applications.Clear;
       New_DIF.Applications.Set_Length(0);
 
-      -- New_DIF.MemberIPCPs.Clear;
-      -- New_DIF.MemberIPCPs.Set_Length(0);
-
       return New_DIF;
    end Create_DIF;
 
@@ -36,18 +33,12 @@ package body DIF_Manager.Dif is
       Put_Line("Routing is: " & To_String(Policy.Routing_Strategy));
       Put_Line("Enrollment: " & To_String(Policy.Enrollment_Type));
 
-
-      
-
       New_DIF.DIF_ID := 0;
       New_DIF.DIF_Name := name;
       New_DIF.AccessibleDIFs.Clear;
       New_DIF.AccessibleDIFs.Set_Length(0);
       New_DIF.Applications.Clear;
       New_DIF.Applications.Set_Length(0);
-      
-      -- New_DIF.MemberIPCPs.Clear;
-      -- New_DIF.MemberIPCPs.Set_Length(0);
       
       return New_DIF;
    end Create_Named_DIF;
@@ -90,25 +81,4 @@ package body DIF_Manager.Dif is
       end loop;
    end List_Accessible_DIF;
    
-   -- lists all member IPCPs of a provided DIF
-   --  procedure listIPCP(self : DIF_Access) is
-   --     begin
-   --     for I in self.MemberIPCPs.First_Index .. self.MemberIPCPs.Last_Index loop
-   --        Put_Line(self.MemberIPCPs(I).ipcpName'Image);
-   --     end loop;
-   --  end listIPCP;
-   
-   -- deletes IPCP with given name from given DIF
-   --  procedure disconnectIPCP(name : Unbounded_String; self : in out DIF_Access) is
-   --     begin
-   --     for I in self.MemberIPCPs.First_Index .. self.MemberIPCPs.Last_Index loop
-   --        if self.MemberIPCPs(I).ipcpName = name then
-   --           self.MemberIPCPs.Delete(I);
-   --           exit;
-   --        end if;
-   --     end loop;
-   --  end disconnectIPCP;
-
-   
-
 end DIF_Manager.Dif;

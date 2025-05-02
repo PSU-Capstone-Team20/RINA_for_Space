@@ -1,6 +1,8 @@
 with Ada.Text_IO; use Ada.Text_IO;
 
 -- what was said in rib_daemon.ads 
+-- this was created to act as a background process in tandem with the mockcomp to simulate a Daemon that automatically updates and maintains the Resource Information Base without need for explicit coding of such actions or user input
+-- not in use, may be altered to work with the rest of the system without the need for the mockcomp package
 package body rib_daemon is
 
    --TODO : add CDAP functionality

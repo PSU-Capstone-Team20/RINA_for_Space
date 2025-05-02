@@ -19,11 +19,11 @@ with RINA; use RINA;
 with simulation; use simulation;
 with EFCP; use EFCP;
 with IPC_Data_Transfer; use IPC_Data_Transfer;
-
---with fakeComp;
 with EFCP; use EFCP;
 
 
+--the code commented out/unused in this file was kept for example purposes so that it can be referred to for templates or how certain functions/procedures are called and handled
+--this is also the main, execution starts here
 procedure Rina_For_Space is
 
   -- IPC_M : IPCP_Manager_T;

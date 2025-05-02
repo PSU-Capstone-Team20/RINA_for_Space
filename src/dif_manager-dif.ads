@@ -29,7 +29,7 @@ package DIF_Manager.Dif is
    subtype DIF_Vector is DIF_Vectors.Vector;
    subtype IPCP_Vector is IPCP_Vectors.Vector;
    subtype computer_connection is computer_connections.Vector;
-   -- subtype IPCP_Vector is IPCP_Vectors.Vector;
+   
 
    type DIF_T is tagged record
       DIF_ID          : Integer;
@@ -52,21 +52,14 @@ package DIF_Manager.Dif is
    -- deletes the DIF that has the specified ID if possible
    procedure Disconnect_DIF(ID : Integer; vector : in out DIF_Vector);
    -- adds a pair of DIFs to each other's accessible DIFs
-   -- TODO so this is using broadcasting to find other available DIFs - Needs tasking
+   
    procedure Pair_DIF(first : in out DIF_Access; second : in out DIF_Access);
    -- lists the IDs of accessible DIFs
    procedure List_Accessible_DIF(self : DIF_Access);
 
-   -- TODO directory and pathing
    -- TODO Application Connection logic
    -- TODO Application Disconnect Logic
    -- TODO Application Distance Logic
    -- TODO Application Distance Broadcast Logic
-   
-   -- TODO Revist this when IPC_Manager is added in.
-   -- lists all member IPCPs of a provided DIF
-   -- procedure listIPCP(self : DIF_Access);
-   -- deletes IPCP with given name from given DIF
-   -- procedure disconnectIPCP(name : Unbounded_String; self : in out DIF_Access);
 
 end DIF_Manager.Dif;

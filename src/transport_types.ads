@@ -27,9 +27,6 @@ package Transport_Types is
       Timestamp   : Time := Clock;
    end record;
 
-   -- Define the PDU_Type enumeration with representations
-   --type PDU_Type is (DT, CTL, ACK, ERR);
-
    type SDU_T is record
       PCI  : PCI_T;
       Data : Unbounded_String;
@@ -40,8 +37,6 @@ package Transport_Types is
       ID        : String(1 .. 7);          -- Unique identifier for the PDU
       PCI       : PCI_T;                   -- Protocol Control Information
       Data      : Unbounded_String;       -- The actual payload
-      --P_Type    : PDU_Type;              -- Type of PDU
-      --Omit DIF only for the PDU address to allow a PDU to take any DIF to its destination regardless of what DIFs are active
    end record;
 
 end Transport_Types;

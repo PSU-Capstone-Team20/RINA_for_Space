@@ -33,6 +33,8 @@ package IPC_Manager.IPCP is
    -- Clears the incoming and/or outgoing PDU buffers of the IPCP
    procedure Clear_PDU_Buffer(IPCP : in out IPCP_T; Clear_Incoming : Boolean := True; Clear_Outgoing : Boolean := True);
    
+   --this is here due to the current implementation not fully processing a PDU when it gets handled by an IPCP
+   --fuller implementation will gather information from the PDU via this procedure for transmission, presently this is a stub
    --procedure Process_PDU(IPCP : in out IPCP_T; PDU : in PDU_T);
 
 end IPC_Manager.IPCP;

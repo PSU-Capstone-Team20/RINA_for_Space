@@ -1,8 +1,6 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Transport_Types; use Transport_Types;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
-
-
 --
 --package for Error and Flow Control Protocol(EFCP) split into two protocol machines DTP and DTCP
 --DTP : Data Transfer Protocol - fragmentation, reassembly, sequencing, concatenation, and separation
@@ -10,7 +8,6 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 --DTCP cont. - transmission control, retransmission control, and flow control
 --
 package body EFCP is
-   
 
     package Int_IO is new Ada.Text_IO.Integer_IO(Integer);
 
@@ -38,7 +35,6 @@ package body EFCP is
 
       Fragments.Data := To_Unbounded_String(Origin_Data(1 .. Size));
       
-
       if Size + 1  <= Remains_Length then
         
          S.Data := To_Unbounded_String(Origin_Data(Size + 1 .. Remains_Length));
@@ -47,7 +43,6 @@ package body EFCP is
          S.Data := To_Unbounded_String(" "); 
       end if;
    
-
    end Fragment;
 
    --recontruction of SDU from received PDU
@@ -97,10 +92,5 @@ package body EFCP is
    begin
       Put_Line("Flow control has been applied to PDU " & P.PCI.Seq_Num'Image);
    end Flow_Control;
-
-
-
-
-
 
 end EFCP;

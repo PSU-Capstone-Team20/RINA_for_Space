@@ -28,12 +28,6 @@ package RIB is
    
     -- represents a live computer in the system as a RIB object
     type RIB_Obj is record
-     -- Hash_ID          : Ada.Containers.Hash_Type; -- hash value for each entry
-      --Accessible_IPCPs : IPCP_Vectors.Vector; -- list of ipcps system has access to
-      --Connected_DIFs   : DIF_Vectors.Vector; -- list of difs system has access to
-      --Active_APNs      : Application_Vectors.Vector; -- applications running on system
-
-      --RIB_Obj is defined as a string representing the Computer and the IPCPs and APNs running on it
       Comp_Connection  : Unbounded_String; --SHOULD BE THE SAME AS THE HASH
       Obj_Obj_Type : RIB_Obj_Obj;
     end record;
@@ -54,8 +48,6 @@ package RIB is
       Obj_Type   : Comp_Hashed_Maps.map;
     end record;
 
-    -- function Hash (Key : Unbounded_String) return Ada.Containers.Hash_Type;
-
     package RIB_Hashed_Maps is new Ada.Containers.Indefinite_Hashed_Maps
     (
       Key_Type => Unbounded_String,
@@ -64,21 +56,6 @@ package RIB is
       Equivalent_Keys => "="
     );
     use RIB_Hashed_Maps;
-
-    
-
-
-   --test procedure: example for how to add and access 
-    --  procedure test is
-    --   tester : Map;
-    --   RIB_Entry_test : RIB_Entry;
-    --  begin
-    --  tester.Include ("John's Computer", RIB_Entry_test);
-    --  tester("John's Computer").Element.Obj_Type.Accessible_IPCPs(0);
-    --  null;
-    --  end test;
-
-    --function Check_Is_Neighbor(A, B : Unbounded_String; Is_Entry : RIB_Entry) return Boolean;
 
     --add procedures for RIB_Entry/DIF/IPCP/APN
     procedure Add_Entry(Name : Unbounded_String);
