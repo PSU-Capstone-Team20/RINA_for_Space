@@ -13,7 +13,7 @@
 
 ## Overview
 
-**RINA for Space** is a senior design capstone project developed at [The Pennsylvania State University, Behrend College](https://behrend.psu.edu/), with sponsorship from [AdaCore](https://www.adacore.com/) through its [GNAT Academic Program](https://github.com/GNAT-Academic-Program). This project explores the use of **Recursive InterNetwork Architecture (RINA)** and the **CCSDS Bundle Protocol** to address the challenges of delay-tolerant networking (DTN) in space communication systems.
+**RINA for Space** is a senior design capstone project developed at [The Pennsylvania State University, Behrend College](https://behrend.psu.edu/), with sponsorship from [AdaCore](https://www.adacore.com/) through its [GNAT Academic Program](https://github.com/GNAT-Academic-Program). This project explores the use of **Recursive InterNetwork Architecture (RINA)** and the [**CCSDS Bundle Protocol**](https://public.ccsds.org/Pubs/734x2b1.pdf) to address the challenges of delay-tolerant networking (DTN) in space communication systems.
 
 Traditional IP-based communication protocols struggle to handle high-latency, intermittent, and resource-constrained environments such as deep space. This project simulates a modular, policy-driven alternative using RINA architecture, implemented in Ada, to support reliable and scalable interplanetary data exchange. The system is intended to lay the foundation for communication architectures used in future space missions, where resilience, autonomy, and adaptability are critical.
 
