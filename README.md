@@ -77,6 +77,38 @@ chmod +x bin/*
 
 ## References
 
-PSOC, “RINA, Recursive Internetwork Architecture,” Nov. 14, 2019. https://www.open-root.eu/IMG/pdf/rina-leaflet_20191115_en.pdf
+#### Pouzin Society - RINA
+[1] PSOC, “RINA, Recursive Internetwork Architecture,” Nov. 14, 2019. https://www.open-root.eu/IMG/pdf/rina-leaflet_20191115_en.pdf
+
+#### AdaCore Company Site
+[2] “AdaCore,” AdaCore, 2024. https://www.adacore.com/
+
+#### Patterns in Network Architecture - John Day
+[3] J. Day, Patterns in Network Architecture. Pearson Education India, 2007.
+
+#### Is the Internet an Unfinished Demo? Meet RINA! Research Paper
+[4] E. Trouva et al., “IS THE INTERNET AN UNFINISHED DEMO? MEET RINA!,” 2010. Accessed: Feb. 26, 2025. https://www.cs.bu.edu/fac/matta/Papers/Internet-unfinished-demo-Meet-RINA.pdf
+
+#### CCSDS Public Documents - Communication protocols
+[5] Consultative Committee for Space Data Systems, “CCSDS Public Documents,” CCSDS. [Online]. Available: https://public.ccsds.org/default.aspx
 
 ## Credits
+
+This project was made possible through the collaborative efforts of our senior design team, with guidance from our mentor at AdaCore and faculty advisors.
+
+Team Members – Penn State Behrend, Class of 2025
+* [Dominic Pasquarelli](https://github.com/dominic24515)
+* [Glenn Bartkowiak](https://github.com/Glennkabob)
+* [Emily Kan](https://github.com/emilyyankan)
+* [Hyelin Lee](https://github.com/mashimelo)
+
+Sponsor Project Mentor
+* [Olivier Henley](https://github.com/ohenley)
+
+Faculty Advisor
+* Naseem Ibrahim, Ph.D. - Chair, Computer Science and Software Engineering. Associate Professor, Computer Science and Software Engineering
+
+* Pulin Agrawal, Ph.D. - Assistant Professor, Computer Science and Software Engineering
+
+* Chen Cao, Ph.D. - Assistant Professor, Computer Science and Software Engineering
+
